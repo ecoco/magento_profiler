@@ -105,19 +105,22 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
         return $this;
     }
 
+    /**
+     * @return array
+     */
     protected function addTrace()
     {
         if (!function_exists('debug_backtrace')) {
             return [];
         }
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 8);
+        
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
 
-        $trace = array_shift($backtrace);
-        while ($backtrace && (!isset($trace['function']) || $trace['function'] !== '__')) {
-            $trace = array_shift($backtrace);
+        while (($trace = reset($backtrace)) && (!isset($trace['function']) || $trace['function'] !== '__')) {
+            array_shift($backtrace);
         }
 
-        $this->currentMessage['trace'] = array_slice($backtrace, 0, 3);
+        $this->currentMessage['trace'] = array_slice($backtrace, 0, 5);
     }
 
     protected function shouldRemoveTraceItem()

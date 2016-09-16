@@ -1,0 +1,185 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Mysql_Panel $this */
+
+/** @var Ecocode_Profiler_Model_Collector_MysqlDataCollector $collector */
+$collector = $this->getCollector();
+$identicalQueries = $this->getIdenticalQueries();
+$identicalQueriesCount = count($identicalQueries);
+
+$queriesByContext = $this->getByContext();
+?>
+<h2>Query Metrics</h2>
+
+<div class="metrics">
+    <div class="metric">
+        <span class="value"><?php echo $collector->getQueryCount()?></span>
+        <span class="label">Database Queries</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo $identicalQueriesCount?></span>
+        <span class="label">Identical Queries</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000)?> ms</span>
+        <span class="label">Query time</span>
+    </div>
+
+</div>
+
+<div class="sf-tabs">
+    <div class="tab">
+        <h3 class="tab-title">
+            Queries
+            <small>(<?php echo $collector->getQueryCount() ?>)</small>
+        </h3>
+        <div class="tab-content">
+            <?php echo $this->renderQueryTable('all', $collector->getQueries() );?>
+        </div>
+    </div>
+    <div class="tab">
+        <h3 class="tab-title">
+            Queries By Context
+            <small>(<?php echo count($queriesByContext) ?>)</small>
+        </h3>
+
+        <div class="tab-content">
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Context</th>
+                    <th>Queries</th>
+                    <th>Total Time</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach($queriesByContext as $index => $context):?>
+                    <tr>
+                        <td><?php echo $index + 1 ?> </td>
+                        <td><?php echo $context['name']?></td>
+                        <td><?php echo $context['count']?></td>
+                        <td><?php echo sprintf('%0.2f', $context['total_time'] * 1000)?> ms</td>
+                        <td class="text-right">
+                            <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#context-queries-<?php echo $index ?>" data-toggle-alt-content="Hide queries">View queries</a>
+                        </td>
+                    </tr>
+                    <tr class="hidden" id="context-queries-<?php echo $index ?>">
+                        <td colspan="5">
+                            Queries:<br>
+                            <?php echo $this->renderQueryTable('context-'. $index, $context['queries']);?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="tab">
+        <h3 class="tab-title">
+            Identical Queries
+            <small>(<?php echo $identicalQueriesCount ?>)</small>
+        </h3>
+
+
+        <div class="tab-content">
+            <?php $prefix = 'identical-'; ?>
+            <table class="alt queries-table">
+                <thead>
+                <tr>
+                    <th class="nowrap">#</th>
+                    <th class="nowrap">Count</th>
+                    <th class="nowrap">Total Time<span></span></th>
+                    <th style="width: 100%;">Info</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($identicalQueries as $index => $query): ?>
+                    <?php $queryData = $query['query'];?>
+                    <tr>
+                        <td class="nowrap"><?php echo $index + 1 ?> </td>
+                        <td class="nowrap"><?php echo $query['count'] ?> </td>
+                        <td class="nowrap"><?php echo sprintf('%0.2f', $query['total_time'] * 1000)?> ms</td>
+                        <td>
+                            <?php echo $this->formatQuery($queryData['sql'], true) ?>
+                            <div>
+                                <strong class="font-normal text-small">Parameters</strong>:
+                                <?php echo $this->dumpParameters($queryData['params']) ?>
+
+                            </div>
+                            <div>
+                                <strong class="font-normal text-small">Context</strong>:
+                                <?php echo $queryData['context'] ?>
+                            </div>
+
+                            <div class="text-small font-normal">
+                                <?php if (isset($query['traces'])):?>
+                                    <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#stack-<?php echo $prefix . $index?>" data-toggle-alt-content="Hide stack trace">Show trace</a>
+                                <?php endif;?>
+                                <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#formatted-query-<?php echo $prefix . $index?>" data-toggle-alt-content="Hide formatted query">View formatted query</a>
+                                <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#original-query-<?php echo $prefix . $index?>" data-toggle-alt-content="Hide runnable query">View runnable query</a>
+                            </div>
+
+                            <div id="formatted-query-<?php echo $prefix . $index?>" class="sql-runnable hidden">
+                                <?php echo $this->formatQuery($queryData['sql']); ?>
+                            </div>
+
+                            <div id="original-query-<?php echo $prefix . $index?>" class="sql-runnable hidden">
+                                <?php echo $this->formatQuery($this->replaceQueryParameters($queryData['sql'], $queryData['params']), true); ?>
+                            </div>
+
+                            <?php if (isset($query['traces'])):?>
+                                <div id="stack-<?php echo $prefix . $index ?>" class="hidden">
+                                    <strong class="font-normal text-small">Traces</strong>:
+                                    <table class="">
+                                        <tbody>
+                                        <?php foreach ($query['traces'] as $j => $trace):?>
+                                            <tr>
+                                            <td class="nowrap">#<?php echo $j + 1 ?></td>
+                                                <td>
+                                                    <ul class="sf-call-stack ">
+                                                        <?php foreach($trace as $item): ?>
+                                                            <li>
+                                                                <?php echo $item['class']?>::<?php echo $item['function']?><br>
+                                                                <small><?php echo $item['file']?>::<?php echo $item['line']?></small>
+                                                            </li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    tr.sf-toggle-content.sf-toggle-visible {
+        display: table-row!important;
+    }
+    .hidden { display: none; }
+    .queries-table td, .queries-table th { vertical-align: top; }
+    .queries-table td > div { margin-bottom: 6px; }
+    .highlight pre { margin: 0; white-space: pre-wrap; }
+    .highlight .keyword   { color: #8959A8; font-weight: bold; }
+    .highlight .word      { color: #222222; }
+    .highlight .variable  { color: #916319; }
+    .highlight .symbol    { color: #222222; }
+    .highlight .comment   { color: #999999; }
+    .highlight .backtick  { color: #718C00; }
+    .highlight .string    { color: #718C00; }
+    .highlight .number    { color: #F5871F; font-weight: bold; }
+    .highlight .error     { color: #C82829; }
+</style>

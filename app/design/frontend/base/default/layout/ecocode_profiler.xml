@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<layout>
+    <profiler_default>
+        <block type="page/html" name="root" output="toHtml" template="ecocode_profiler/layout.phtml">
+            <block type="core/template" name="profiler_js" template="ecocode_profiler/profiler/base.js.phtml"/>
+            <block type="core/template" name="profiler_css" template="ecocode_profiler/profiler/base.css.phtml"/>
+            <block type="core/template" name="summery" template="ecocode_profiler/profiler/summery.phtml"/>
+            <block type="core/text_list" name="left" as="left" translate="label">
+                <label>Left Column</label>
+                <block type="ecocode_profiler/profiler_sidebar" name="sidebar" template="ecocode_profiler/layout/sidebar.phtml">
+                    <block type="ecocode_profiler/profiler_sidebar_menu" name="menu" template="ecocode_profiler/layout/sidebar/menu.phtml">
+                        <block name="request" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/menu.phtml"/>
+                        <block name="mysql" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/menu.phtml"/>
+                        <block name="event" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/event/menu.phtml"/>
+                        <block name="layout" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/layout/menu.phtml"/>
+                        <block name="translation" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/translation/menu.phtml"/>
+                        <block name="rewrite" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/rewrite/menu.phtml"/>
+                        <block name="log" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/log/menu.phtml"/>
+                        <block name="cache" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/cache/menu.phtml"/>
+                        <block name="config" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/config/menu.phtml"/>
+                    </block>
+                </block>
+            </block>
+            <block type="core/text_list" name="content" as="content" translate="label">
+                <label>Main Content Area</label>
+            </block>
+        </block>
+
+
+    </profiler_default>
+
+    <profiler_index_toolbar>
+        <block type="ecocode_profiler/toolbar" name="root" output="toHtml" template="ecocode_profiler/toolbar.phtml">
+            <block name="profiler.mysql.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/toolbar.phtml"/>
+            <block name="profiler.request.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/toolbar.phtml"/>
+            <block name="profiler.translation.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/translation/toolbar.phtml"/>
+            <block name="profiler.ajax.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/ajax/toolbar.phtml"/>
+            <block name="profiler.cache.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/cache/toolbar.phtml"/>
+            <block name="profiler.memory.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/memory/toolbar.phtml"/>
+            <block name="profiler.rewrite.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/rewrite/toolbar.phtml"/>
+            <block name="profiler.log.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/log/toolbar.phtml"/>
+            <block name="profiler.customer.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/customer/toolbar.phtml"/>
+            <block name="profiler.layout.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/layout/toolbar.phtml"/>
+            <block name="profiler.config.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/config/toolbar.phtml"/>
+        </block>
+
+    </profiler_index_toolbar>
+
+
+    <profiler_index_searchresults>
+        <reference name="content">
+            <block type="core/template" name="profiler.search.summery" template="ecocode_profiler/profiler/search/summery.phtml"/>
+            <block type="core/template" name="profiler.search.results" template="ecocode_profiler/profiler/search/results.phtml"/>
+        </reference>
+    </profiler_index_searchresults>
+
+
+    <collector_mysql>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_mysql_panel" template="ecocode_profiler/collector/mysql/panel.phtml"/>
+        </reference>
+    </collector_mysql>
+
+    <collector_request>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/panel.phtml"/>
+        </reference>
+    </collector_request>
+
+    <collector_translation>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_translation_panel" template="ecocode_profiler/collector/translation/panel.phtml"/>
+        </reference>
+    </collector_translation>
+
+    <collector_config>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/config/panel.phtml"/>
+        </reference>
+    </collector_config>
+
+    <collector_rewrite>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/rewrite/panel.phtml"/>
+        </reference>
+    </collector_rewrite>
+
+    <collector_event>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/event/panel.phtml"/>
+        </reference>
+    </collector_event>
+
+    <collector_layout>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_layout_panel" template="ecocode_profiler/collector/layout/panel.phtml"/>
+        </reference>
+    </collector_layout>
+
+    <collector_cache>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/cache/panel.phtml"/>
+        </reference>
+    </collector_cache>
+
+    <collector_log>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_log_panel" template="ecocode_profiler/collector/log/panel.phtml"/>
+        </reference>
+    </collector_log>
+</layout>

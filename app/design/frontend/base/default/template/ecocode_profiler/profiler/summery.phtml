@@ -1,0 +1,90 @@
+<?php
+/** @var Ecocode_Profiler_Model_Profile $profile */
+$profile = Mage::registry('current_profile');
+?>
+<?php if ($profile): ?>
+    <?php
+        /** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $requestCollector */
+        $requestCollector = $profile->getCollector('request');
+        $statusCode = $requestCollector->getStatusCode();
+        $cssClass = ($statusCode > 399) ? 'status-error' : $statusCode > 299 ? 'status-warning' : 'status-success';
+    ?>
+
+<div class="status <?php echo $cssClass?>">
+    <div class="container">
+        <h2 class="break-long-words">
+            <?php if (in_array(strtoupper($profile->getMethod()), ['GET', 'HEAD'])): ?>
+                <a href="<?php echo $profile->getUrl()?>"><?php echo $profile->getUrl()?></a>
+            <?php else: ?>
+                <?php echo $profile->getUrl()?>
+            <?php endif;?>
+        </h2>
+
+<!--        {% if request_collector is defined and request_collector.redirect -%}
+            {%- set redirect = request_collector.redirect -%}
+            {%- set controller = redirect.controller -%}
+            {%- set redirect_route = '@' ~ redirect.route %}
+            <dl class="metadata">
+                <dt>
+                    <span class="label">{{ redirect.status_code }}</span>
+                    Redirect from
+                </dt>
+                <dd>
+                    {{ 'GET' != redirect.method ? redirect.method }}
+                    {% if redirect.controller.class is defined -%}
+                    {%- set link = controller.file|file_link(controller.line) -%}
+                    {% if link %}<a href="{{ link }}" title="{{ controller.file }}">{% endif -%}
+                        {{ redirect_route }}
+                        {%- if link %}</a>{% endif -%}
+                    {%- else -%}
+                    {{ redirect_route }}
+                    {%- endif %}
+                    (<a href="{{ path('_profiler', { token: redirect.token }) }}">{{ redirect.token }}</a>)
+                </dd>
+            </dl>
+        {%- endif %}-->
+
+<!--        {% if request_collector and request_collector.forward|default(false) and request_collector.forward.controller.class is defined -%}
+        {%- set forward = request_collector.forward -%}
+        {%- set controller = forward.controller -%}
+        <dl class="metadata">
+            <dt>Forwarded to</dt>
+            <dd>
+                {% set link = controller.file|file_link(controller.line) -%}
+                {%- if link %}<a href="{{ link }}" title="{{ controller.file }}">{% endif -%}
+                    {{- controller.class|abbr_class|striptags -}}
+                    {{- controller.method ? ' :: ' ~ controller.method }}
+                    {%- if link %}</a>{% endif %}
+                (<a href="{{ path('_profiler', { token: forward.token }) }}">{{ forward.token }}</a>)
+            </dd>
+        </dl>
+        {%- endif %}-->
+
+        <dl class="metadata">
+            <dt>Method</dt>
+            <dd><?php echo strtoupper($profile->getMethod()) ?></dd>
+
+            <?php if ($profile->hasCollector('request')):?>
+                <?php
+                /** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
+                $collector = $profile->getCollector('request');
+                ?>
+                <dt>Route</dt>
+                <dd><?php echo $collector->getRoute(); ?></dd>
+            <?php endif; ?>
+
+            <dt>HTTP Status</dt>
+            <dd><?php echo $statusCode ?></dd>
+
+            <dt>IP</dt>
+            <dd><?php echo $profile->getIp() ?></dd>
+
+            <dt>Profiled on</dt>
+            <dd><?php echo date('r', $profile->getTime()) ?></dd>
+
+            <dt>Token</dt>
+            <dd><?php echo $profile->getToken(); ?></dd>
+        </dl>
+    </div>
+</div>
+<?php endif;?>

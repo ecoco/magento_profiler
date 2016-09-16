@@ -1,0 +1,150 @@
+<!--{% set request_handler %}
+{% import _self as helper %}
+{{ helper.set_handler(collector.controller) }}
+{% endset %}-->
+
+<!--{% if collector.redirect %}
+{% set redirect_handler %}
+{% import _self as helper %}
+{{ helper.set_handler(collector.redirect.controller, collector.redirect.route, 'GET' != collector.redirect.method ? collector.redirect.method) }}
+{% endset %}
+{% endif %}
+
+{% if collector.forward|default(false) %}
+{% set forward_handler %}
+{% import _self as helper %}
+{{ helper.set_handler(collector.forward.controller) }}
+{% endset %}
+{% endif %}
+-->
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Base $this */
+
+/** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
+$collector = $this->getCollector();
+$token = $this->getToken();
+$requestStatusCodeColor = $collector->getStatusCode() >= 400 ? 'red' : $collector->getStatusCode()  >= 300 ? 'yellow' : 'green';
+?>
+
+<div class="sf-toolbar-block sf-toolbar-block-<?php echo $collector->getName()?> sf-toolbar-status-normal ">
+    <a target="_blank" href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => $token, 'panel' => 'request']);?>">
+        <div class="sf-toolbar-icon">
+            <span class="sf-toolbar-status sf-toolbar-status-<?php echo $requestStatusCodeColor?>"><?php echo $collector->getStatusCode()?></span>
+            <?php if($collector->getRoute()): ?>
+                <span class="sf-toolbar-label"><?php echo $collector->getMethod() !== 'GET' ? $collector->getMethod() : ''?> @</span>
+                <span class="sf-toolbar-value sf-toolbar-info-piece-additional"><?php echo $collector->getRoute()?></span>
+            <?php endif?>
+        </div>
+    </a>
+    <div class="sf-toolbar-info" style="left: 0px;">
+        <div class="sf-toolbar-info-group">
+            <div class="sf-toolbar-info-piece">
+                <b>HTTP status</b>
+                <span><?php echo $collector->getStatusCode() ?></span>
+            </div>
+
+
+            <div class="sf-toolbar-info-piece">
+                <b>Route Name</b><span><?php echo $collector->getRoute() ?></span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Module</b><span><?php echo $collector->getModuleName() ?></span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Controller</b>
+                <span><?php echo $collector->getControllerName() ?>::<?php echo $collector->getActionName() ?> </span>
+            </div>
+
+            <?php $controllerData = $collector->getController(); ?>
+            <div class="sf-toolbar-info-piece">
+                <b>Controller class</b>
+                <span><?php echo $controllerData['class'] ?></span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Full action name</b>
+                <span><?php echo $collector->getRoute(); ?></span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<?php /*
+{% set icon %}
+<span class="sf-toolbar-status sf-toolbar-status-<?php echo $requestStatusCodeColor?>"><?php echo $collector->getStatusCode()?></span>
+
+<!--{% if collector.route %}
+{% if collector.redirect %}{{ include('@WebProfiler/Icon/redirect.svg') }}{% endif %}
+{% if collector.forward|default(false) %}{{ include('@WebProfiler/Icon/forward.svg') }}{% endif %}
+<span class="sf-toolbar-label">{{ 'GET' != collector.method ? collector.method }} @</span>
+<span class="sf-toolbar-value sf-toolbar-info-piece-additional">{{ collector.route }}</span>
+{% endif %}
+{% endset %}
+-->
+{% set text %}
+<div class="sf-toolbar-info-group">
+    <div class="sf-toolbar-info-piece">
+        <b>HTTP status</b>
+        <span>{{ collector.statuscode }} {{ collector.statustext }}</span>
+    </div>
+
+    {% if 'GET' != collector.method -%}
+    <div class="sf-toolbar-info-piece">
+        <b>Method</b>
+        <span>{{ collector.method }}</span>
+    </div>
+    {%- endif %}
+
+    <div class="sf-toolbar-info-piece">
+        <b>Controller</b>
+        <span>{{ request_handler }}</span>
+    </div>
+
+    {% if collector.controller.class is defined -%}
+    <div class="sf-toolbar-info-piece">
+        <b>Controller class</b>
+        <span>{{ collector.controller.class }}</span>
+    </div>
+    {%- endif %}
+
+    <div class="sf-toolbar-info-piece">
+        <b>Route name</b>
+        <span>{{ collector.route|default('NONE') }}</span>
+    </div>
+
+    <div class="sf-toolbar-info-piece">
+        <b>Has session</b>
+        <span>{% if collector.sessionmetadata|length %}yes{% else %}no{% endif %}</span>
+    </div>
+</div>
+
+{% if redirect_handler is defined -%}
+<div class="sf-toolbar-info-group">
+    <div class="sf-toolbar-info-piece">
+        <b>
+            <span class="sf-toolbar-redirection-status sf-toolbar-status-yellow">{{ collector.redirect.status_code }}</span>
+            Redirect from
+        </b>
+        <span>
+                        {{ redirect_handler }}
+                        (<a href="{{ path('_profiler', { token: collector.redirect.token }) }}">{{ collector.redirect.token }}</a>)
+                    </span>
+    </div>
+</div>
+{% endif %}
+
+{% if forward_handler is defined %}
+<div class="sf-toolbar-info-group">
+    <div class="sf-toolbar-info-piece">
+        <b>Forwarded to</b>
+        <span>
+                    	{{ forward_handler }}
+                    	(<a href="{{ path('_profiler', { token: collector.forward.token }) }}">{{ collector.forward.token }}</a>)
+                	</span>
+    </div>
+</div>
+{% endif %}
+{% endset %}
+
+{{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url }) }}
+
+ */?>

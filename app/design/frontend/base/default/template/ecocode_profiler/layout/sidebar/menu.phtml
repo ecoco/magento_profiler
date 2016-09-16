@@ -1,0 +1,21 @@
+<?php /** @var Ecocode_Profiler_Block_Profiler_Sidebar_Menu $this */?>
+<?php
+if (!$this->getProfile()) {
+    return '';
+}
+$token = $this->getProfile()->getToken();
+$panel   = Mage::registry('current_panel');
+?>
+<?php foreach ($this->getMenuBlocks() as $name => $block): ?>
+    <?php
+    /** @var Ecocode_Profiler_Block_Collector_AbstractBase $block */
+    /** @var Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector */
+    $collector = $block->getCollector();
+    $url       = Mage::getUrl('_profiler/index/panel', ['token' => $token, 'panel' => $name]);
+    ?>
+    <li class="<?php echo $name ?> <?php echo $name === $panel ? 'selected' : '' ?>">
+        <a href="<?php echo $url ?>"><?php echo $block->toHtml(); ?></a>
+    </li>
+
+<?php endforeach; ?>
+

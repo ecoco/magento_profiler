@@ -1,0 +1,77 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Base $this */
+
+/** @var Ecocode_Profiler_Model_Collector_RewriteDataCollector $collector */
+$collector = $this->getCollector();
+
+?>
+<?php $conflicts = $collector->getModuleRewriteConflicts(); ?>
+<h2>Rewrite Conflicts</h2>
+<?php if ($conflicts): ?>
+    <table>
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Class</th>
+            <th>Rewrites</th>
+            <th>Loaded Class</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($conflicts as $conflict): ?>
+            <tr>
+                <td><?php echo $conflict['type'] ?></td>
+                <td><?php echo $conflict['class'] ?></td>
+                <td><?php echo implode('<br>', $conflict['rewrites']) ?></td>
+                <td><?php echo $conflict['loaded_class'] ?></td>
+            </tr>
+
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+<?php else: ?>
+    <div class="empty">
+        <p>No rewrite conflicts</p>
+    </div>
+
+<?php endif; ?>
+
+<?php
+$rewrites = $collector->getModuleRewrites();
+?>
+<h2>Rewrites</h2>
+
+<div class="sf-tabs">
+    <?php foreach ($rewrites as $type => $typeRewrites): ?>
+        <div class="tab">
+            <h3 class="tab-title"><?php echo ucwords($type) ?>
+                <small>(<?php echo count($typeRewrites) ?>)</small>
+            </h3>
+            <div class="tab-content">
+                <?php if ($rewrites): ?>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Class Group</th>
+                            <th>Rewrites</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($typeRewrites as $classGroup => $rewrites): ?>
+                            <tr>
+                                <td><?php echo $classGroup ?></td>
+                                <td><?php echo implode('<br>', $rewrites) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="empty">
+                        <p>No rewrite conflicts</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>

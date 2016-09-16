@@ -1,0 +1,56 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Log_Panel $this */
+
+/** @var Ecocode_Profiler_Model_Collector_LogDataCollector $collector */
+$collector = $this->getCollector();
+?>
+
+    <h2>Log Messages</h2>
+
+<?php if (!$collector->getLogCount()): ?>
+    <div class="empty">
+        <p>No log messages available.</p>
+    </div>
+<?php else: ?>
+    <div class="sf-tabs">
+        <?php foreach ($this->getLogGroups() as $groupData): ?>
+            <div class="tab">
+                <h3 class="tab-title">
+                    <?php echo $groupData['name'] ?>
+                    <span class="badge"><?php echo count($groupData['logs']); ?></span><br>
+                </h3>
+
+                <div class="tab-content">
+                    <small><?php echo $groupData['file']; ?></small>
+                    <table class="logs">
+                        <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Message</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <?php foreach ($groupData['logs'] as $entry): ?>
+                            <?php
+                            $level    = $entry['level'];
+                            $cssClass = $this->getEntryCssClass($entry['level']);
+                            ?>
+
+                            <tr class="<?php echo $cssClass; ?>">
+                                <td class="font-normal text-small">
+                                <span
+                                    class="colored text-bold nowrap"><?php echo $this->getPriorityName($level) ?></span>
+                                    <!--<span class="text-muted nowrap newline">{{ log.timestamp|date('H:i:s') }}</span>-->
+                                </td>
+
+                                <td class="font-normal"><?php echo $entry['message'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

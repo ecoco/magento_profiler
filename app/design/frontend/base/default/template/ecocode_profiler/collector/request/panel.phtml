@@ -1,0 +1,163 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Base $this */
+
+/** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
+$collector = $this->getCollector();
+?>
+
+
+<div class="sf-tabs">
+    <div class="tab">
+        <h3 class="tab-title">Request</h3>
+
+        <div class="tab-content">
+            <h3>GET Parameters</h3>
+
+            <?php if (!count($collector->getRequestQuery())): ?>
+                <div class="empty">
+                    <p>No GET parameters</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderBag($collector->getRequestQuery()) ?>
+            <?php endif ?>
+
+            <h3>POST Parameters</h3>
+
+            <?php if (!count($collector->getRequestRequest())): ?>
+                <div class="empty">
+                    <p>No POST parameters</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderBag($collector->getRequestRequest()) ?>
+            <?php endif ?>
+
+            <h3>Request Attributes</h3>
+
+            <?php if (!count($collector->getRequestAttributes())): ?>
+                <div class="empty">
+                    <p>No attributes</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderBag($collector->getRequestAttributes()) ?>
+            <?php endif ?>
+
+            <h3>Cookies</h3>
+
+            <?php if (!count($collector->getRequestCookies())): ?>
+                <div class="empty">
+                    <p>No cookies</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderBag($collector->getRequestCookies()) ?>
+            <?php endif ?>
+
+            <h3>Request Headers</h3>
+            <?php echo $this->renderBag($collector->getRequestHeaders()) ?>
+
+            <h3>Request Content</h3>
+
+            <?php if ($collector->getContent() === false): ?>
+                <div class="empty">
+                    <p>Request content not available (it was retrieved as a resource).</p>
+                </div>
+            <?php elseif ($collector->getContent()): ?>
+                <div class="card">
+                    <pre class="break-long-words"><?php echo $collector->getContent() ?></pre>
+                </div>
+            <?php else: ?>
+                <div class="empty">
+                    <p>No content</p>
+                </div>
+            <?php endif ?>
+
+            <h3>Server Parameters</h3>
+            <?php echo $this->renderBag($collector->getRequestServer()) ?>
+        </div>
+    </div>
+
+    <div class="tab">
+        <h3 class="tab-title">Response</h3>
+
+        <div class="tab-content">
+            <h3>Response Headers</h3>
+
+            <?php echo $this->renderBag($collector->getResponseHeaders()) ?>
+        </div>
+    </div>
+
+    <!--<div class="tab {{ collector.sessionmetadata is empty ? 'disabled' }}">
+        <h3 class="tab-title">Session</h3>
+
+        <div class="tab-content">
+            <h3>Session Metadata</h3>
+
+            {% if collector.sessionmetadata is empty %}
+            <div class="empty">
+                <p>No session metadata</p>
+            </div>
+            {% else %}
+            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.sessionmetadata }, with_context = false) }}
+            {% endif %}
+
+            <h3>Session Attributes</h3>
+
+            {% if collector.sessionattributes is empty %}
+            <div class="empty">
+                <p>No session attributes</p>
+            </div>
+            {% else %}
+            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.sessionattributes, labels: ['Attribute', 'Value'] }, with_context = false) }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="tab {{ collector.flashes is empty ? 'disabled' }}">
+        <h3 class="tab-title">Flashes</h3>
+
+        <div class="tab-content">
+            <h3>Flashes</h3>
+
+            {% if collector.flashes is empty %}
+            <div class="empty">
+                <p>No flash messages were created.</p>
+            </div>
+            {% else %}
+            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.flashes }, with_context = false) }}
+            {% endif %}
+        </div>
+    </div>
+
+    {% if profile.parent %}
+    <div class="tab">
+        <h3 class="tab-title">Parent Request</h3>
+
+        <div class="tab-content">
+            <h3>
+                <a href="{{ path('_profiler', { token: profile.parent.token }) }}">Return to parent request</a>
+                <small>(token = {{ profile.parent.token }})</small>
+            </h3>
+
+            {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: profile.parent.getcollector('request').requestattributes }, with_context = false) }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if profile.children|length %}
+    <div class="tab">
+        <h3 class="tab-title">Sub Requests <span class="badge">{{ profile.children|length }}</span></h3>
+
+        <div class="tab-content">
+            {% for child in profile.children %}
+            <h3>
+                <a href="{{ path('_profiler', { token: child.token }) }}">
+                    {{- child.getcollector('request').requestattributes.get('_controller') -}}
+                </a>
+                <small>(token = {{ child.token }})</small>
+            </h3>
+
+            {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: child.getcollector('request').requestattributes }, with_context = false) }}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}-->
+</div>

@@ -1,0 +1,41 @@
+<?php
+/** @var Ecocode_Profiler_Helper_ValueExporter $valueExporter */
+$valueExporter = $this->helper('ecocode_profiler/valueExporter');
+?>
+<table>
+    <thead>
+    <tr>
+        <th>Locale</th>
+        <th>Module</th>
+        <th>Times used</th>
+        <th>Message ID</th>
+        <th>Message Preview</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->getData('messages') as $i => $message): ?>
+        <tr>
+            <td class="font-normal text-small"><?php echo $message['locale']?></td>
+            <td class="font-normal text-small text-bold"><?php echo $message['module'] ?></td>
+            <td class="font-normal text-small"><?php echo $message['count'] ?></td>
+            <td>
+                <?php echo $message['code'] ?>
+
+                <?php if ($message['parameters']): ?>
+                    <button class="btn-link newline text-small sf-toggle"
+                            data-toggle-selector="#parameters-<?php echo $i ?>"
+                            data-toggle-alt-content="Hide parameters">Show parameters
+                    </button>
+
+                    <div id="parameters-<?php echo $i ?>" class="hidden">
+                        <?php foreach ($message['parameters'] as $parameters): ?>
+                            <?php echo $valueExporter->exportValue($parameters); ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </td>
+            <td><?php echo $message['translation'] ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

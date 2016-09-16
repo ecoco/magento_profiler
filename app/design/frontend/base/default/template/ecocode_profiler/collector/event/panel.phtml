@@ -1,0 +1,72 @@
+<?php
+
+/** @var Ecocode_Profiler_Block_Collector_Base $this */
+
+/** @var Ecocode_Profiler_Model_Collector_EventDataCollector $collector */
+$collector = $this->getCollector();
+
+$eventsFired = $collector->getFiredEvents();
+?>
+<h2>Events</h2>
+
+<?php if (!$eventsFired): ?>
+    <div class="empty">
+        <p>No events have been recorded. Check that you are loading "AppDev"</p>
+    </div>
+<?php else: ?>
+    <?php
+    $calledListeners = $collector->getCalledListeners()
+    ?>
+    <div class="sf-tabs">
+        <div class="tab">
+            <h3 class="tab-title">Called Listeners <span class="badge"><?php echo count($calledListeners) ?></span></h3>
+
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Listener</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($calledListeners as $listener): ?>
+                        <tr>
+                            <td><?php echo $listener['event_name'] ?></td>
+                            <td><?php echo $listener['class'] ?>:<?php echo $listener['method'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">Events Fired <span class="badge"><?php echo count($eventsFired) ?></span></h3>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="text-right">Event</th>
+                        <th>Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($eventsFired as $event): ?>
+                        <tr>
+                            <td><?php echo $event['name'] ?></td>
+                            <td><?php echo $event['count'] ?></td>
+                        </tr>
+
+                    <?php endforeach; ?>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+<?php endif; ?>

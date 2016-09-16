@@ -1,0 +1,114 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Translation_Panel $this */
+
+/** @var Ecocode_Profiler_Model_Collector_TranslationDataCollector $collector */
+$collector = $this->getCollector();
+?>
+
+
+<h2>Translation Metrics</h2>
+
+<div class="metrics">
+    <div class="metric">
+        <span class="value"><?php echo $collector->getStateCount('translated'); ?></span>
+        <span class="label">Defined messages</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo $collector->getStateCount('fallback'); ?></span>
+        <span class="label">Fallback messages</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo $collector->getStateCount('missing'); ?></span>
+        <span class="label">Missing messages</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo $collector->getStateCount('invalid'); ?></span>
+        <span class="label">Invalid messages</span>
+    </div>
+</div>
+
+
+
+<h2>Translation Messages</h2>
+
+<?php $messageGroups = $this->getMessageGroups();?>
+<div class="sf-tabs">
+    <div class="tab">
+        <h3 class="tab-title">Defined <span class="badge"><?php echo count($messageGroups['translated']) ?></span></h3>
+
+        <div class="tab-content">
+            <p class="help">
+                These messages are correctly translated into the given locale.
+            </p>
+
+            <?php if (empty($messageGroups['translated'])): ?>
+                <div class="empty">
+                    <p>None of the used translation messages are defined for the given locale.</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderTable($messageGroups['translated']); ?>
+            <?php endif ?>
+        </div>
+    </div>
+
+    <div class="tab">
+        <h3 class="tab-title">Fallback <span class="badge"><?php echo count($messageGroups['fallback']) ?></span></h3>
+
+        <div class="tab-content">
+            <p class="help">
+                These messages are not available for the given Module
+                but Magento found them in the global namespace.
+            </p>
+
+            <?php if (empty($messageGroups['fallback'])): ?>
+                <div class="empty">
+                    <p>No fallback translation messages were used.</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderTable($messageGroups['fallback']); ?>
+            <?php endif ?>
+        </div>
+    </div>
+
+    <div class="tab">
+        <h3 class="tab-title">Missing <span class="badge"><?php echo count($messageGroups['missing']) ?></span></h3>
+
+        <div class="tab-content">
+            <p class="help">
+                These messages are not available for the given locale and cannot
+                be found in the fallback locales. Add them to the translation
+                catalogue to avoid Magento outputting untranslated contents.
+            </p>
+
+
+            <?php if (empty($messageGroups['missing'])): ?>
+                <div class="empty">
+                    <p>There are no messages of this category.</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderTable($messageGroups['missing']); ?>
+            <?php endif ?>
+        </div>
+    </div>
+
+    <div class="tab">
+        <h3 class="tab-title">Invalid <span class="badge"><?php echo count($messageGroups['invalid']) ?></span></h3>
+
+        <div class="tab-content">
+            <p class="help">
+                These messages are not correctly translated as its not correctly formatted or parameters were missing
+            </p>
+
+            <?php if (empty($messageGroups['invalid'])): ?>
+                <div class="empty">
+                    <p>There are no messages of this category.</p>
+                </div>
+            <?php else: ?>
+                <?php echo $this->renderTable($messageGroups['invalid']); ?>
+            <?php endif ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+<?php
+/** @var Ecocode_Profiler_Block_Collector_Layout_Panel $this */
+
+/** @var Ecocode_Profiler_Model_Collector_LayoutDataCollector $collector */
+$collector = $this->getCollector();
+
+?>
+<h2>Render Metrics </h2>
+<div class="metrics">
+    <div class="metric">
+        <span class="value"><?php echo sprintf('%0.0f', $collector->getTotalRenderTime() * 1000)?> <span class="unit">ms</span></span>
+        <span class="label">Render time</span>
+    </div>
+
+
+    <div class="metric">
+        <span class="value"><?php echo $collector->getBlocksCreatedCount()?></span>
+        <span class="label">Block created</span>
+    </div>
+
+    <div class="metric">
+        <span class="value"><?php echo $collector->getBlocksRenderedCount()?></span>
+        <span class="label">Block rendered</span>
+    </div>
+</div>
+
+<h2>Layout Handler</h2>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">Handler</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach($collector->getLayoutHandles() as $handle): ?>
+    <tr>
+        <td><?php echo $handle?></td>
+    </tr>
+    </tbody>
+    <?php endforeach;?>
+</table>
+
+<h2>Created but not rendered blocks</h2>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Module</th>
+        <th scope="col">Type</th>
+        <th scope="col">Class</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach($collector->getBlocksNotRendered() as $block): ?>
+    <tr>
+        <td><?php echo $block['name']?></td>
+        <td><?php echo $block['module']?></td>
+        <td><?php echo $block['type']?></td>
+        <td><?php echo $block['class']?></td>
+    </tr>
+    </tbody>
+    <?php endforeach;?>
+</table>
+
+
+<h2>Rendering Call Graph</h2>
+<div id="twig-dump">
+    <?php echo $this->renderTree($collector->getCallTree()); ?>
+</div>

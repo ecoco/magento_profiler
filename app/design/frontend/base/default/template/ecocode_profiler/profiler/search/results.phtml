@@ -1,0 +1,71 @@
+<?php
+$data = $this->getData();
+?>
+<h2><?php echo $data['tokens'] ? count($data['tokens']) : 'No' ?> results found</h2>
+
+<?php if ($data['tokens']): ?>
+    <table id="search-results">
+        <thead>
+        <tr>
+            <th scope="col" class="text-center">Status</th>
+            <th scope="col">IP</th>
+            <th scope="col">Method</th>
+            <th scope="col">URL</th>
+            <th scope="col">Time</th>
+            <th scope="col">Token</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($data['tokens'] as $result): ?>
+            <?php
+                $statusCode = isset($result['status_code']) ? $result['status_code'] : 0;
+                $cssClass = $statusCode > 399 ? 'status-error' : $statusCode > 299 ? 'status-warning' : 'status-success';
+            ?>
+
+        <tr>
+            <td class="text-center">
+                <span class="label <?php echo $cssClass?>"><?php echo $statusCode ? $statusCode : 'n/a'?></span>
+            </td>
+            <td>
+                <span class="nowrap"><?php echo $result['ip']?></span>
+<!--                {% if request.session is not null %}
+                <a href="{{ path('_profiler_search_results', request.query.all|merge({'ip': result.ip, 'token': result.token})) }}"
+                   title="Search">
+                    <span title="Search" class="sf-icon sf-search">{{ include('@WebProfiler/Icon/search.svg') }}</span>
+                </a>
+                {% endif %}-->
+            </td>
+            <td>
+                <?php echo $result['method']?>
+<!--                {% if request.session is not null %}
+                <a href="{{ path('_profiler_search_results', request.query.all|merge({'method': result.method, 'token': result.token})) }}"
+                   title="Search">
+                    <span title="Search" class="sf-icon sf-search">{{ include('@WebProfiler/Icon/search.svg') }}</span>
+                </a>
+                {% endif %}-->
+            </td>
+            <td class="break-long-words">
+                <?php echo $result['url']?>
+<!--                {% if request.session is not null %}
+                <a href="{{ path('_profiler_search_results', request.query.all|merge({'url': result.url, 'token': result.token})) }}"
+                   title="Search">
+                    <span title="Search" class="sf-icon sf-search">{{ include('@WebProfiler/Icon/search.svg') }}</span>
+                </a>
+                {% endif %}-->
+            </td>
+            <td class="text-small">
+                <?php $date = (new DateTime())->setTimestamp($result['time']);?>
+                <span class="nowrap"><?php echo $date->format('d-M-Y')?></span>
+                <span class="nowrap newline"><?php echo $date->format('H:i:s')?></span>
+            </td>
+            <td class="nowrap"><a href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => $result['token']]) ?>"><?php echo $result['token']?></a></td>
+        </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <div class="empty">
+        <p>The query returned no result.</p>
+    </div>
+<?php endif ?>
+

@@ -13,6 +13,7 @@
         "php": ">=5.4",
         "symfony/debug": "^3.1",
         "symfony/yaml": "^3.1",
-        "jdorn/sql-formatter": "^1.2"
+        "jdorn/sql-formatter": "^1.2",
+        "magento-hackathon/magento-composer-installer": "^3.0"
     }
 }

@@ -6,16 +6,11 @@
  */
 class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
 {
-
-    static $formatTotalTime      = 0;
-    static $replaceTotalTime     = 0;
-
     protected $formattedQueriesCache = [];
 
     public function replaceQueryParameters($query, array $parameters)
     {
-        $start = microtime(true);
-        $i     = 0;
+        $i = 0;
 
         $result = preg_replace_callback(
             '/\?|((?<!:):[a-z0-9_]+)/i',
@@ -36,7 +31,6 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
             },
             $query
         );
-        self::$replaceTotalTime += (microtime(true) - $start);
         return $result;
     }
 
@@ -63,11 +57,10 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
         if (!class_exists('SqlFormatter')) {
             return 'SqlFormatter is not installed';
         }
-        $cacheKey = md5($sql . ($highlightOnly ? '1' : 0 ));
+        $cacheKey = md5($sql . ($highlightOnly ? '1' : 0));
         if (isset($this->formattedQueriesCache[$cacheKey])) {
             return $this->formattedQueriesCache[$cacheKey];
         }
-        $start = microtime(true);
 
         \SqlFormatter::$pre_attributes            = 'class="highlight highlight-sql"';
         \SqlFormatter::$quote_attributes          = 'class="string"';
@@ -87,7 +80,7 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
             $html = \SqlFormatter::format($sql);
             $html = preg_replace('/<pre class="(.*)">([^"]*+)<\/pre>/Us', '<div class="\1"><pre>\2</pre></div>', $html);
         }
-        self::$formatTotalTime += (microtime(true) - $start);
+        
         return $this->formattedQueriesCache[$cacheKey] = $html;
     }
 

@@ -9,7 +9,7 @@ class Ecocode_Profiler_Block_Collector_Log_Panel
 {
     protected $logGroups;
 
-    const PRIORITY_NAMES = [
+    protected $priorityNames = [
         Zend_Log::EMERG  => 'emergency',
         Zend_Log::ALERT  => 'emergency',
         Zend_Log::CRIT   => 'critical',
@@ -50,7 +50,7 @@ class Ecocode_Profiler_Block_Collector_Log_Panel
 
     public function getPriorityName($level)
     {
-        $names = $this::PRIORITY_NAMES;
+        $names = $this->priorityNames;
         if (isset($names[$level])) {
             return $names[$level];
         }

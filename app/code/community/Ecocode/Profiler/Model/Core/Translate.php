@@ -13,7 +13,8 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
         $_args                = $args;
         $this->currentMessage = [
             'locale' => $this->_locale,
-            'module' => null
+            'module' => null,
+            'trace'  => []
         ];
 
         $text = array_shift($_args);
@@ -30,6 +31,7 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
 
         if (@vsprintf($this->currentMessage['translation'], $_args) === false) {
             $this->currentMessage['state'] = 'invalid';
+            $this->addTrace();
         }
 
         $this->currentMessage['parameters']  = $_args;
@@ -49,8 +51,10 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
             $state = 'translated';
         } elseif (array_key_exists($text, $this->_data)) {
             $state = 'fallback';
+            $this->addTrace();
         } else {
             $state = 'missing';
+            $this->addTrace();
         }
 
         $this->currentMessage['state']       = $state;
@@ -69,7 +73,8 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
                 $this->currentMessage['translation'],
                 $this->currentMessage['state'],
                 $this->currentMessage['parameters'],
-                $this->currentMessage['module']
+                $this->currentMessage['module'],
+                $this->currentMessage['trace']
             );
     }
 
@@ -98,5 +103,40 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
             }
         }
         return $this;
+    }
+
+    protected function addTrace()
+    {
+        if (!function_exists('debug_backtrace')) {
+            return [];
+        }
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 8);
+
+        $trace = array_shift($backtrace);
+        while ($backtrace && (!isset($trace['function']) || $trace['function'] !== '__')) {
+            $trace = array_shift($backtrace);
+        }
+
+        $this->currentMessage['trace'] = array_slice($backtrace, 0, 3);
+    }
+
+    protected function shouldRemoveTraceItem()
+    {
+        if (!isset($data['class'], $data['function'])) {
+            return true;
+        }
+
+        if (!isset($data['object'])) {
+            return false;
+        }
+
+        $functionIdent = $data['class'] . '::' . $data['function'];
+        if (in_array($functionIdent, $this->ignoredFunctionCalls)) {
+            return false;
+        }
+
+        $object = $data['object'];
+        return ($object instanceof Zend_Db_Adapter_Abstract
+            || $object instanceof Varien_Db_Statement_Pdo_Mysql);
     }
 }

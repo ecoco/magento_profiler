@@ -106,14 +106,14 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         if (isset($responseHeaders['Status'])) {
             preg_match('/^[0-9]{3}/', $responseHeaders['Status'], $matches);
             if ($matches) {
-                $statusCode = (int) reset($matches);
+                $statusCode = (int)reset($matches);
             }
         }
         $statusText = isset(self::$statusTexts[$statusCode]) ? self::$statusTexts[$statusCode] : '';
 
 
         $contentType = isset($responseHeaders['content-type']) ? $responseHeaders['content-type'] : 'text/html';
-        $this->data = [
+        $this->data  = [
             'method'             => $request->getMethod(),
             'content'            => $requestContent,
             'content_type'       => $contentType,
@@ -371,7 +371,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             $request->getRequestedControllerName() . '_' .
             $request->getRequestedActionName();
 
-        $attributes     = [
+        $attributes = [
             'request_string' => $request->getRequestString(),
             'request_uri'    => $request->getRequestUri(),
             '_module'        => $request->getModuleName(),

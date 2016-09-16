@@ -6,6 +6,7 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
 
 
     protected $sqlHelper;
+    protected $queryTableRenderer;
 
     public function _construct()
     {
@@ -91,10 +92,8 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
     public function renderQueryTable($prefix, array $queries)
     {
         $prefix .= '-';
-        $block = $this->getLayout()->createBlock('ecocode_profiler/collector_mysql_panel');
-
-        $block->setTemplate('ecocode_profiler/collector/mysql/panel/query.phtml');
-        $block->addData([
+        $block = $this->getQueryTableRenderer();
+        $block->setData([
             'queries' => $queries,
             'prefix'  => $prefix
         ]);
@@ -111,4 +110,17 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         }
         return $this->sqlHelper;
     }
+
+    /**
+     * @return $this
+     */
+    public function getQueryTableRenderer()
+    {
+        if ($this->queryTableRenderer === null) {
+            $this->queryTableRenderer = clone $this;
+            $this->queryTableRenderer->setTemplate('ecocode_profiler/collector/mysql/panel/query.phtml');
+        }
+        return $this->queryTableRenderer;
+    }
+
 }

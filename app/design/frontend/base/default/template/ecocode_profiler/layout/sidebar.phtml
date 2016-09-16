@@ -39,7 +39,7 @@ if ($profile && $profile->getToken()) {
 
             <!--{{ render(path('_profiler_search_bar', request.query.all)) }}-->
             <div id="sidebar-search">
-                <form action="<?php echo Mage::getUrl('_profiler/index/search')?>" method="get">
+                <form action="<?php echo Mage::getUrl('_profiler/index/search', [])?>" method="get">
                     <div class="form-group">
                         <label for="ip">IP</label>
                         <input type="text" name="ip" id="ip" value="<?php echo $request->getParam('ip');?> ">
@@ -67,7 +67,7 @@ if ($profile && $profile->getToken()) {
 
                     <div class="form-group">
                         <label for="token">Token</label>
-                        <input type="text" name="token" id="token" value="<?php echo $request->getParam('token');?>">
+                        <input type="text" name="_token" id="token" value="<?php echo $request->getParam('_token');?>">
                     </div>
 
                     <div class="form-group">

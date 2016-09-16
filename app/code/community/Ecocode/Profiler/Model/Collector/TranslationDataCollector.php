@@ -30,7 +30,8 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
         $translation,
         $state,
         $parameters = [],
-        $module = null
+        $module = null,
+        $trace = []
     )
     {
         $this->translations[] = [
@@ -40,7 +41,8 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
             'translation' => $translation,
             'state'       => $state,
             'parameters'  => $parameters,
-            'module'      => $module
+            'module'      => $module,
+            'trace'       => $trace,
         ];
     }
 
@@ -59,11 +61,15 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
             if (!isset($translations[$translationId])) {
                 $translation['count']         = 1;
                 $translation['parameters']    = !empty($translation['parameters']) ? [$translation['parameters']] : [];
+                $translation['traces']        = !empty($translation['trace']) ? [$translation['trace']] : [];
                 $translations[$translationId] = $translation;
                 $this->data['state_counts'][$translation['state']]++;
             } else {
                 if (!empty($translation['parameters'])) {
                     $translation[$translationId]['parameters'][] = $translation['parameters'];
+                }
+                if (!empty($translation['trace'])) {
+                    $translation[$translationId]['traces'][] = $translation['trace'];
                 }
                 $translations[$translationId]['count']++;
             }

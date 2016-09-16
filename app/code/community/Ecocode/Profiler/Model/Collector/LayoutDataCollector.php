@@ -9,7 +9,6 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
     public function beforeToHtml(Varien_Event_Observer $observer)
     {
-
         /** @var Mage_Core_Block_Abstract $block */
         $block = $observer->getEvent()->getData('block');
         $id    = uniqid();

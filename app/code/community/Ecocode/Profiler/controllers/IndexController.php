@@ -8,22 +8,9 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $this->renderLayout();
     }
 
-/*    public function enableAction()
-    {
-        setcookie('ecocode_profiler', 1, 0, '/');
-        $this->getResponse()
-            ->setHeader('content-type', 'application/json')
-            ->setBody(json_encode(['ok']));
-    }
-
-    public function disableAction()
-    {
-        setcookie('ecocode_profiler', null, -1);
-        $this->getResponse()
-            ->setHeader('content-type', 'application/json')
-            ->setBody(json_encode(['ok']));
-    }*/
-
+    /**
+     *
+     */
     public function toolbarAction()
     {
         $token    = $this->getRequest()->getParam('token');
@@ -47,7 +34,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $start  = $request->getParam('start');
         $end    = $request->getParam('end');
         $limit  = $request->getParam('limit');
-        $token  = $request->getParam('token');
+        $token  = $request->getParam('_token');
 
         if (null !== $session = Mage::getSingleton('core/session')) {
             $session->setData('_profiler_search_ip', $ip);
@@ -63,12 +50,8 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
             return $this->_redirect('_profiler/index/panel', ['token' => $token]);
         }
 
-        $tokens = $profiler->find($ip, $url, $limit, $method, $start, $end);
-
-
         return $this->_redirect('_profiler/index/searchResults',
             [
-                'token'  => $tokens ? $tokens[0]['token'] : 'empty',
                 'ip'     => $ip,
                 'method' => $method,
                 'url'    => $url,
@@ -83,9 +66,6 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
     {
         $request  = $this->getRequest();
         $profiler = $this->getProfiler();
-        $token    = $request->getParam('token');
-
-        $profile = $profiler->loadProfile($token);
 
         $ip         = $request->getParam('ip');
         $method     = $request->getParam('method');
@@ -97,8 +77,6 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
         $data = [
             'request'     => $request,
-            'token'       => $token,
-            'profile'     => $profile,
             'tokens'      => $profiler->find($ip, $url, $limit, $method, $start, $end),
             'ip'          => $ip,
             'method'      => $method,

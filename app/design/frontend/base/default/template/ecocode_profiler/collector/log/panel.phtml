@@ -5,7 +5,7 @@
 $collector = $this->getCollector();
 ?>
 
-    <h2>Log Messages</h2>
+<h2>Log Messages</h2>
 
 <?php if (!$collector->getLogCount()): ?>
     <div class="empty">
@@ -13,7 +13,7 @@ $collector = $this->getCollector();
     </div>
 <?php else: ?>
     <div class="sf-tabs">
-        <?php foreach ($this->getLogGroups() as $groupData): ?>
+        <?php foreach ($this->getLogGroups() as $groupIndex => $groupData): ?>
             <div class="tab">
                 <h3 class="tab-title">
                     <?php echo $groupData['name'] ?>
@@ -31,7 +31,7 @@ $collector = $this->getCollector();
                         </thead>
 
                         <tbody>
-                        <?php foreach ($groupData['logs'] as $entry): ?>
+                        <?php foreach ($groupData['logs'] as $index => $entry): ?>
                             <?php
                             $level    = $entry['level'];
                             $cssClass = $this->getEntryCssClass($entry['level']);

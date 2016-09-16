@@ -1,0 +1,24 @@
+<?php
+/** @var Ecocode_Profiler_Block_BackTrace $this */
+
+/** @var Ecocode_Profiler_Helper_ValueExporter $valueExport */
+$valueExport = $this->helper('ecocode_profiler/valueExporter');
+
+$trace = $this->getTrace();
+?>
+<?php if ($trace): ?>
+    <div id="stack-<?php echo $this->getTraceId() ?>" class="hidden">
+        <strong class="font-normal text-small">Trace</strong>:
+        <ul class="sf-call-stack ">
+
+            <?php foreach ($trace as $item): ?>
+                <li>
+                    <?php echo isset($item['class']) ? $item['class'] . '::' : '' ?><?php echo $item['function'] ?><br>
+                    <?php if (isset($item['file'])): ?>
+                        <small><?php echo $item['file'] ?>::<?php echo $item['line'] ?></small>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>

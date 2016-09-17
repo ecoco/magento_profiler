@@ -14,6 +14,7 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
         $this->enable();
         if (!$this->initialized) {
             $this->initialized = true;
+
             foreach ($this->getDataCollectors() as $dataCollector) {
                 /** @var Ecocode_Profiler_Model_Collector_DataCollectorInterface $dataCollector */
                 $dataCollector->init();

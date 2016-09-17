@@ -14,12 +14,6 @@
             <ecocode_profiler_resource>
                 <class>Ecocode_Profiler_Model_Resource</class>
             </ecocode_profiler_resource>
-            <core>
-                <rewrite>
-                    <translate>Ecocode_Profiler_Model_Core_Translate</translate>
-                    <store>Ecocode_Profiler_Model_Core_Store</store>
-                </rewrite>
-            </core>
         </models>
         <blocks>
             <ecocode_profiler>
@@ -32,85 +26,4 @@
             </ecocode_profiler>
         </helpers>
     </global>
-    <frontend>
-        <layout>
-            <updates>
-                <ecocode_profiler>
-                    <file>ecocode_profiler.xml</file>
-                </ecocode_profiler>
-            </updates>
-        </layout>
-        <routers>
-            <profiler>
-                <use>standard</use>
-                <args>
-                    <frontName>_profiler</frontName>
-                    <module>Ecocode_Profiler</module>
-                </args>
-            </profiler>
-        </routers>
-        <events>
-            <controller_front_send_response_before>
-                <observers>
-                    <ecocode_profiler>
-                        <type>singleton</type>
-                        <class>ecocode_profiler/observer</class>
-                        <method>controllerFrontSendResponseBefore</method>
-                    </ecocode_profiler>
-                </observers>
-            </controller_front_send_response_before>
-            <mage_terminate>
-                <observers>
-                    <ecocode_profiler>
-                        <type>singleton</type>
-                        <class>ecocode_profiler/observer</class>
-                        <method>onTerminate</method>
-                    </ecocode_profiler>
-                </observers>
-            </mage_terminate>
-            <core_block_abstract_to_html_before>
-                <observers>
-                    <ecocode_myql_profiler>
-                        <type>singleton</type>
-                        <class>ecocode_profiler/collector_mysqlDataCollector</class>
-                        <method>setCurrentBlock</method>
-                    </ecocode_myql_profiler>
-                    <ecocode_layout_profiler>
-                        <type>singleton</type>
-                        <class>ecocode_profiler/collector_layoutDataCollector</class>
-                        <method>beforeToHtml</method>
-                    </ecocode_layout_profiler>
-                </observers>
-            </core_block_abstract_to_html_before>
-            <core_block_abstract_to_html_after>
-                <observers>
-                    <ecocode_layout_profiler>
-                        <type>singleton</type>
-                        <class>ecocode_profiler/collector_layoutDataCollector</class>
-                        <method>afterToHtml</method>
-                    </ecocode_layout_profiler>
-                </observers>
-            </core_block_abstract_to_html_after>
-        </events>
-    </frontend>
-    <ecocode>
-        <profiler>
-            <toolbar>1</toolbar>
-            <allow_ip>127.0.0.1</allow_ip>
-            <collectors>
-                <request>ecocode_profiler/collector_requestDataCollector</request>
-                <memory>ecocode_profiler/collector_memoryDataCollector</memory>
-                <ajax>ecocode_profiler/collector_ajaxDataCollector</ajax>
-                <mysql>ecocode_profiler/collector_mysqlDataCollector</mysql>
-                <translation>ecocode_profiler/collector_translationDataCollector</translation>
-                <rewrite>ecocode_profiler/collector_rewriteDataCollector</rewrite>
-                <customer>ecocode_profiler/collector_customerDataCollector</customer>
-                <layout>ecocode_profiler/collector_layoutDataCollector</layout>
-                <config>ecocode_profiler/collector_configDataCollector</config>
-                <event>ecocode_profiler/collector_eventDataCollector</event>
-                <cache>ecocode_profiler/collector_cacheDataCollector</cache>
-                <log>ecocode_profiler/collector_logDataCollector</log>
-            </collectors>
-        </profiler>
-    </ecocode>
 </config>

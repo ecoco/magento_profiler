@@ -20,6 +20,27 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //DONT SET WE ARE USING THE SYMFONY DEBUG ONE
     }
 
+    protected function _initModules()
+    {
+        if (!$this->_config->loadModulesCache()) {
+            $this->_config->loadModules();
+            if ($this->_config->isLocalConfigLoaded() && !$this->_shouldSkipProcessModulesUpdates()) {
+                Varien_Profiler::start('mage::app::init::apply_db_schema_updates');
+                Mage_Core_Model_Resource_Setup::applyAllUpdates();
+                Varien_Profiler::stop('mage::app::init::apply_db_schema_updates');
+            }
+            /* start  */
+            /* load development.xml for all modules if present */
+            $this->_config->loadModulesConfiguration(array('development.xml'), $this->_config);
+            /* end */
+            $this->_config->loadDb();
+
+            $this->_config->saveCache();
+        }
+        return $this;
+    }
+
+
     /**
      * start the profiler
      *

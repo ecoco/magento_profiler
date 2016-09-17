@@ -25,13 +25,17 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
 
         $translation = parent::translate($args);
         if ($translation === '') {
-            //@TODO log
+            //@TODO log?
             return $translation;
         }
 
         if (@vsprintf($this->currentMessage['translation'], $_args) === false) {
-            $this->currentMessage['state'] = 'invalid';
-            $this->addTrace();
+            $trace = $this->addTrace();
+            if ($trace && $this->traceHasFunctionCall($trace, 'getTranslateJson')) {
+                //dont log invalid as strings are used with empty placeholders is intended here
+            } else {
+                $this->currentMessage['state'] = 'invalid';
+            }
         }
 
         $this->currentMessage['parameters']  = $_args;
@@ -90,7 +94,7 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
         foreach ($data as $key => $value) {
 
             /*
-            we need to simplify this to properly detect not translated strings
+            we needed to simplify this to properly detect not translated strings and their scope
             */
             $key   = $this->_prepareDataString($key);
             $value = $this->_prepareDataString($value);
@@ -113,33 +117,28 @@ class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
         if (!function_exists('debug_backtrace')) {
             return [];
         }
-        
+
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
 
         while (($trace = reset($backtrace)) && (!isset($trace['function']) || $trace['function'] !== '__')) {
             array_shift($backtrace);
         }
 
-        $this->currentMessage['trace'] = array_slice($backtrace, 0, 5);
+        return $this->currentMessage['trace'] = array_slice($backtrace, 0, 5);
     }
 
-    protected function shouldRemoveTraceItem()
+    /**
+     * @param array $trace
+     * @param       $functionName
+     * @return bool
+     */
+    protected function traceHasFunctionCall(array $trace, $functionName)
     {
-        if (!isset($data['class'], $data['function'])) {
-            return true;
+        foreach ($trace as $item) {
+            if (isset($item['function']) && $item['function'] === $functionName) {
+                return true;
+            }
         }
-
-        if (!isset($data['object'])) {
-            return false;
-        }
-
-        $functionIdent = $data['class'] . '::' . $data['function'];
-        if (in_array($functionIdent, $this->ignoredFunctionCalls)) {
-            return false;
-        }
-
-        $object = $data['object'];
-        return ($object instanceof Zend_Db_Adapter_Abstract
-            || $object instanceof Varien_Db_Statement_Pdo_Mysql);
+        return false;
     }
 }

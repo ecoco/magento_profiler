@@ -6,6 +6,7 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
     protected $renderLog      = [];
     protected $renderedBlocks = [];
     protected $currentBlock;
+    protected $tree;
 
     public function beforeToHtml(Varien_Event_Observer $observer)
     {
@@ -148,7 +149,10 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
     public function getCallTree()
     {
-        return $this->createCallTree();
+        if (!$this->tree) {
+            $this->tree = $this->createCallTree();
+        }
+        return $this->tree;
     }
 
     protected function createCallTree()

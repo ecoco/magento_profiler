@@ -142,15 +142,6 @@ class Ecocode_Profiler_Model_Http_ResponseHeaderBag
         return array_key_exists($key, $this->computedCacheControl) ? $this->computedCacheControl[$key] : null;
     }
 
-    /**
-     * Sets a cookie.
-     *
-     * @param Cookie $cookie
-     */
-    public function setCookie(Cookie $cookie)
-    {
-        $this->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
-    }
 
     /**
      * Removes a cookie from the array, but does not unset it in the browser.
@@ -205,20 +196,6 @@ class Ecocode_Profiler_Model_Http_ResponseHeaderBag
         }
 
         return $flattenedCookies;
-    }
-
-    /**
-     * Clears a cookie in the browser.
-     *
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httpOnly
-     */
-    public function clearCookie($name, $path = '/', $domain = null, $secure = false, $httpOnly = true)
-    {
-        $this->setCookie(new Cookie($name, null, 1, $path, $domain, $secure, $httpOnly));
     }
 
     /**

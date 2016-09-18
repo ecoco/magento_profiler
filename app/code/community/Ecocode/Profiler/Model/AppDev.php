@@ -34,10 +34,19 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
             $this->_config->loadModulesConfiguration(array('development.xml'), $this->_config);
             /* end */
             $this->_config->loadDb();
-
+            $this->enableSymlinks();
             $this->_config->saveCache();
         }
         return $this;
+    }
+
+    protected function enableSymlinks()
+    {
+        $dir = $this->_config->getModuleDir('etc', 'Ecocode_Profiler');
+        if (is_link($dir)) {
+            //module is install via symlinks, so make sure magento allows it!
+            $this->_config->setNode('default/dev/template/allow_symlink', 1);
+        }
     }
 
 

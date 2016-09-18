@@ -7,6 +7,7 @@
             <collectors>
                 <request>ecocode_profiler/collector_requestDataCollector</request>
                 <memory>ecocode_profiler/collector_memoryDataCollector</memory>
+                <time>ecocode_profiler/collector_timeDataCollector</time>
                 <ajax>ecocode_profiler/collector_ajaxDataCollector</ajax>
                 <mysql>ecocode_profiler/collector_mysqlDataCollector</mysql>
                 <translation>ecocode_profiler/collector_translationDataCollector</translation>

@@ -6,6 +6,20 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
     protected $eventsFired     = [];
     protected $calledListeners = [];
 
+    protected $startTime;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->startTime = microtime(true);
+    }
+
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+
     public function _initRequest()
     {
         $result = parent::_initRequest();

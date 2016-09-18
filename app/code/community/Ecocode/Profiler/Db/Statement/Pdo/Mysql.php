@@ -86,7 +86,7 @@ class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_My
         while ($this->_shouldRemoveTraceItem(reset($backtrace))) {
             array_shift($backtrace);
         }
-        $backtrace = array_slice($backtrace, 0, 7);
+        $backtrace = array_slice($backtrace, 0, 10);
         $backtrace = array_map(function ($item) {
             unset($item['object'], $item['args'], $item['type']);
             return $item;

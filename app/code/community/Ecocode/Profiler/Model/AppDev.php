@@ -35,17 +35,6 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //DONT SET WE ARE USING THE SYMFONY DEBUG ONE
     }
 
-    public function init($code, $type = null, $options = [])
-    {
-        $context = new Ecocode_Profiler_Model_Context('init');
-
-        $helper = Mage::helper('ecocode_profiler/context');
-        $helper->open($context);
-        $result = parent::init($code, $type, $options);
-        $helper->close($context);
-        return $result;
-    }
-
     protected function _initModules()
     {
         if (!$this->_config->loadModulesCache()) {
@@ -70,8 +59,15 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
     {
         $dir = $this->_config->getModuleDir('etc', 'Ecocode_Profiler');
         if (is_link($dir)) {
-            //module is install via symlinks, so make sure magento allows it!
-            $this->_config->setNode('default/dev/template/allow_symlink', 1);
+            //due to magentos awesome "config->loadDb()" call we need to overwrite each store
+            //as the config gets copied over into all stores, so setting only the "default" is not enough
+            $this->_config->setNode('default/dev/template/allow_symlink', true);
+            foreach($this->_config->getNode('websites')->children() as $website) {
+                $website->setNode(Mage_Core_Block_Template::XML_PATH_TEMPLATE_ALLOW_SYMLINK, true);
+            }
+            foreach($this->_config->getNode('stores')->children() as $store) {
+                $store->setNode(Mage_Core_Block_Template::XML_PATH_TEMPLATE_ALLOW_SYMLINK, true);
+            }
         }
     }
 

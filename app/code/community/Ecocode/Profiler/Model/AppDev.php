@@ -7,6 +7,7 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
     protected $calledListeners = [];
 
     protected $startTime;
+
     /**
      * Constructor
      */
@@ -34,6 +35,17 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //DONT SET WE ARE USING THE SYMFONY DEBUG ONE
     }
 
+    public function init($code, $type = null, $options = [])
+    {
+        $context = new Ecocode_Profiler_Model_Context('init');
+
+        $helper = Mage::helper('ecocode_profiler/context');
+        $helper->open($context);
+        $result = parent::init($code, $type, $options);
+        $helper->close($context);
+        return $result;
+    }
+
     protected function _initModules()
     {
         if (!$this->_config->loadModulesCache()) {
@@ -45,7 +57,7 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
             }
             /* start  */
             /* load development.xml for all modules if present */
-            $this->_config->loadModulesConfiguration(array('development.xml'), $this->_config);
+            $this->_config->loadModulesConfiguration(['development.xml'], $this->_config);
             /* end */
             $this->_config->loadDb();
             $this->enableSymlinks();

@@ -1,0 +1,29 @@
+<?php
+/** @var Ecocode_Profiler_Block_Renderer_Context $this */
+
+$prefix = $this->getData('prefix');
+
+/** @var Ecocode_Profiler_Model_Context $context */
+$context = $this->getData('context');
+
+/** @var Ecocode_Profiler_Helper_ValueExporter $exporter */
+$exporter = Mage::helper('ecocode_profiler/valueExporter')
+?>
+
+<strong class="font-normal text-small">Context</strong>: <?php echo $context->getKey()?>
+<?php if($context->getData()):?>
+    <a href="#" class="sf-toggle link-inverse"
+       data-toggle-selector="#context-<?php echo $prefix . $context->getId() ?>"
+       data-toggle-alt-content="Hide meta data">View meta data</a>
+    <div id="context-<?php echo $prefix . $context->getId() ?>" class="hidden">
+        <table>
+            <?php foreach($context->getData() as $key => $value):?>
+                <tr>
+                    <th class="key"><?php echo $key?></th>
+                    <td><?php echo $exporter->exportValue($value, true)?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+
+<?php endif?>

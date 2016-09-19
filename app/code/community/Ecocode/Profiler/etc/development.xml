@@ -79,11 +79,11 @@
             </mage_terminate>
             <core_block_abstract_to_html_before>
                 <observers>
-                    <ecocode_myql_profiler>
+                    <ecocode_profiler_context>
                         <type>singleton</type>
-                        <class>ecocode_profiler/collector_mysqlDataCollector</class>
-                        <method>setCurrentBlock</method>
-                    </ecocode_myql_profiler>
+                        <class>ecocode_profiler/observer_context</class>
+                        <method>openBlockContext</method>
+                    </ecocode_profiler_context>
                     <ecocode_layout_profiler>
                         <type>singleton</type>
                         <class>ecocode_profiler/collector_layoutDataCollector</class>
@@ -93,6 +93,11 @@
             </core_block_abstract_to_html_before>
             <core_block_abstract_to_html_after>
                 <observers>
+                    <ecocode_profiler_context>
+                        <type>singleton</type>
+                        <class>ecocode_profiler/observer_context</class>
+                        <method>closeBlockContext</method>
+                    </ecocode_profiler_context>
                     <ecocode_layout_profiler>
                         <type>singleton</type>
                         <class>ecocode_profiler/collector_layoutDataCollector</class>

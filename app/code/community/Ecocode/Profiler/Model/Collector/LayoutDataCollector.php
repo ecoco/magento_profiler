@@ -10,6 +10,7 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
     public function beforeToHtml(Varien_Event_Observer $observer)
     {
+        //@FIXME if hide module output is disabled
         /** @var Mage_Core_Block_Abstract $block */
         $block = $observer->getEvent()->getData('block');
         $id    = uniqid();
@@ -51,13 +52,6 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         $data['stop_render']      = microtime(true);
         $data['render_time_incl'] = $data['stop_render'] - $data['start_render'];
 
-        $renderTimeExcl = $data['render_time_incl'];
-        foreach ($data['children'] as $childId) {
-            $child = $this->renderLog[$childId];
-            $renderTimeExcl -= $child['render_time_incl'];
-        }
-        $data['render_time'] = $renderTimeExcl;
-
         if ($block instanceof Mage_Core_Block_Template) {
             $data['template'] = $block->getTemplate();
         }
@@ -84,7 +78,14 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         }
 
         $totalTime = 0;
-        foreach ($this->renderLog as $data) {
+        foreach ($this->renderLog as &$data) {
+            $renderTimeExcl = $data['render_time_incl'];
+            foreach ($data['children'] as $childId) {
+                $child = $this->renderLog[$childId];
+                $renderTimeExcl -= $child['render_time_incl'];
+            }
+            $data['render_time'] = $renderTimeExcl;
+
             $totalTime += $data['render_time'];
         }
 

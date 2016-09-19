@@ -42,8 +42,11 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
     public function getDataCollectors()
     {
         if ($this->dataCollectors === null) {
-            $this->dataCollectors = [];
-            $collectors           = Mage::getConfig()->getNode('ecocode/profiler/collectors')->asArray();
+            $contextCollector                                   = Mage::getSingleton('ecocode_profiler/collector_contextDataCollector');
+            $this->dataCollectors                               = [];
+            $this->dataCollectors[$contextCollector->getName()] = $contextCollector;
+
+            $collectors = Mage::getConfig()->getNode('ecocode/profiler/collectors')->asArray();
             foreach ($collectors as $classGroup) {
                 $collector = Mage::getSingleton($classGroup);
                 if (!$collector instanceof Ecocode_Profiler_Model_Collector_DataCollectorInterface) {
@@ -67,7 +70,7 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
             return;
         }
 
-        $start = microtime(true);
+        $start   = microtime(true);
         $profile = new Ecocode_Profiler_Model_Profile(substr(hash('sha256', uniqid(mt_rand(), true)), 0, 6));
         $profile->setTime(time());
         $profile->setUrl($request->getRequestString());

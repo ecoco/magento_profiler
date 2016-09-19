@@ -6,10 +6,12 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {
     protected $data = [];
 
+    protected $contextHelper;
+
 
     public function init()
     {
-
+        //fill if needed
     }
 
     public function serialize()
@@ -35,5 +37,25 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
     public function getBlockToolbarName()
     {
         return 'profiler.' . $this->getName() . '.toolbar';
+    }
+
+    /**
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->getContextHelper()->getCurrentId();
+    }
+
+    /**
+     * @return Ecocode_Profiler_Helper_Context
+     */
+    public function getContextHelper()
+    {
+        if ($this->contextHelper === null) {
+            $this->contextHelper = Mage::helper('ecocode_profiler/context');
+        }
+
+        return $this->contextHelper;
     }
 }

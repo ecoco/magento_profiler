@@ -10,14 +10,6 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
     protected $rawQueries     = [];
     protected $totalQueryTime = 0;
 
-    public function setCurrentBlock(Varien_Event_Observer $observer)
-    {
-        $event               = $observer->getEvent();
-        $this->_currentBlock = $event->getData('block');
-        Ecocode_Profiler_Db_Statement_Pdo_Mysql::setCurrentBlock($this->_currentBlock);
-    }
-
-
     public function getConnections()
     {
         return Mage::getSingleton('core/resource')->getConnections();
@@ -33,12 +25,6 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
 
     public function logQuery(Ecocode_Profiler_Db_Statement_Pdo_Mysql $statement, array $params = [], $time, $result, $trace = [])
     {
-        $context = 'unknown';
-        if ($this->_currentBlock) {
-            $context = $this->_currentBlock->getNameInLayout();
-            $context .= '_' . get_class($this->_currentBlock);
-        }
-
         $this->totalQueryTime += $time;
         $this->rawQueries[] = [
             'sql'       => $statement->getQueryString(),
@@ -46,7 +32,7 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
             'time'      => $time,
             'params'    => $params,
             'result'    => $result,
-            'context'   => $context,
+            'context'   => $this->getContextId(),
             'trace'     => $trace
         ];
     }
@@ -61,7 +47,7 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
         $this->data['total_time'] = $this->totalQueryTime;
 
         $queries = [];
-        foreach($this->rawQueries as $query) {
+        foreach ($this->rawQueries as $query) {
             unset($query['statement']);
             $queries[] = $query;
         }

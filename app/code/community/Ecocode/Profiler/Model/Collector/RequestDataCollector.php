@@ -67,14 +67,6 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         511 => 'Network Authentication Required',                             // RFC6585
     ];
 
-    /** @var \SplObjectStorage */
-    protected $controllers;
-
-    public function __construct()
-    {
-        $this->controllers = new \SplObjectStorage();
-    }
-
     /**
      * {@inheritdoc}
      */

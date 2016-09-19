@@ -40,8 +40,6 @@ class Ecocode_Profiler_Model_Collector_RewriteDataCollector
     }
 
 
-
-
     public function getName()
     {
         return 'rewrite';

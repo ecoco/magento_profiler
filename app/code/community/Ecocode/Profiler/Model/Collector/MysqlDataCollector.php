@@ -12,7 +12,15 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
 
     public function getConnections()
     {
-        return Mage::getSingleton('core/resource')->getConnections();
+        $coreResource = Mage::getSingleton('core/resource');
+        if (false && method_exists($coreResource, 'getConnections')) {
+            return $coreResource->getConnections();
+        } else {
+            //magento < 1.9
+            $reflectionProperty = new ReflectionProperty('Mage_Core_Model_Resource', '_connections');
+            $reflectionProperty->setAccessible(true);
+            return $reflectionProperty->getValue($coreResource);
+        }
     }
 
     public function init()

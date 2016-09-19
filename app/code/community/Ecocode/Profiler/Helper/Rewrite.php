@@ -24,6 +24,7 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
     public function getRewrites()
     {
         if ($this->_rewrites === null) {
+            $files      = ['config.xml', 'development.xml'];
             $prototype = $this->_rewriteTypes;
             $return    = array_combine($prototype, array_fill(0, count($prototype), []));
             // Load config of each module because modules can overwrite config each other. Global config is already merged
@@ -34,26 +35,29 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
                     continue;
                 }
                 // Load config of module
-                $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
-                if (!is_readable($configXmlFile)) {
-                    continue;
-                }
-                $xml = \simplexml_load_file($configXmlFile);
-                if (!$xml) {
-                    continue;
-                }
-                $rewriteElements = $xml->xpath('//*/*/rewrite');
-                foreach ($rewriteElements as $element) {
-                    $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
-                    if (!isset($return[$type])) {
+                foreach ($files as $file) {
+
+                    $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . $file;
+                    if (!is_readable($configXmlFile)) {
                         continue;
                     }
-                    foreach ($element->children() as $child) {
-                        $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
-                        if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
-                            $return[$type][$groupClassName . '/' . $child->getName()] = [];
+                    $xml = \simplexml_load_file($configXmlFile);
+                    if (!$xml) {
+                        continue;
+                    }
+                    $rewriteElements = $xml->xpath('//*/*/rewrite');
+                    foreach ($rewriteElements as $element) {
+                        $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
+                        if (!isset($return[$type])) {
+                            continue;
                         }
-                        $return[$type][$groupClassName . '/' . $child->getName()][] = (string)$child;
+                        foreach ($element->children() as $child) {
+                            $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
+                            if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
+                                $return[$type][$groupClassName . '/' . $child->getName()] = [];
+                            }
+                            $return[$type][$groupClassName . '/' . $child->getName()][] = (string)$child;
+                        }
                     }
                 }
             }

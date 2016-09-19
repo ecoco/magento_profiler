@@ -156,8 +156,10 @@ $contextHelper    = Mage::helper('ecocode_profiler/context');
                                                             <li>
                                                                 <?php echo isset($item['class']) ? $item['class'] : '' ?>
                                                                 ::<?php echo $item['function'] ?><br>
-                                                                <small><?php echo isset($item['file']) ? $item['file'] : '' ?>
+                                                                <?php if (isset($item['file'])):?>
+                                                                    <small><?php echo $item['file'] ?>
                                                                     ::<?php echo $item['line'] ?></small>
+                                                                <?php endif;?>
                                                             </li>
                                                         <?php endforeach; ?>
                                                     </ul>

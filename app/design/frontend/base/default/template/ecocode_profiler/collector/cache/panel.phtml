@@ -18,7 +18,25 @@ $iconNo    = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0
 
 $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
 ?>
-<h2>Cache Configuration</h2>
+<h2>Cache metrics</h2>
+
+<div class="metrics">
+    <?php foreach ($collector->getStats() as $key => $value): ?>
+        <div class="metric">
+            <span class="value"><?php echo $value ?></span>
+            <span class="label"><?php echo uc_words($key) ?></span>
+        </div>
+
+    <?php endforeach; ?>
+
+    <div class="metric">
+        <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
+        <span class="label">Time</span>
+    </div>
+
+</div>
+
+<h2>Cache configuration</h2>
 <table class="cache-table">
     <thead>
     <tr>
@@ -27,7 +45,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
         <th>Run Status</th>
         <th>Current Status</th>
         <th class="text-right">
-            <a href="<?php echo Mage::getUrl('_profiler/cache/clearAll') ?>" class="btn btn-sm ajax-action">Clear
+            <a data-url="<?php echo Mage::getUrl('_profiler/cache/clearAll') ?>" class="btn btn-sm ajax-action">Clear
                 All</a>
         </th>
     </tr>
@@ -63,6 +81,64 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
     </tbody>
 </table>
 
+<h2>
+    Cache Backend<br>
+    <small><?php echo $collector->getBackendName() ?></small>
+</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($collector->getBackendOptions() as $key => $value): ?>
+        <tr>
+            <td class="nowrap"><?php echo $key ?> </td>
+            <td class="nowrap"><?php echo $value ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2>Cache Calls</h2>
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Action</th>
+        <th style="width: 100%;">Id</th>
+        <th>Hit</th>
+        <th>Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($collector->getCacheCalls() as $index => $call): ?>
+        <tr>
+            <td class="nowrap"><?php echo $index + 1 ?> </td>
+            <td><?php echo $call['action'] ?></td>
+            <td>
+                <?php echo isset($call['id']) ? $call['id'] : '-'; ?>
+                <?php if (!empty($call['tags'])): ?>
+                    <br>
+                    <small><strong>Tags:</strong> <?php echo implode(', ', $call['tags']) ?></small>
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if (isset($call['hit'])): ?>
+                    <span class="label status-<?php echo $call['hit'] ? 'success' : 'error' ?>">
+                <?php echo $call['hit'] ? 'Hit' : 'Miss' ?>
+                </span>
+                <?php else: ?>
+                    -
+                <?php endif ?>
+            </td>
+            <td class="nowrap"><?php echo sprintf('%0.2f', $call['time'] * 1000) ?> ms</td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 <script>
     (function () {
         var actions = document.querySelectorAll('.cache-table .ajax-action');

@@ -55,6 +55,20 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         return $this;
     }
 
+    /**
+     * Initialize application cache instance
+     *
+     * @param array $cacheInitOptions
+     * @return Mage_Core_Model_App
+     */
+    protected function _initCache(array $cacheInitOptions = array())
+    {
+        //its to early to make use of normal rewrites as they are not yet loaded
+        //so just set it our self
+        $this->_config->setNode('global/models/core/rewrite/cache', 'Ecocode_Profiler_Model_Core_Cache');
+        return parent::_initCache($cacheInitOptions);
+    }
+
     protected function enableSymlinks()
     {
         $dir = $this->_config->getModuleDir('etc', 'Ecocode_Profiler');

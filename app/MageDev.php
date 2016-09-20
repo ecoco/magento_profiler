@@ -27,12 +27,12 @@ function registerComposerAutoloader()
 function loadMageOriginal()
 {
     $mageRoot      = MAGENTO_ROOT . DIRECTORY_SEPARATOR;
-    $mageCacheDir  = $mageRoot . 'var' . DIRECTORY_SEPARATOR . 'cache';
+    $mageVarDir    = $mageRoot . 'var' . DIRECTORY_SEPARATOR;
     $mageFile      = $mageRoot . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
     $mgeMd5        = md5_file($mageFile);
-    $mageCacheFile = $mageCacheDir . DIRECTORY_SEPARATOR . 'MageDev-' . $mgeMd5 . '.php';
+    $mageCacheFile = $mageVarDir . DIRECTORY_SEPARATOR . 'MageDev-' . $mgeMd5 . '.php';
 
-    if (true || !file_exists($mageCacheFile)) {
+    if (!file_exists($mageCacheFile)) {
         $mageCode = file_get_contents($mageFile);
 
         $replace  = [

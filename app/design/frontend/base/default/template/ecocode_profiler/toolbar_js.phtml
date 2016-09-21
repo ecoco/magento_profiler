@@ -7,7 +7,7 @@
     (function () {
         Sfjs.load(
             'sfwdt<?php echo $token?>',
-            '<?php echo Mage::getUrl('_profiler/index/toolbar', ['token' => $token])?>',
+            '<?php echo Mage::getUrl('_profiler/index/toolbar', [Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER => $token])?>',
             function(xhr, el) {
                 el.style.display = -1 !== xhr.responseText.indexOf('sf-toolbarreset') ? 'block' : 'none';
 

@@ -23,7 +23,7 @@ if ($profile && $profile->getToken()) {
 
             <a class="btn btn-sm" href="<?php echo Mage::getUrl('_profiler/index/search', ['limit' => 10])?>">Last 10</a>
             <a class="btn btn-sm"
-               href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => 'latest'])?>">Latest</a>
+               href="<?php echo Mage::helper('ecocode_profiler')->getUrl('latest'); ?>">Latest</a>
 
             <a class="sf-toggle btn btn-sm" data-toggle-selector="#sidebar-search" <?php echo $token ?: 'data-toggle-initial="display"'?>>
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"

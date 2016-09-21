@@ -13,7 +13,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
      */
     public function toolbarAction()
     {
-        $token    = $this->getRequest()->getParam('token');
+        $token    = $this->getRequest()->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
         $profiler = $this->getProfiler();
 
         $profile = $profiler->loadProfile($token);
@@ -47,7 +47,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         }
 
         if (!empty($token)) {
-            return $this->_redirect('_profiler/index/panel', ['token' => $token]);
+            return $this->_redirect('_profiler/index/panel', [Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER => $token]);
         }
 
         return $this->_redirect('_profiler/index/searchResults',
@@ -105,7 +105,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         /** @var Mage_Core_Controller_Request_Http $request */
         $request = $this->getRequest();
 
-        $token = $request->getParam('token');
+        $token = $request->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
         if (!$token) {
             return $this->_redirect('_profiler');
         }

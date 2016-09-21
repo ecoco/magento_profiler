@@ -58,7 +58,7 @@ $data = $this->getData();
                 <span class="nowrap"><?php echo $date->format('d-M-Y')?></span>
                 <span class="nowrap newline"><?php echo $date->format('H:i:s')?></span>
             </td>
-            <td class="nowrap"><a href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => $result['token']]) ?>"><?php echo $result['token']?></a></td>
+            <td class="nowrap"><a href="<?php echo Mage::helper('ecocode_profiler')->getUrl($result['token']) ?>"><?php echo $result['token']?></a></td>
         </tr>
         <?php endforeach;?>
         </tbody>

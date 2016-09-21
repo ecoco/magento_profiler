@@ -46,7 +46,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
         $modules    = [];
         foreach ($moduleList as $key => $node) {
             $data           = $node->asArray();
-            $data['active'] = $data['active'] === 'true';
+            $data['active'] = isset($data['active']) && $data['active'] === 'true';
             $modules[$key]  = $data;
         }
 

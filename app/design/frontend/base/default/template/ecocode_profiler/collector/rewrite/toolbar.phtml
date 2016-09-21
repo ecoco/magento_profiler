@@ -10,7 +10,7 @@ $conflictCount = $collector->getModuleRewriteConflictCount();
     <div
         class="sf-toolbar-block sf-toolbar-block-<?php echo $collector->getName() ?> sf-toolbar-status-<?php echo $conflictCount ? 'red' : 'normal' ?>">
         <a target="_blank"
-           href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => $token, 'panel' => $collector->getName()]) ?>">
+           href="<?php echo Mage::helper('ecocode_profiler')->getCollectorUrl($token, $collector); ?>">
             <div class="sf-toolbar-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                     <path style="fill:#aaa" d="M23.61,11.07L17.07,4.35A1.2,1.2,0,0,0,15,5.28V9H1.4A1.82,1.82,0,0,0,0,10.82v2.61A1.55,

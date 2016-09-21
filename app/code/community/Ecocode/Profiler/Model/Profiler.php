@@ -8,6 +8,7 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
     protected $initialized    = false;
     protected $dataCollectors = null;
 
+    const URL_TOKEN_PARAMETER   = 'eco_token';
 
     public function init()
     {

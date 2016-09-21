@@ -27,7 +27,7 @@ $requestStatusCodeColor = $collector->getStatusCode() >= 400 ? 'red' : $collecto
 ?>
 
 <div class="sf-toolbar-block sf-toolbar-block-<?php echo $collector->getName()?> sf-toolbar-status-normal ">
-    <a target="_blank" href="<?php echo Mage::getUrl('_profiler/index/panel', ['token' => $token, 'panel' => 'request']);?>">
+    <a target="_blank" href="<?php echo Mage::helper('ecocode_profiler')->getCollectorUrl($token, $collector); ?>">
         <div class="sf-toolbar-icon">
             <span class="sf-toolbar-status sf-toolbar-status-<?php echo $requestStatusCodeColor?>"><?php echo $collector->getStatusCode()?></span>
             <?php if($collector->getRoute()): ?>

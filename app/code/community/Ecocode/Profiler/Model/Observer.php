@@ -71,7 +71,7 @@ class Ecocode_Profiler_Model_Observer
         }
 
         if ($token) {
-            $url = Mage::getUrl('_profiler/index/panel', ['token' => $token]);
+            $url = Mage::helper('ecocode_profiler')->getUrl($token);
             $response->setHeader('X-Debug-Token-Link', $url);
         }
 
@@ -90,8 +90,13 @@ class Ecocode_Profiler_Model_Observer
      *
      * @param Mage_Core_Controller_Response_Http $response A Response instance
      * @param Mage_Core_Controller_Request_Http  $request
+     * @param null                               $token
      */
-    protected function injectToolbar(Mage_Core_Controller_Response_Http $response, Mage_Core_Controller_Request_Http $request, $token = null)
+    protected function injectToolbar(
+        Mage_Core_Controller_Response_Http $response,
+        Mage_Core_Controller_Request_Http $request,
+        $token = null
+    )
     {
         $content = $response->getBody();
         $pos     = strripos($content, '</body>');

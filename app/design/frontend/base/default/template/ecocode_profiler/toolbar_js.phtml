@@ -56,7 +56,7 @@
             },
             function(xhr) {
                 if (xhr.status !== 0) {
-                    confirm('An error occurred while loading the web debug toolbar (' + xhr.status + ': ' + xhr.statusText + ').\n\nDo you want to open the profiler?') && (window.location = '{{ path("_profiler", { "token": token }) }}');
+                    confirm('An error occurred while loading the web debug toolbar (' + xhr.status + ': ' + xhr.statusText + ').\n\nDo you want to open the profiler?') && (window.location = '<?php echo Mage::helper('ecocode_profiler')->getUrl($token)?>');
                 }
             },
             {'maxTries': 5}

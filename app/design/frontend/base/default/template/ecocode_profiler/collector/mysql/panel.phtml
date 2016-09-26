@@ -26,8 +26,24 @@ $contextHelper    = Mage::helper('ecocode_profiler/context');
         <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
         <span class="label">Query time</span>
     </div>
-
 </div>
+
+<?php $connections = $collector->getConnectionData(); ?>
+<?php if (count($connections) > 1): ?>
+    <h2>
+        Queries by connection
+    </h2>
+        <small>Only connections that differ in their settings will be shown here</small>
+
+    <div class="metrics">
+        <?php foreach ($connections as $name => $queryCount): ?>
+            <div class="metric">
+                <span class="value"><?php echo $queryCount ?></span>
+                <span class="label"><?php echo $name ?></span>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 
 <div class="sf-tabs">
     <div class="tab">
@@ -156,10 +172,10 @@ $contextHelper    = Mage::helper('ecocode_profiler/context');
                                                             <li>
                                                                 <?php echo isset($item['class']) ? $item['class'] : '' ?>
                                                                 ::<?php echo $item['function'] ?><br>
-                                                                <?php if (isset($item['file'])):?>
+                                                                <?php if (isset($item['file'])): ?>
                                                                     <small><?php echo $item['file'] ?>
-                                                                    ::<?php echo $item['line'] ?></small>
-                                                                <?php endif;?>
+                                                                        ::<?php echo $item['line'] ?></small>
+                                                                <?php endif; ?>
                                                             </li>
                                                         <?php endforeach; ?>
                                                     </ul>

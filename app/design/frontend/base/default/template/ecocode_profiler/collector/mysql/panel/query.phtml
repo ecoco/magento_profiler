@@ -6,6 +6,7 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
     <thead>
     <tr>
         <th class="nowrap">#</th>
+        <th class="nowrap">Connection</th>
         <th class="nowrap">Time<span></span></th>
         <th style="width: 100%;">Info</th>
     </tr>
@@ -14,6 +15,7 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
     <?php foreach ($this->getData('queries') as $index => $queryData): ?>
         <tr>
             <td class="nowrap"><?php echo $index + 1 ?> </td>
+            <td class="nowrap"><?php echo $queryData['connection'] ?> </td>
             <td class="nowrap"><?php echo sprintf('%0.2f', $queryData['time'] * 1000) ?> ms</td>
             <td>
                 <?php echo $this->formatQuery($queryData['sql'], true) ?>

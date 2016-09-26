@@ -6,8 +6,6 @@
  */
 class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_Mysql
 {
-    protected static $block;
-
     protected $ignoredFunctionCalls = [
         'Mage_Core_Model_Resource_Db_Abstract::load',
         'Mage_Eav_Model_Entity_Abstract::load',
@@ -15,17 +13,6 @@ class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_My
         'Mage_Core_Model_Abstract::load',
         'Varien_Data_Collection_Db::_fetchAll'
     ];
-
-    public static function setCurrentBlock(Mage_Core_Block_Abstract $block)
-    {
-        self::$block = $block;
-    }
-
-    public static function getCurrentBlock()
-    {
-        return self::$block;
-    }
-
 
     /**
      * Executes statement with binding values to it.

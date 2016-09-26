@@ -1,5 +1,4 @@
 <?php
-
 use Symfony\Component\Debug\Debug;
 
 if ((!isset($_SERVER['ALLOW_PROFILER']) || $_SERVER['ALLOW_PROFILER'] !== '1') && (

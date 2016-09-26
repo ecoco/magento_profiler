@@ -27,6 +27,7 @@
                 <rewrite>
                     <translate>Ecocode_Profiler_Model_Core_Translate</translate>
                     <store>Ecocode_Profiler_Model_Core_Store</store>
+                    <resource>Ecocode_Profiler_Model_Core_Resource</resource>
                 </rewrite>
             </core>
         </models>

@@ -85,7 +85,7 @@ class Mage extends MageOriginal
             ob_start();
             parent::run($code, $type, $options);
             ob_end_flush();
-        } catch (Exception $e) {
+        } catch (\Symfony\Component\Debug\Exception\ContextErrorException $e) {
             ob_clean();
             throw $e;
         }

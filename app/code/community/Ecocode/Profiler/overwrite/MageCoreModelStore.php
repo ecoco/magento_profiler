@@ -1,7 +1,10 @@
 <?php
 
+loadRenamedClass('core/Mage/Core/Model/Store.php', 'Original_Mage_Core_Model_Store');
 
-class Ecocode_Profiler_Model_Core_Store extends Mage_Core_Model_Store
+
+class Mage_Core_Model_Store extends
+    Original_Mage_Core_Model_Store
 {
     protected $_isDev;
 
@@ -26,6 +29,7 @@ class Ecocode_Profiler_Model_Core_Store extends Mage_Core_Model_Store
         if ($this->_isDev === null) {
             $this->_isDev = Mage::app() instanceof Ecocode_Profiler_Model_AppDev;
         }
+
         return $this->_isDev;
     }
 }

@@ -5,25 +5,4 @@
             <version>0.1.0</version>
         </Ecocode_Profiler>
     </modules>
-    <global>
-        <models>
-            <ecocode_profiler>
-                <class>Ecocode_Profiler_Model</class>
-                <resourceModel>ecocode_profiler_resource</resourceModel>
-            </ecocode_profiler>
-            <ecocode_profiler_resource>
-                <class>Ecocode_Profiler_Model_Resource</class>
-            </ecocode_profiler_resource>
-        </models>
-        <blocks>
-            <ecocode_profiler>
-                <class>Ecocode_Profiler_Block</class>
-            </ecocode_profiler>
-        </blocks>
-        <helpers>
-            <ecocode_profiler>
-                <class>Ecocode_Profiler_Helper</class>
-            </ecocode_profiler>
-        </helpers>
-    </global>
 </config>

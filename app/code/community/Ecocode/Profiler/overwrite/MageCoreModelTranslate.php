@@ -1,10 +1,12 @@
 <?php
 
+loadRenamedClass('core/Mage/Core/Model/Translate.php', 'Original_Mage_Core_Model_Translate');
+
 /**
  * @author ecocode GmbH <jk@ecocode.de>
  * @author Justus Krapp <jk@ecocode.de>
  */
-class Ecocode_Profiler_Model_Core_Translate extends Mage_Core_Model_Translate
+class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 {
     protected $currentMessage = null;
 

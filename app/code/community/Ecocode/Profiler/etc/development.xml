@@ -23,13 +23,13 @@
     </ecocode>
     <global>
         <models>
-            <core>
-                <rewrite>
-                    <translate>Ecocode_Profiler_Model_Core_Translate</translate>
-                    <store>Ecocode_Profiler_Model_Core_Store</store>
-                    <resource>Ecocode_Profiler_Model_Core_Resource</resource>
-                </rewrite>
-            </core>
+            <ecocode_profiler>
+                <class>Ecocode_Profiler_Model</class>
+                <resourceModel>ecocode_profiler_resource</resourceModel>
+            </ecocode_profiler>
+            <ecocode_profiler_resource>
+                <class>Ecocode_Profiler_Model_Resource</class>
+            </ecocode_profiler_resource>
         </models>
         <blocks>
             <ecocode_profiler>

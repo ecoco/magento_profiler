@@ -1,7 +1,10 @@
 <?php
 
-class Ecocode_Profiler_Model_Core_Resource extends
-    Mage_Core_Model_Resource
+loadRenamedClass('core/Mage/Core/Model/Resource.php', 'Original_Mage_Core_Model_Resource');
+
+
+class Mage_Core_Model_Resource extends
+    Original_Mage_Core_Model_Resource
 {
     protected $configProperty;
 

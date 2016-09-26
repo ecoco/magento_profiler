@@ -37,6 +37,9 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
 
     protected function _initModules()
     {
+        //needed as the mysql collector needs to log queries before the config is loaded!!!
+        $this->_config->setNode('global/models/ecocode_profiler/class', 'Ecocode_Profiler_Model');
+        $this->_config->setNode('global/helpers/ecocode_profiler/class', 'Ecocode_Profiler_Helper');
         if (!$this->_config->loadModulesCache()) {
             $this->_config->loadModules();
             if ($this->_config->isLocalConfigLoaded() && !$this->_shouldSkipProcessModulesUpdates()) {

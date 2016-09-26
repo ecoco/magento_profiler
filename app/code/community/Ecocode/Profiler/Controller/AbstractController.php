@@ -15,6 +15,8 @@ class Ecocode_Profiler_Controller_AbstractController
             header('HTTP/1.0 403 Forbidden');
             exit('You are not allowed to access this file. Check ' . basename(__FILE__) . ' for more information.');
         }
+        //ban cache usage as we dont need the cache and it causes some overhead
+        Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
 
         parent::preDispatch();
         return $this;

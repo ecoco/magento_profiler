@@ -9,41 +9,43 @@ $identicalQueriesCount = count($identicalQueries);
 $queriesByContext = $this->getByContext();
 $contextHelper    = Mage::helper('ecocode_profiler/context');
 ?>
-<h2>Query metrics</h2>
 
-<div class="metrics">
-    <div class="metric">
-        <span class="value"><?php echo $collector->getQueryCount() ?></span>
-        <span class="label">Database queries</span>
-    </div>
 
-    <div class="metric">
-        <span class="value"><?php echo $identicalQueriesCount ?></span>
-        <span class="label">Identical queries</span>
-    </div>
+<div style="float:left; width: 50%">
+    <h2>Query metrics</h2>
+    <div class="metrics">
+        <div class="metric">
+            <span class="value"><?php echo $collector->getQueryCount() ?></span>
+            <span class="label">Database queries</span>
+        </div>
 
-    <div class="metric">
-        <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
-        <span class="label">Query time</span>
+        <div class="metric">
+            <span class="value"><?php echo $identicalQueriesCount ?></span>
+            <span class="label">Identical queries</span>
+        </div>
+
+        <div class="metric">
+            <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
+            <span class="label">Query time</span>
+        </div>
     </div>
 </div>
-
 <?php $connections = $collector->getConnectionData(); ?>
 <?php if (count($connections) > 1): ?>
-    <h2>
-        Queries by connection
-    </h2>
-        <small>Only connections that differ in their settings will be shown here</small>
+    <div style="float:left; width: 50%">
+        <h2>Queries by connection</h2>
 
-    <div class="metrics">
-        <?php foreach ($connections as $name => $queryCount): ?>
-            <div class="metric">
-                <span class="value"><?php echo $queryCount ?></span>
-                <span class="label"><?php echo $name ?></span>
-            </div>
-        <?php endforeach; ?>
+        <div class="metrics">
+            <?php foreach ($connections as $name => $queryCount): ?>
+                <div class="metric">
+                    <span class="value"><?php echo $queryCount ?></span>
+                    <span class="label"><?php echo $name ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 <?php endif; ?>
+<div style="clear: both;"></div>
 
 <div class="sf-tabs">
     <div class="tab">
@@ -51,8 +53,35 @@ $contextHelper    = Mage::helper('ecocode_profiler/context');
             Queries
             <small>(<?php echo $collector->getQueryCount() ?>)</small>
         </h3>
-        <div class="tab-content">
-            <?php echo $this->renderQueryTable('all', $collector->getQueries()); ?>
+        <div id="all-queries" class="tab-content">
+            <?php if ($this->getQueryCountByType()): ?>
+                <div style="float:left; width: 50%">
+                    <strong>Type: </strong>
+                    <?php foreach ($this->getQueryCountByType() as $type => $count): ?>
+                        <span data-toggle="query-type" data-type="<?php echo $type ?>" class="label">
+                        <strong><?php echo strtoupper($type) ?></strong>
+                                <span class="count">
+                                (<span><?php echo $count ?></span>)
+                            </span>
+                        </span>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            <?php if (count($connections) > 1): ?>
+                <div style="float:left; width: 50%">
+                    <strong>Connection: </strong>
+                    <?php foreach ($connections as $connection => $count): ?>
+                        <span data-toggle="query-connection" data-connection="<?php echo $connection ?>" class="label">
+                        <strong><?php echo $connection ?></strong>
+                                <span class="count">
+                                (<span><?php echo $count ?></span>)
+                            </span>
+                        </span>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            <div style="clear: both;"></div>
+            <?php echo $this->renderQueryTable('all', $this->getQueries()); ?>
         </div>
     </div>
     <div class="tab">
@@ -194,8 +223,70 @@ $contextHelper    = Mage::helper('ecocode_profiler/context');
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        var allQueries  = $('#all-queries'),
+            queryTypes  = allQueries.find('span[data-toggle="query-type"]'),
+            connections = allQueries.find('span[data-toggle="query-connection"]');
 
+
+        queryTypes.click(function () {
+            var $this      = $(this),
+                type       = $this.data('type'),
+                makeActive = !$this.hasClass('status-success');
+
+            queryTypes.removeClass('status-success');
+            allQueries.removeAttr('data-type');
+
+            if (makeActive) {
+                $this.addClass('status-success');
+                allQueries.attr('data-type', type);
+            }
+        });
+
+        connections.click(function () {
+            var $this      = $(this),
+                connection = $this.data('connection'),
+                makeActive = !$this.hasClass('status-success');
+
+            connections.removeClass('status-success');
+
+            if (makeActive) {
+                $this.addClass('status-success');
+                allQueries.find('tbody > tr').hide();
+                allQueries.find('tbody > tr[data-connection="' + connection + '"]').show();
+            } else {
+                allQueries.find('tbody > tr').show();
+            }
+        });
+    });
+</script>
 <style>
+    #all-queries[data-type] tr[data-type] {
+        display: none;
+    }
+
+    #all-queries[data-type="select"] tr[data-type="select"] {
+        display: table-row;
+    }
+
+    #all-queries[data-type="insert"] tr[data-type="insert"] {
+        display: table-row;
+    }
+
+    #all-queries[data-type="update"] tr[data-type="update"] {
+        display: table-row;
+    }
+
+    #all-queries[data-type="delete"] tr[data-type="delete"] {
+        display: table-row;
+    }
+
+    #all-queries span[data-toggle="query-type"],
+    #all-queries span[data-toggle="query-connection"] {
+        cursor: pointer;
+    }
+
     tr.sf-toggle-content.sf-toggle-visible {
         display: table-row !important;
     }

@@ -8,70 +8,141 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
     protected $sqlHelper;
     protected $queryTableRenderer;
 
+    protected $queries;
+    protected $identicalQueries;
+    protected $queriesByContext;
+    protected $queryCountByType;
+
     public function _construct()
     {
         $this->setTemplate('ecocode_profiler/collector/mysql/panel.phtml');
         parent::_construct();
     }
 
-    public function getIdenticalQueries()
+    public function prepareQueryData()
     {
+        $this->queries = [];
+        $this->identicalQueries = [];
+        $this->queriesByContext = [];
+        $this->queryCountByType = [
+            'select' => 0,
+            'insert' => 0,
+            'update' => 0,
+            'delete' => 0
+        ];
+
         /** @var Ecocode_Profiler_Model_Collector_MysqlDataCollector $collector */
         $collector = $this->getCollector();
-        $list      = [];
-        foreach ($collector->getQueries() as $queryData) {
-            $ident = md5($queryData['sql'] . implode(',', $queryData['params']));
-            if (!isset($list[$ident])) {
-                $list[$ident] = [
-                    'ident'      => $ident,
-                    'count'      => 0,
-                    'total_time' => 0,
-                    'query'      => $queryData,
-                    'traces'     => []
-                ];
-            }
 
-            $list[$ident]['count']++;
-            $list[$ident]['total_time'] += $queryData['time'];
-            $list[$ident]['traces'][] = $queryData['trace'];
+        foreach ($collector->getQueries() as &$queryData) {
+            $this->processType($queryData);
+            $this->preRenderQuery($queryData);
+            $this->processIdentical($queryData);
+            $this->processContext($queryData);
+            $this->queries[] = $queryData;
         }
 
-        usort($list, function ($a, $b) {
+        usort($this->queriesByContext, function ($a, $b) {
             return $b['count'] - $a['count'];
         });
 
-        $list = array_filter($list, function ($item) {
+        usort($this->identicalQueries, function ($a, $b) {
+            return $b['count'] - $a['count'];
+        });
+
+        $this->identicalQueries = array_filter($this->identicalQueries, function ($item) {
             return $item['count'] > 1;
         });
 
-        return array_values($list);
+
+        return $this;
     }
 
+    protected function processType(array &$queryData)
+    {
+        $sql  = $queryData['sql'];
+        $type = explode(' ', $sql, 2);
+        $type = reset($type);
+        $type = strtolower($type);
+
+        if (isset($this->queryCountByType[$type])) {
+            $this->queryCountByType[$type]++;
+        }
+
+        $queryData['type'] = $type;
+    }
+
+    protected function processIdentical(array $queryData)
+    {
+        $queryId = md5($queryData['sql'] . implode(',', $queryData['params']));
+
+        if (!isset($this->identicalQueries[$queryId])) {
+            $this->identicalQueries[$queryId] = [
+                'id'         => $queryId,
+                'count'      => 0,
+                'total_time' => 0,
+                'query'      => $queryData,
+                'traces'     => []
+            ];
+        }
+        $this->identicalQueries[$queryId]['count']++;
+        $this->identicalQueries[$queryId]['total_time'] += $queryData['time'];
+        $this->identicalQueries[$queryId]['traces'][] = $queryData['trace'];
+    }
+
+    protected function processContext(array $queryData)
+    {
+        $contextKey = $queryData['context'];
+        if (!isset($this->queriesByContext[$contextKey])) {
+            $this->queriesByContext[$contextKey] = [
+                'name'       => $contextKey,
+                'count'      => 0,
+                'total_time' => 0,
+                'queries'    => []
+            ];
+        }
+
+        $this->queriesByContext[$contextKey]['count']++;
+        $this->queriesByContext[$contextKey]['total_time'] += $queryData['time'];
+        $this->queriesByContext[$contextKey]['queries'][] = $queryData;
+    }
+
+    public function getIdenticalQueries()
+    {
+        if ($this->identicalQueries === null) {
+            $this->prepareQueryData();
+        }
+        return $this->identicalQueries;
+    }
+
+    public function preRenderQuery(array $queryData)
+    {
+        //@TODO format queries so we only have to do this once
+    }
+
+    public function getQueries()
+    {
+        if ($this->queries === null) {
+            $this->prepareQueryData();
+        }
+        return $this->queries;
+    }
+
+    public function getQueryCountByType()
+    {
+        if ($this->queryCountByType === null) {
+            $this->prepareQueryData();
+            $this->queryCountByType = array_filter($this->queryCountByType);
+        }
+        return $this->queryCountByType;
+    }
 
     public function getByContext()
     {
-        /** @var Ecocode_Profiler_Model_Collector_MysqlDataCollector $collector */
-        $collector   = $this->getCollector();
-        $contextList = [];
-        foreach ($collector->getQueries() as $queryData) {
-            $contextKey = $queryData['context'];
-            if (!isset($contextList[$contextKey])) {
-                $contextList[$contextKey] = [
-                    'name'       => $contextKey,
-                    'count'      => 0,
-                    'total_time' => 0,
-                    'queries'    => []
-                ];
-            }
-
-            $contextList[$contextKey]['count']++;
-            $contextList[$contextKey]['total_time'] += $queryData['time'];
-            $contextList[$contextKey]['queries'][] = $queryData;
+        if ($this->queriesByContext === null) {
+            $this->prepareQueryData();
         }
-        usort($contextList, function ($a, $b) {
-            return $b['count'] - $a['count'];
-        });
-        return array_values($contextList);
+        return $this->queriesByContext;
     }
 
     public function replaceQueryParameters($query, array $parameters)
@@ -122,5 +193,4 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         }
         return $this->queryTableRenderer;
     }
-
 }

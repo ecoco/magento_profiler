@@ -49,20 +49,6 @@ class Mage extends MageOriginal
         return parent::log($message, $level, $file, $forceLog);
     }
 
-    public static function run($code = '', $type = 'store', $options = [])
-    {
-        try {
-            ob_start();
-            ob_start();
-            parent::run($code, $type, $options);
-            ob_end_flush();
-        } catch (Exception $e) {
-            ob_clean();
-            throw $e;
-        }
-    }
-
-
     public static function getLogEntries()
     {
         return self::$_logs;

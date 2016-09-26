@@ -53,6 +53,7 @@ class Mage extends MageOriginal
     {
         try {
             ob_start();
+            ob_start();
             parent::run($code, $type, $options);
             ob_end_flush();
         } catch (Exception $e) {

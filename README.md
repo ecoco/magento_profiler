@@ -15,7 +15,7 @@ The concept and code of the WebProfiler is ported to the magento needs as good a
 ![Toolbar](/docs/image/toolbar.jpg "Toolbar")
 
 
-![Profiler](/docs/image/profiler.jog "Profiler")
+![Profiler](/docs/image/profiler.jpg "Profiler")
 
 
 ## Installation

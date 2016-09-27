@@ -15,13 +15,16 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
 
     public function _construct()
     {
+        //ban cache usage as we dont need the cache and it causes some overhead
+        Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
+
         $this->setTemplate('ecocode_profiler/collector/mysql/panel.phtml');
         parent::_construct();
     }
 
     public function prepareQueryData()
     {
-        $this->queries = [];
+        $this->queries          = [];
         $this->identicalQueries = [];
         $this->queriesByContext = [];
         $this->queryCountByType = [
@@ -115,9 +118,16 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         return $this->identicalQueries;
     }
 
-    public function preRenderQuery(array $queryData)
+    public function preRenderQuery(array &$queryData)
     {
-        //@TODO format queries so we only have to do this once
+        $queryTableRenderer = $this->getQueryTableRenderer();
+
+        $queryData['sql_highlighted'] = $queryTableRenderer->formatQuery($queryData['sql'], true);
+        $queryData['sql_formatted']   = $queryTableRenderer->formatQuery($queryData['sql']);
+        $queryData['sql_runnable']    = $queryTableRenderer->formatQuery(
+            $queryTableRenderer->replaceQueryParameters($queryData['sql'], $queryData['params']),
+            true
+        );
     }
 
     public function getQueries()
@@ -145,20 +155,6 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         return $this->queriesByContext;
     }
 
-    public function replaceQueryParameters($query, array $parameters)
-    {
-        return $this->getSqlHelper()->replaceQueryParameters($query, $parameters);
-    }
-
-    public function dumpParameters(array $parameters)
-    {
-        return $this->getSqlHelper()->dumpParameters($parameters);
-    }
-
-    public function formatQuery($sql, $highlightOnly = false)
-    {
-        return $this->getSqlHelper()->formatQuery($sql, $highlightOnly);
-    }
 
     public function renderQueryTable($prefix, array $queries)
     {
@@ -172,24 +168,12 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
     }
 
     /**
-     * @return Ecocode_Profiler_Helper_Sql
-     */
-    public function getSqlHelper()
-    {
-        if ($this->sqlHelper === null) {
-            $this->sqlHelper = Mage::helper('ecocode_profiler/sql');
-        }
-        return $this->sqlHelper;
-    }
-
-    /**
      * @return $this
      */
     public function getQueryTableRenderer()
     {
         if ($this->queryTableRenderer === null) {
-            $this->queryTableRenderer = clone $this;
-            $this->queryTableRenderer->setTemplate('ecocode_profiler/collector/mysql/panel/query.phtml');
+            $this->queryTableRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_mysql_queryTable');
         }
         return $this->queryTableRenderer;
     }

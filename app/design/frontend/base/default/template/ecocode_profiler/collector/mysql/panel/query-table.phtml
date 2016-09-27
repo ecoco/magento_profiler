@@ -18,7 +18,7 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
             <td class="nowrap"><?php echo $queryData['connection'] ?> </td>
             <td class="nowrap"><?php echo sprintf('%0.2f', $queryData['time'] * 1000) ?> ms</td>
             <td>
-                <?php echo $this->formatQuery($queryData['sql'], true) ?>
+                <?php echo $queryData['sql_highlighted']; ?>
                 <div>
                     <strong class="font-normal text-small">Parameters</strong>:
                     <?php echo $this->dumpParameters($queryData['params']) ?>
@@ -43,11 +43,11 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
                 </div>
 
                 <div id="formatted-query-<?php echo $prefix . $index ?>" class="sql-runnable hidden">
-                    <?php echo $this->formatQuery($queryData['sql']); ?>
+                    <?php echo $queryData['sql_formatted']; ?>
                 </div>
 
                 <div id="original-query-<?php echo $prefix . $index ?>" class="sql-runnable hidden">
-                    <?php echo $this->formatQuery($this->replaceQueryParameters($queryData['sql'], $queryData['params']), true); ?>
+                    <?php echo $queryData['sql_runnable']; ?>
                 </div>
 
                 <?php if (isset($queryData['trace'])): ?>

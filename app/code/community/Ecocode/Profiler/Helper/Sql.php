@@ -61,7 +61,7 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
         if (isset($this->formattedQueriesCache[$cacheKey])) {
             return $this->formattedQueriesCache[$cacheKey];
         }
-
+        \SqlFormatter::$cli                       = false;
         \SqlFormatter::$pre_attributes            = 'class="highlight highlight-sql"';
         \SqlFormatter::$quote_attributes          = 'class="string"';
         \SqlFormatter::$backtick_quote_attributes = 'class="string"';
@@ -80,7 +80,7 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
             $html = \SqlFormatter::format($sql);
             $html = preg_replace('/<pre class="(.*)">([^"]*+)<\/pre>/Us', '<div class="\1"><pre>\2</pre></div>', $html);
         }
-        
+
         return $this->formattedQueriesCache[$cacheKey] = $html;
     }
 

@@ -15,9 +15,9 @@ class Ecocode_Profiler_Controller_AbstractController
             header('HTTP/1.0 403 Forbidden');
             exit('You are not allowed to access this file. Check ' . basename(__FILE__) . ' for more information.');
         }
-        //ban cache usage as we dont need the cache and it causes some overhead
-        Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
 
+        Mage::app()->getConfig()->setNode('frontend/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type', 'disabled');
+        Mage::app()->getConfig()->setNode('frontend/events/core_block_abstract_to_html_after/observers/ecocode_profiler_context/type', 'disabled');
         parent::preDispatch();
         return $this;
     }

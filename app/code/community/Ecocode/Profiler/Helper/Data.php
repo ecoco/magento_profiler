@@ -39,7 +39,7 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
     public function getBackTraceRenderer()
     {
         if ($this->backTraceRenderer === null) {
-            $this->backTraceRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/backTrace');
+            $this->backTraceRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_backTrace');
         }
         return $this->backTraceRenderer;
     }

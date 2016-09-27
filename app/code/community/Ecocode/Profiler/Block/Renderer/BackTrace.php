@@ -5,8 +5,8 @@
  *
  * @method getBag
  */
-class Ecocode_Profiler_Block_BackTrace
-    extends Mage_Core_Block_Template
+class Ecocode_Profiler_Block_Renderer_BackTrace
+    extends Ecocode_Profiler_Block_Renderer_AbstractRenderer
 {
     public function _construct()
     {

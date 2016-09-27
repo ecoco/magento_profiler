@@ -6,7 +6,7 @@
  * @method getBag
  */
 class Ecocode_Profiler_Block_Renderer_Context
-    extends Mage_Core_Block_Template
+    extends Ecocode_Profiler_Block_Renderer_AbstractRenderer
 {
     public function _construct()
     {

@@ -3,13 +3,16 @@
 
 Welcome to the Ecocode Web Profiler for Magento.
 
-This profiler is based on the awesome Symfony WebProfiler.
+This profiler is based on the awesome [Symfony WebProfiler][4].
 The concept and code of the WebProfiler is ported to the magento needs as good as possible.
 
 
 ## Requirements
 * php >= 5.4
 * magento < 2
+
+Tested with magento 
+1.7, 1.8. 1.9
 
 ---
 ![Toolbar](/docs/image/toolbar.jpg "Toolbar")
@@ -36,19 +39,22 @@ It might be needed to extend your webserver config to handle "dev.php" correctly
 ### Nginx:
 If you are using nginx and get a `404` for the profiler, it might be needed to add the following to your nginx config before the php location definition:
 ```
-    location /dev.php/ {
-        rewrite / /dev.php;
-    }
+location /dev.php/ {
+    rewrite / /dev.php;
+}
 ```
 ---
 #### Apache:
-to be done!
+nothing to do here, should run out of the box
 
 ## Usage
-The profiler is only enabled if you open your shop with `dev.php/` 
+The profiler is only enabled if you open your shop via `http://myshop.local/dev.php/`.
+The idea is to develop always in dev mode alias "dev.php" and only switch back to "production" from
+time to verify the result.
 
 ## Features
 * Improved exception handling in dev mode with the [symfony/debug][2]. No more checking of the log files!
+* Search old profiles
 * Easy extendable, just add a new **collector** via you configuration
 
 ## Collectors
@@ -81,7 +87,7 @@ The profiler is only enabled if you open your shop with `dev.php/`
 * Logs
   * Display of all `Mage::log` calls
 * Cache
-  * Display if current cache configuration including the option to enable/disable and flush form the profiler
+  * Display of current cache configuration including the option to enable/disable and flush form the profiler
   * Display of all cache calls including a not for cache **hits** and **misses**
 * Configuration
   * Base PHP configuration
@@ -99,6 +105,8 @@ via your nginx or htaccess
 
 ## TODO
 * Session Data
+* Rewrites
+* Model load detection
 * Improve docs
 * "how to extend"
 
@@ -119,8 +127,10 @@ http {
 ## Thanks to
 * [symfony/debug][2] for the awesome debug component
 * [magen98-magerun][3] for the rewrite conflict detection
+* [Symfony WebProfiler][4]
 
 
 [1]: https://github.com/Cotya/magento-composer-installer
 [2]: https://github.com/symfony/debug
 [3]: https://github.com/netz98/n98-magerun
+[4]: https://github.com/symfony/web-profiler-bundle

@@ -52,7 +52,7 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
     <div class="tab">
         <h3 class="tab-title">
             Queries
-            <small>(<?php echo $collector->getQueryCount() ?>)</small>
+            <span class="badge"><?php echo $collector->getQueryCount() ?></span>
         </h3>
         <div id="all-queries" class="tab-content">
             <?php if ($this->getQueryCountByType()): ?>
@@ -88,7 +88,7 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
     <div class="tab">
         <h3 class="tab-title">
             Queries by context
-            <small>(<?php echo count($queriesByContext) ?>)</small>
+            <span class="badge"><?php echo count($queriesByContext) ?></span>
         </h3>
 
         <div class="tab-content">
@@ -133,7 +133,7 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
     <div class="tab">
         <h3 class="tab-title">
             Identical queries
-            <small>(<?php echo $identicalQueriesCount ?>)</small>
+            <span class="badge"><?php echo $identicalQueriesCount ?></span>
         </h3>
 
 
@@ -144,7 +144,7 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
                 <tr>
                     <th class="nowrap">#</th>
                     <th class="nowrap">Count</th>
-                    <th class="nowrap">Total Time<span></span></th>
+                    <th class="nowrap">Total time<span></span></th>
                     <th style="width: 100%;">Info</th>
                 </tr>
                 </thead>
@@ -261,23 +261,14 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
     });
 </script>
 <style>
-
-/*
-    #all-queries[data-connection] tr[data-connection],
-    #all-queries[data-type] tr[data-type] {
-        display: none;
-    }
-*/
-
-
     <?php foreach ($connections as $name => $queryCount): ?>
-        #all-queries[data-connection="<?php echo $name ?>"] tr:not([data-connection="<?php echo $name ?>"]) {
+        #all-queries[data-connection="<?php echo $name ?>"] tbody > tr:not([data-connection="<?php echo $name ?>"]) {
             display: none;
         }
     <?php endforeach; ?>
 
     <?php foreach ($this->getQueryCountByType() as $name => $queryCount): ?>
-        #all-queries[data-type="<?php echo $name ?>"] tr:not([data-type="<?php echo $name ?>"]) {
+        #all-queries[data-type="<?php echo $name ?>"] tbody > tr:not([data-type="<?php echo $name ?>"]) {
             display: none;
         }
     <?php endforeach; ?>

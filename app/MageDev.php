@@ -27,6 +27,8 @@ require_once $overwriteBasePath . 'Mage.php';
 require_once $overwriteBasePath . 'MageCoreModelResource.php';
 require_once $overwriteBasePath . 'MageCoreModelTranslate.php';
 require_once $overwriteBasePath . 'MageCoreModelStore.php';
+require_once $overwriteBasePath . 'MageCoreModelResourceDbAbstract.php';
+require_once $overwriteBasePath . 'MageEavModelEntityAbstract.php';
 
 
 Mage::setRoot(MAGENTO_ROOT . DIRECTORY_SEPARATOR . 'app');

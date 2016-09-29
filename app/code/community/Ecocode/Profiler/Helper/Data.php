@@ -8,6 +8,50 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
 {
     protected $backTraceRenderer;
 
+    protected $configClassNameReflection;
+    protected $classNameCache;
+
+    /**
+     * use the config class cache to retrieve the initial class group
+     *
+     * @param $className
+     * @return string
+     */
+    public function getClassGroup($className)
+    {
+        $classNames = $this->getClassNames();
+        if (!isset($classNames[$className])) {
+            $classNames = $this->getClassNames(true);
+            if (!isset($classNames[$className])) {
+                return '';
+            }
+        }
+        return $classNames[$className];
+    }
+
+    protected function getClassNames($reload = false)
+    {
+        if ($this->classNameCache !== null && $reload === false) {
+            return $this->classNameCache;
+        }
+        if ($this->configClassNameReflection === null) {
+            $this->configClassNameReflection = new ReflectionProperty('Mage_Core_Model_Config', '_classNameCache');
+            $this->configClassNameReflection->setAccessible(true);
+        }
+
+        $classNameCache = $this->configClassNameReflection->getValue(Mage::getConfig());
+        foreach($classNameCache as $groupRoot) {
+            foreach ($groupRoot as $module => $classNames) {
+                foreach($classNames as $class => $className) {
+                    $this->classNameCache[$className] = $module . '/' . $class;
+                }
+            }
+        }
+
+        return $this->classNameCache;
+    }
+
+
     public function getCollectorUrl($token, Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         return $this->getUrl($token, $collector->getName());

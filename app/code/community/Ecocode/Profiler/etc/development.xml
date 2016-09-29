@@ -18,6 +18,7 @@
                 <event>ecocode_profiler/collector_eventDataCollector</event>
                 <cache>ecocode_profiler/collector_cacheDataCollector</cache>
                 <log>ecocode_profiler/collector_logDataCollector</log>
+                <model>ecocode_profiler/collector_modelDataCollector</model>
             </collectors>
         </profiler>
     </ecocode>
@@ -106,6 +107,33 @@
                     </ecocode_layout_profiler>
                 </observers>
             </core_block_abstract_to_html_after>
+            <model_resource_db_load>
+                <observers>
+                    <ecocode_profiler_model>
+                        <type>singleton</type>
+                        <method>trackModelLoad</method>
+                        <class>ecocode_profiler/collector_modelDataCollector</class>
+                    </ecocode_profiler_model>
+                </observers>
+            </model_resource_db_load>
+            <model_resource_db_save>
+                <observers>
+                    <ecocode_profiler_model>
+                        <type>singleton</type>
+                        <method>trackModelSave</method>
+                        <class>ecocode_profiler/collector_modelDataCollector</class>
+                    </ecocode_profiler_model>
+                </observers>
+            </model_resource_db_save>
+            <model_resource_db_delete>
+                <observers>
+                    <ecocode_profiler_model>
+                        <type>singleton</type>
+                        <method>trackModelDelete</method>
+                        <class>ecocode_profiler/collector_modelDataCollector</class>
+                    </ecocode_profiler_model>
+                </observers>
+            </model_resource_db_delete>
         </events>
     </frontend>
 </config>

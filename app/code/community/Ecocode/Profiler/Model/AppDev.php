@@ -2,9 +2,9 @@
 
 class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
 {
-    protected $eventFiredCount = 0;
-    protected $eventsFired     = [];
-    protected $calledListeners = [];
+    protected $eventsFiredCount = 0;
+    protected $eventFiredCount  = [];
+    protected $calledListeners  = [];
 
     protected $startTime;
 
@@ -120,11 +120,12 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
      */
     public function dispatchEvent($eventName, $args)
     {
-        $this->eventFiredCount++;
-        $this->eventsFired[] = [
-            'name' => $eventName,
-            'args' => $args
-        ];
+        if (!isset($args['debug'])) {
+            if (!isset($this->eventFiredCount[$eventName])) {
+                $this->eventFiredCount[$eventName] = 0;
+            }
+            $this->eventFiredCount[$eventName]++;
+        }
 
         return parent::dispatchEvent($eventName, $args);
     }
@@ -140,21 +141,39 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
     protected function _callObserverMethod($object, $method, $observer)
     {
         $eventName               = $observer->getEvent()->getName();
-        $this->calledListeners[] = [
-            'event_name' => $eventName,
-            'class'      => get_class($object),
-            'method'     => $method
-        ];
+        if (!$observer->getEvent()->getData('debug')) {
+            $this->calledListeners[] = [
+                'event_name' => $eventName,
+                'class'      => get_class($object),
+                'method'     => $method
+            ];
+
+            if (!method_exists($object, $method)) {
+                Mage::log(
+                    sprintf(
+                        'event "%s" tried to call a non existing method "%s" in "%s"',
+                        $eventName,
+                        $method,
+                        get_class($object)
+                    )
+                );
+            }
+        }
 
         return parent::_callObserverMethod($object, $method, $observer);
     }
 
-    public function getFiredEvents()
+    public function getEvents()
     {
-        return $this->eventsFired;
+        return $this->_events;
     }
 
     public function getFiredEventCount()
+    {
+        return $this->eventsFiredCount;
+    }
+
+    public function getFiredEvents()
     {
         return $this->eventFiredCount;
     }

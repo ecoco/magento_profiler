@@ -35,17 +35,30 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
         $eventList = $app->getFiredEvents();
         $events    = [];
 
-        foreach ($eventList as $event) {
-            $name = $event['name'];
-            if (!isset($events[$name])) {
-                $events[$name] = [
-                    'name'       => $name,
-                    'count'      => 1,
-                    'parameters' => []
-                ];
-            } else {
-                $events[$name]['count']++;
+        $observerList = $app->getEvents();
+
+        foreach ($eventList as $eventName => $count) {
+            $observers     = [];
+            $observerCount = 0;
+
+            foreach ($observerList as $area => $list) {
+                if (!isset($list[$eventName]) || $list[$eventName] === false) {
+                    continue;
+                }
+
+                $observers[$area] = [];
+                foreach ($list[$eventName] as $areaObservers) {
+                    $observers[$area] += $areaObservers;
+                    $observerCount += count($areaObservers);
+                }
             }
+
+            $events[$eventName] = [
+                'name'           => $eventName,
+                'count'          => $count,
+                'observer'       => $observers,
+                'observer_count' => $observerCount
+            ];
         }
 
         return $events;

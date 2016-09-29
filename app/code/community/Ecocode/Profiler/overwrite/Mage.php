@@ -36,7 +36,7 @@ class Mage extends MageOriginal
 
     public static function terminate()
     {
-        self::dispatchEvent('mage_terminate');
+        self::dispatchDebugEvent('mage_terminate');
     }
 
     public static function log($message, $level = null, $file = '', $forceLog = false)

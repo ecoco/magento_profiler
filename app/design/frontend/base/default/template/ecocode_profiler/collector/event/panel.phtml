@@ -19,6 +19,75 @@ $eventsFired = $collector->getFiredEvents();
     ?>
     <div class="sf-tabs">
         <div class="tab">
+            <h3 class="tab-title">Events Fired <span class="badge"><?php echo count($eventsFired) ?></span></h3>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Observer</th>
+                        <th>Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($eventsFired as $index => $event): ?>
+                        <tr>
+                            <td>
+                                <?php echo $event['name'] ?>
+                                <?php if ($event['observer_count']): ?>
+                                    <a href="#" class="sf-toggle link-inverse text-small"
+                                       data-toggle-selector="#event-observer-<?php echo $index ?>"
+                                       data-toggle-alt-content="Hide observer">Show observer</a>
+                                    <div id="event-observer-<?php echo $index ?>" class="hidden">
+                                        <ul>
+                                            <?php foreach ($event['observer'] as $area => $observers):?>
+                                                <li>
+                                                    <?php echo $area ?>
+                                                <table>
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>Model</th>
+                                                        <th>Method</th>
+                                                    </tr>
+                                                    </thead>
+                                                        <?php foreach ($observers as $name => $observer):?>
+                                                            <tr>
+                                                                <td><?php echo $name ?></td>
+                                                                <td><?php echo $observer['type'] ? $observer['type'] : 'singleton' ?></td>
+                                                                <td><?php echo $observer['model'] ?></td>
+                                                                <td><?php echo $observer['method'] ?></td>
+                                                            </tr>
+                                                        <?php endforeach;?>
+                                                </table>
+
+                                                </li>
+                                            <?php endforeach;?>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
+
+                            </td>
+                            <td>
+                                <?php if ($event['observer_count']): ?>
+                                    <?php echo $event['observer_count'] ?>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo $event['count'] ?></td>
+                        </tr>
+
+                    <?php endforeach; ?>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="tab">
             <h3 class="tab-title">Called Listeners <span class="badge"><?php echo count($calledListeners) ?></span></h3>
 
             <div class="tab-content">
@@ -36,31 +105,6 @@ $eventsFired = $collector->getFiredEvents();
                             <td><?php echo $listener['event_name'] ?></td>
                             <td><?php echo $listener['class'] ?>:<?php echo $listener['method'] ?></td>
                         </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
-
-        <div class="tab">
-            <h3 class="tab-title">Events Fired <span class="badge"><?php echo count($eventsFired) ?></span></h3>
-            <div class="tab-content">
-                <table>
-                    <thead>
-                    <tr>
-                        <th class="text-right">Event</th>
-                        <th>Count</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <?php foreach ($eventsFired as $event): ?>
-                        <tr>
-                            <td><?php echo $event['name'] ?></td>
-                            <td><?php echo $event['count'] ?></td>
-                        </tr>
-
                     <?php endforeach; ?>
                     </tbody>
 

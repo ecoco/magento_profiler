@@ -1,6 +1,7 @@
 <?php
 /** @var Ecocode_Profiler_Model_Collector_ModelDataCollector $collector */
-$collector = $this->getCollector();
+$collector  = $this->getCollector();
+$operations = ['save', 'delete', 'load'];
 ?>
 
 
@@ -30,11 +31,11 @@ $collector = $this->getCollector();
         </h3>
         <div id="all-crud-operations" class="tab-content">
             <strong>Operation: </strong>
-            <?php foreach ($collector->getMetric() as $operation => $count): ?>
+            <?php foreach ($operations as $operation): ?>
                 <span data-toggle="crud-operation" data-operation="<?php echo $operation ?>" class="label">
                     <strong><?php echo strtoupper($operation) ?></strong>
                     <span class="count">
-                        (<span><?php echo $count ?></span>)
+                        (<span><?php echo $collector->getMetric($operation) ?></span>)
                     </span>
                 </span>
             <?php endforeach; ?>
@@ -160,7 +161,7 @@ $collector = $this->getCollector();
         cursor: pointer;
     }
 
-    <?php foreach ($collector->getMetric() as $name => $queryCount): ?>
+    <?php foreach ($operations as $name): ?>
     #all-crud-operations[data-operation="<?php echo $name ?>"] tbody > tr:not([data-operation="<?php echo $name ?>"]) {
         display: none;
     }

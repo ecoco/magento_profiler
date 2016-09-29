@@ -87,7 +87,11 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
             return $v['count'] > 1;
         });
 
-        return $traceHashList;
+        usort($traceHashList, function ($a, $b) {
+            return $b['count'] - $a['count'];
+        });
+
+        return array_values($traceHashList);
     }
 
 

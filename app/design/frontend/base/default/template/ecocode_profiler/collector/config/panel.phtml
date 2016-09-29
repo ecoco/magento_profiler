@@ -142,7 +142,7 @@ $iconNo    = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0
                 <?php foreach ($inActiveModules as $name => $data): ?>
                     <tr>
                         <td><?php echo $name ?></td>
-                        <td><?php echo $data['codePool'] ?></td>
+                        <td><?php echo isset($data['codePool']) ? $data['codePool'] : '?' ?></td>
                     </tr>
 
                 <?php endforeach; ?>

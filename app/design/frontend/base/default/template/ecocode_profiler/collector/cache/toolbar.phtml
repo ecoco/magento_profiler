@@ -3,7 +3,8 @@
 $collector = $this->getCollector();
 $token     = $this->getToken();
 
-$cacheList = $collector->getCacheList();
+$cacheList  = $collector->getCacheList();
+$cacheTypes = Mage::app()->getCacheInstance()->getTypes();
 ?>
 
 <div
@@ -20,6 +21,7 @@ $cacheList = $collector->getCacheList();
     <div class="sf-toolbar-info" style="left: 0px;">
         <div class="sf-toolbar-info-group" style="float: left;">
             <?php foreach ($cacheList as $cache): ?>
+                <?php $currentStatus = $cacheTypes[$cache['id']]->getData('status'); ?>
                 <div class="sf-toolbar-info-piece">
                     <b><?php echo uc_words($cache['id'], ' ')?></b>
                     <?php if($cache['status'] == 1): ?>
@@ -27,6 +29,19 @@ $cacheList = $collector->getCacheList();
                     <?php else:?>
                         <span class="sf-toolbar-status">No</span>
                     <?php endif;?>
+                    &nbsp;
+                    <?php if ($currentStatus): ?>
+                        <a href="#"
+                           data-url="<?php echo Mage::getUrl('_profiler/cache/clear', ['types' => $cache['id']]) ?>"
+                           class="btn btn-sm ajax-action">Clear</a> /
+                        <a href="#"
+                           data-url="<?php echo Mage::getUrl('_profiler/cache/disable', ['types' => $cache['id']]) ?>"
+                           class="btn btn-sm ajax-action">Disable</a>
+                    <?php else: ?>
+                        <a href="#"
+                           data-url="<?php echo Mage::getUrl('_profiler/cache/enable', ['types' => $cache['id']]) ?>"
+                           class="btn btn-sm ajax-action">Enable</a>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>

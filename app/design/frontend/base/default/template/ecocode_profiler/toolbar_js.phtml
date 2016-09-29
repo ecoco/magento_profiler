@@ -53,6 +53,22 @@
                         }
                     };
                 }
+
+                var actions = document.querySelectorAll('.sf-toolbar .ajax-action');
+
+                for (var j = 0; j < actions.length; j++) {
+                    (function () {
+
+                        var button = actions[j],
+                            url    = button.getAttribute('data-url');
+
+                        button.addEventListener('click', function (e) {
+                            Sfjs.request(url, function () {
+                                window.location.reload();
+                            });
+                        });
+                    })();
+                }
             },
             function(xhr) {
                 if (xhr.status !== 0) {

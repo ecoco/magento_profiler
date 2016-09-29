@@ -49,7 +49,11 @@ class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_Abstr
 
     protected function setCacheStatus(array $types, $status)
     {
-        $allTypes     = Mage::app()->useCache();
+        $allTypes = Mage::app()->getCacheInstance()->getTypes();
+        $allTypes = array_map(function ($type) {
+            return $type->getData('status');
+        }, $allTypes);
+        
         $updatedTypes = 0;
         foreach ($types as $code) {
             if (isset($allTypes[$code])) {

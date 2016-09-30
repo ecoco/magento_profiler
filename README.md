@@ -84,6 +84,9 @@ time to time to verify the result.
   * Detection of rewrites and rewrite conflicts (credits to [magen98-magerun][3] for the detection)
 * Logs
   * Display of all `Mage::log` calls
+* Models
+  * Display of all model load, delete and save calls
+  * Detection of "load" calls within loops!
 * Cache
   * Display of current cache configuration including the option to enable/disable and flush from the profiler
   * Display of all cache calls including not-for-cache **hits** and **misses**

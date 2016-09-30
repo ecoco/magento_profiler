@@ -13,6 +13,11 @@ The concept and code of the WebProfiler have been ported to assist with Magento 
 Tested with magento 
 1.7, 1.8. 1.9
 
+Demo Stores:
+* [Profiler with Magento 1.7.0.2][http://1.7.0.2.magento-profiler.ecocode.de/dev.php/]
+* [Profiler with Magento 1.8.1.0][http://1.8.1.0.magento-profiler.ecocode.de/]
+* [Profiler with Magento 1.9.2.4][http://1.9.2.4.magento-profiler.ecocode.de/dev.php]
+
 ---
 ![Toolbar](/docs/image/toolbar.jpg "Toolbar")
 

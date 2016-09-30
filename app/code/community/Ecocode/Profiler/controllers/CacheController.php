@@ -53,7 +53,7 @@ class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_Abstr
         $allTypes = array_map(function ($type) {
             return $type->getData('status');
         }, $allTypes);
-        
+
         $updatedTypes = 0;
         foreach ($types as $code) {
             if (isset($allTypes[$code])) {

@@ -10,7 +10,7 @@ class Mage_Core_Model_Resource extends
 
     public function __construct()
     {
-        $this->configProperty = new ReflectionProperty('Magento_Db_Adapter_Pdo_Mysql', '_config');
+        $this->configProperty = new ReflectionProperty('Varien_Db_Adapter_Pdo_Mysql', '_config');
         $this->configProperty->setAccessible(true);
     }
 

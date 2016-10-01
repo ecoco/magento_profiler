@@ -40,10 +40,10 @@ abstract class Mage_Eav_Model_Entity_Abstract extends
     /**
      * overwrite load function as "_afterDelete" etc can be overwritten
      *
-     * @param Mage_Core_Model_Abstract $object
-     * @return Mage_Core_Model_Resource_Db_Abstract
+     * @param $object
+     * @return Mage_Eav_Model_Entity_Abstract
      */
-    public function delete(Mage_Core_Model_Abstract $object)
+    public function delete($object)
     {
         $start  = microtime(true);
         $result = parent::delete($object);

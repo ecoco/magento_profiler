@@ -76,12 +76,15 @@ class MagentoErrorHandler extends ErrorHandler
 }
 
 Debug::enable();
-ErrorHandler::register(new MagentoErrorHandler(new BufferingLogger()));
+$errorHandler  = new MagentoErrorHandler(new BufferingLogger());
+$errorHandler->throwAt(-1, true);
+
+ErrorHandler::register($errorHandler);
+$errorHandler->setDefaultLogger(Mage::getLogger());
 
 $options = [
     'cache' => ['id_prefix' => 'dev']
 ];
 Mage::run($mageRunCode, $mageRunType, $options);
-
 
 Mage::terminate();

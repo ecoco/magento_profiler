@@ -7,6 +7,7 @@
 class Ecocode_Profiler_Block_Collector_Log_Panel
     extends Ecocode_Profiler_Block_Collector_Base
 {
+    protected $logTableRenderer;
     protected $logGroups;
 
     protected $priorityNames = [
@@ -24,25 +25,47 @@ class Ecocode_Profiler_Block_Collector_Log_Panel
     public function getLogGroups()
     {
         if ($this->logGroups === null) {
+            $logGroups = [
+                'deprecation'    => [],
+                'debug'          => [],
+                'info_and_error' => [],
+                'silenced'       => []
+            ];
+
             /** @var Ecocode_Profiler_Model_Collector_LogDataCollector $collector */
             $collector = $this->getCollector();
-            $logGroups = [];
-            foreach ($collector->getLogs() as $entry) {
-                list($file, $level, $message) = $entry;
-                if (!isset($logGroups[$file])) {
-                    $logGroups[$file] = [
-                        'name' => basename($file, '.log'),
-                        'file' => $file,
-                        'logs' => []
-                    ];
+            foreach ($collector->getLogs() as $log) {
+                if (isset($log['context']['level'], $log['context']['type']) && in_array($log['context']['type'], [E_DEPRECATED, E_USER_DEPRECATED])) {
+                    $logGroups['deprecation'][] = $log;
+                } elseif (isset($log['context']['scream']) && $log['context']['scream'] === true) {
+                    $logGroups['silenced'][] = $log;
+                } elseif ($log['priorityName'] === 'DEBUG') {
+                    $logGroups['debug'][] = $log;
+                } else {
+                    $logGroups['info_and_error'][] = $log;
                 }
-
-                $logGroups[$file]['logs'][] = [
-                    'level'   => $level,
-                    'message' => $message
-                ];
             }
             $this->logGroups = $logGroups;
+
+            /** @var Ecocode_Profiler_Model_Collector_LogDataCollector $collector */
+            /*            $collector = $this->getCollector();
+                        $logGroups = [];
+                        foreach ($collector->getLogs() as $entry) {
+                            list($file, $level, $message) = $entry;
+                            if (!isset($logGroups[$file])) {
+                                $logGroups[$file] = [
+                                    'name' => basename($file, '.log'),
+                                    'file' => $file,
+                                    'logs' => []
+                                ];
+                            }
+
+                            $logGroups[$file]['logs'][] = [
+                                'level'   => $level,
+                                'message' => $message
+                            ];
+                        }
+                        $this->logGroups = $logGroups;*/
         }
 
         return $this->logGroups;
@@ -71,11 +94,26 @@ class Ecocode_Profiler_Block_Collector_Log_Panel
     }
 
 
-    public function renderTable(array $messages)
+    public function renderLogTable($logs, $category = '', $showLevel = false, $isDeprecation = false)
     {
-        $tableBlock = $this->getLayout()->createBlock('core/template');
-        $tableBlock->setTemplate('ecocode_profiler/collector/translation/panel/table.phtml');
-        $tableBlock->setData('messages', $messages);
-        return $tableBlock->toHtml();
+        $block = $this->getLogTableRenderer();
+        $block->setData([
+            'logs'           => $logs,
+            'category'       => $category,
+            'show_level'     => $showLevel,
+            'is_deprecation' => $isDeprecation
+        ]);
+        return $block->toHtml();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getLogTableRenderer()
+    {
+        if ($this->logTableRenderer === null) {
+            $this->logTableRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_log_logTable');
+        }
+        return $this->logTableRenderer;
     }
 }

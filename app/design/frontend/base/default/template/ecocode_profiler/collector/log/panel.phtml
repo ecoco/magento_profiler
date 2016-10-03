@@ -7,13 +7,73 @@ $collector = $this->getCollector();
 
 <h2>Log Messages</h2>
 
-<?php if (!$collector->getLogCount()): ?>
+<?php if (!$collector->getLogs()): ?>
     <div class="empty">
         <p>No log messages available.</p>
     </div>
 <?php else: ?>
     <div class="sf-tabs">
-        <?php foreach ($this->getLogGroups() as $groupIndex => $groupData): ?>
+        <?php $showLevel = true;?>
+        <?php $groups = $this->getLogGroups();?>
+        <div class="tab">
+            <h3 class="tab-title">Info. &amp; Errors <span class="badge"><?php echo count($groups['info_and_error']); ?></span></h3>
+
+            <div class="tab-content">
+                <?php if (!$groups['info_and_error']): ?>
+                    <div class="empty">
+                        <p>There are no log messages of this level.</p>
+                    </div>
+                <?php else: ?>
+                    <?php echo $this->renderLogTable($groups['info_and_error'], 'info', true); ?>
+                <?php endif;?>
+            </div>
+        </div>
+
+
+
+        <div class="tab">
+            <h3 class="tab-title">Deprecations <span class="badge"><?php echo $collector->countDeprecations()?></span></h3>
+
+            <div class="tab-content">
+                <?php if (empty($groups['deprecation'])): ?>
+                <div class="empty">
+                    <p>There are no log messages about deprecated features.</p>
+                </div>
+                <?php else: ?>
+                    <?php echo $this->renderLogTable($groups['deprecation'], 'deprecation', false, true); ?>
+                <?php endif;?>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">Debug <span class="badge"><?php echo count($groups['debug'])?></span></h3>
+
+            <div class="tab-content">
+                <?php if (empty($groups['debug'])): ?>
+                <div class="empty">
+                    <p><p>There are no log messages of this level.</p>
+                </div>
+                <?php else: ?>
+                    <?php echo $this->renderLogTable($groups['debug'], 'debug'); ?>
+                <?php endif;?>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">Silenced Errors  <span class="badge"><?php echo $collector->countScreams() ?></span></h3>
+
+            <div class="tab-content">
+                <?php if (empty($groups['silenced'])): ?>
+                <div class="empty">
+                    <p><p>There are no log messages of this level.</p>
+                </div>
+                <?php else: ?>
+                    <?php echo $this->renderLogTable($groups['silenced'], 'silenced'); ?>
+                <?php endif;?>
+            </div>
+        </div>
+
+        <?php /* foreach ($this->getLogGroups() as $groupName => $logs): ?>
             <div class="tab">
                 <h3 class="tab-title">
                     <?php echo $groupData['name'] ?>
@@ -51,6 +111,6 @@ $collector = $this->getCollector();
                     </table>
                 </div>
             </div>
-        <?php endforeach; ?>
+        <?php endforeach; */?>
     </div>
 <?php endif; ?>

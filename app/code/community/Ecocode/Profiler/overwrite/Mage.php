@@ -3,7 +3,7 @@
 $mageRoot      = MAGENTO_ROOT . DIRECTORY_SEPARATOR;
 $mageVarDir    = $mageRoot . 'var' . DIRECTORY_SEPARATOR;
 $mageFile      = $mageRoot . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
-$mageMd5        = md5_file($mageFile);
+$mageMd5       = md5_file($mageFile);
 $mageCacheFile = $mageVarDir . DIRECTORY_SEPARATOR . 'MageDev-' . $mageMd5 . '.php';
 
 if (!file_exists($mageCacheFile)) {
@@ -32,7 +32,46 @@ require_once $mageCacheFile;
 
 class Mage extends MageOriginal
 {
-    protected static $_logs = [];
+    protected static $_logChannels = [];
+
+    protected static $_logger;
+    protected static $_loggerDebugHandler;
+
+    /**
+     * @return Ecocode_Profiler_Model_Logger
+     */
+    public static function getLogger($channel = null)
+    {
+        if ($channel === null) {
+            return static::getDefaultLogger();
+        }
+        if (!isset(static::$_logChannels[$channel])) {
+            static::$_logChannels[$channel] = static::getNewLogger($channel);
+        }
+
+        return static::$_logChannels[$channel];
+    }
+
+    public static function getDefaultLogger()
+    {
+        if (static::$_logger === null) {
+            static::$_logger = static::getNewLogger('default');
+        }
+
+        return static::$_logger;
+    }
+
+    protected static function getNewLogger($channel)
+    {
+        if (static::$_loggerDebugHandler === null) {
+            static::$_loggerDebugHandler = new Ecocode_Profiler_Model_Logger_DebugHandler();
+        }
+
+        return new Ecocode_Profiler_Model_Logger(
+            $channel,
+            [static::$_loggerDebugHandler]
+        );
+    }
 
     public static function terminate()
     {
@@ -41,18 +80,15 @@ class Mage extends MageOriginal
 
     public static function log($message, $level = null, $file = '', $forceLog = false)
     {
-        $level = is_null($level) ? Zend_Log::DEBUG : $level;
-        $file  = empty($file) ? 'system.log' : $file;
+        $level   = is_null($level) ? Zend_Log::DEBUG : $level;
+        $file    = empty($file) ? 'system.log' : $file;
 
-        self::$_logs[] = [$file, $level, $message];
+        $channel = preg_replace('/(\..+)$/', '', $file);
+        static::getLogger($channel)->mageLog($level, $message);
 
         return parent::log($message, $level, $file, $forceLog);
     }
 
-    public static function getLogEntries()
-    {
-        return self::$_logs;
-    }
 
     public static function dispatchDebugEvent($name, array $data = [])
     {

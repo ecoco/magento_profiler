@@ -1,0 +1,130 @@
+<?php
+/** @var Ecocode_Profiler_Block_Renderer_Log_LogTable $this */
+$channelIsDefined = $this->getIsChannelDefined();
+$showLevel        = $this->getShowLevel();
+$isDeprecation    = $this->isDeprecation();
+
+/** @var Ecocode_Profiler_Helper_Code $codeHelper */
+$codeHelper = Mage::helper('ecocode_profiler/code');
+
+/** @var Ecocode_Profiler_Helper_ValueExporter $valueExporter */
+$valueExporter = Mage::helper('ecocode_profiler/valueExporter');
+?>
+<table class="logs" xmlns="http://www.w3.org/1999/html">
+    <thead>
+    <tr>
+        <th><?php echo $showLevel ? 'Level' : 'Time' ?></th>
+        <?php echo $channelIsDefined ? '<th>Channel</th>' : '' ?>
+        <th style="width: 100%">Message</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <?php foreach ($this->getLogs() as $index => $log): ?>
+        <?php
+        $cssClass = '';
+        if (!$isDeprecation) {
+            switch ($log['priorityName']) {
+                case 'CRITICAL':
+                case 'ERROR':
+                case 'ALERT':
+                case 'EMERGENCY':
+                    $cssClass = 'status-error';
+                    break;
+                case 'WARNING':
+                case 'NOTICE':
+                    $cssClass = 'status-warning';
+
+            }
+        }
+        ?>
+        <tr class="<?php echo $cssClass ?>">
+            <td class="font-normal text-small">
+                <?php if ($showLevel): ?>
+                    <span class="colored text-bold nowrap"><?php echo $log['priorityName'] ?></span>
+                <?php endif ?>
+                <span class="text-muted nowrap newline"><?php echo date('H:i:s', $log['timestamp']) ?></span>
+            </td>
+
+            <?php if ($channelIsDefined): ?>
+                <td class="font-normal text-small text-bold nowrap"><?php echo $log['channel'] ?></td>
+            <?php endif; ?>
+
+            <td class="font-normal">
+                <?php echo $log['message']; ?>
+
+                <?php if ($this->isDeprecation()): ?>
+                    <?php $stack = isset($log['context']['stack']) ? $log['context']['stack'] : []; ?>
+                    <?php array_shift($stack); //remove the error handler from stack ?>
+                    <?php $stackId = 'sf-call-stack-' . $this->getCategory() . '-' . $index; ?>
+
+                    <?php if (isset($log['context']['errorCount'])): ?>
+                        <span class="text-small text-bold">(<?php echo $log['context']['errorCount'] ?> times)</span>
+                    <?php endif; ?>
+
+                    <?php if ($stack): ?>
+                        <button class="btn-link text-small sf-toggle" data-toggle-selector="#<?php echo $stackId ?>"
+                                data-toggle-alt-content="Hide stack trace">Show stack trace
+                        </button>
+                    <?php endif; ?>
+
+                    <ul class="sf-call-stack hidden" id="<?php echo $stackId ?>">
+                        <?php foreach ($stack as $index => $call): ?>
+                            <?php
+                            $from = '-';
+                            if (isset($call['class'])) {
+                                $from = $codeHelper->abbrClass($call['class']) . '::' . $codeHelper->abbrMethod($call['function']);
+                            } elseif (isset($call['function'])) {
+                                $from = $codeHelper->abbrMethod($call['function']);
+                            } elseif (isset($call['file'])) {
+                                $from = $call['file'];
+                            }
+
+                            $fileName = null;
+                            if (isset($call['file'], $call['line'])) {
+                                $fileName = str_replace('\\', '/', $call['file']);
+                                $fileName = explode('/', $fileName);
+                                $fileName = end($fileName);
+                            }
+                            ?>
+
+                            <li>
+                                <?php echo $from; ?>
+                                <?php if ($fileName): ?>
+                                    <span
+                                        class="text-small">(called from <?php echo $codeHelper->formatFile($call['file'], $call['line'], $fileName) ?>
+                                        )</span>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <?php if (!empty($log['context'])): ?>
+                        <?php $contextId = 'context-' . $this->getCategory() . '-' . $index; ?>
+                        <?php $contextDump = $valueExporter->exportValue($log['context']); ?>
+
+                        <div class="metadata">
+                            <strong>Context</strong>:
+                            <?php if (strlen($contextDump) > 120): ?>
+                                <?php substr($contextDump, 120); ?> ...
+
+                                <a class="btn-link text-small sf-toggle"
+                                   data-toggle-selector="#<?php echo $contextId ?>"
+                                   data-toggle-alt-content="Hide full context">Show full context</a>
+
+                                <div id="<?php echo $contextId ?>" class="context">
+                                    <pre><?php echo $contextDump ?></pre>
+                                </div>
+                            <?php else: ?>
+                                <?php echo $contextDump ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

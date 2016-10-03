@@ -74,7 +74,7 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
         $start   = microtime(true);
         $profile = new Ecocode_Profiler_Model_Profile(substr(hash('sha256', uniqid(mt_rand(), true)), 0, 6));
         $profile->setTime(time());
-        $profile->setUrl($request->getRequestString());
+        $profile->setUrl($request->getRequestString() ? $request->getRequestString() : '/');
         $profile->setMethod($request->getMethod());
         $profile->setStatusCode($response->getHttpResponseCode());
         $profile->setIp($request->getClientIp());

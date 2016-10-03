@@ -18,7 +18,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
             <span class="sf-toolbar-value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
         </div>
     </a>
-    <div class="sf-toolbar-info" style="left: 0px;">
+    <div class="sf-toolbar-info">
         <div class="sf-toolbar-info-group" style="float: left;">
             <?php foreach ($cacheList as $cache): ?>
                 <?php $currentStatus = $cacheTypes[$cache['id']]->getData('status'); ?>

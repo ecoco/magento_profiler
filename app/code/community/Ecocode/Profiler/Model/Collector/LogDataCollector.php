@@ -133,6 +133,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
     private function computeErrorsCount()
     {
         $count = [
+            'total_log_count'   => count($this->logger->getLogs()),
             'error_count'       => $this->logger->countErrors(),
             'deprecation_count' => 0,
             'scream_count'      => 0,
@@ -165,7 +166,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
 
     public function getLogCount()
     {
-        return count($this->data['logs']);
+        return $this->data['total_log_count'];
     }
 
     /**

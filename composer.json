@@ -11,9 +11,10 @@
     ],
     "require": {
         "php": ">=5.4",
-        "symfony/debug": "^3.1",
+        "symfony/debug": "^3.0",
         "symfony/yaml": "^3.1",
         "jdorn/sql-formatter": "^1.2",
+        "monolog/monolog": "~1.11",
         "magento-hackathon/magento-composer-installer": "^3.0"
     }
 }

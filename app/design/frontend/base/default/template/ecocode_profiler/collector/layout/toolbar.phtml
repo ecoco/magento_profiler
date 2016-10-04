@@ -18,21 +18,31 @@ $token     = $this->getToken();
         </div>
     </a>
     <div class="sf-toolbar-info">
-        <div class="sf-toolbar-info-piece">
-            <b>Render Time</b>
-            <span><?php echo sprintf('%0.0f', $collector->getTotalRenderTime() * 1000)?></span>
+        <div class="sf-toolbar-info-group" >
+            <div class="sf-toolbar-info-piece">
+                <b>Layout handles</b>
+                <?php foreach ($collector->getLayoutHandles() as $handle): ?>
+                        <?php echo $handle ?><br>
+                <?php endforeach; ?>
+            </div>
         </div>
+        <div class="sf-toolbar-info-group" >
+            <div class="sf-toolbar-info-piece">
+                <b>Render Time</b>
+                <span><?php echo sprintf('%0.0f', $collector->getTotalRenderTime() * 1000)?></span>
+            </div>
 
 
-        <div class="sf-toolbar-info-piece">
-            <b>Block created</b>
-            <span class="sf-toolbar-status"><?php echo $collector->getBlocksCreatedCount()?></span>
-        </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Block created</b>
+                <span class="sf-toolbar-status"><?php echo $collector->getBlocksCreatedCount()?></span>
+            </div>
 
 
-        <div class="sf-toolbar-info-piece">
-            <b>Block rendered</b>
-            <span class="sf-toolbar-status"><?php echo $collector->getBlocksRenderedCount()?></span>
+            <div class="sf-toolbar-info-piece">
+                <b>Block rendered</b>
+                <span class="sf-toolbar-status"><?php echo $collector->getBlocksRenderedCount()?></span>
+            </div>
         </div>
     </div>
 </div>

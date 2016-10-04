@@ -54,7 +54,7 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
 
     public function formatQuery($sql, $highlightOnly = false)
     {
-        if (!class_exists('SqlFormatter')) {
+        if (@!class_exists('SqlFormatter')) {
             return 'SqlFormatter is not installed';
         }
         $cacheKey = md5($sql . ($highlightOnly ? '1' : 0));

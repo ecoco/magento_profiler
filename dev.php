@@ -1,8 +1,4 @@
 <?php
-use Symfony\Component\Debug\BufferingLogger;
-use Symfony\Component\Debug\Debug;
-use Symfony\Component\Debug\ErrorHandler;
-
 if ((!isset($_SERVER['ALLOW_PROFILER']) || $_SERVER['ALLOW_PROFILER'] !== '1') && (
         isset($_SERVER['HTTP_CLIENT_IP'])
         || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
@@ -46,6 +42,7 @@ if (file_exists($maintenanceFile)) {
 }
 
 require_once $mageFilename;
+require_once PROFILER_DIR . 'debug.php';
 
 #Varien_Profiler::enable();
 
@@ -63,24 +60,6 @@ $mageRunCode = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : ''
 /* Run store or run website */
 $mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
 
-
-class MagentoErrorHandler extends ErrorHandler
-{
-    public function handleException($exception, array $error = null)
-    {
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-        parent::handleException($exception, $error);
-    }
-}
-
-Debug::enable();
-$errorHandler  = new MagentoErrorHandler(new BufferingLogger());
-$errorHandler->throwAt(-1, true);
-
-ErrorHandler::register($errorHandler);
-$errorHandler->setDefaultLogger(Mage::getLogger());
 
 $options = [
     'cache' => ['id_prefix' => 'dev']

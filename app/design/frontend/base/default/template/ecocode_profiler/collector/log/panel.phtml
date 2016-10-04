@@ -7,7 +7,11 @@ $collector = $this->getCollector();
 
 <h2>Log Messages</h2>
 
-<?php if (!$collector->getLogs()): ?>
+<?php if (Mage::getLogger() === false): ?>
+    <div class="empty status-error">
+        <p>No log messages available as the "monolog/monolog" is not installed please check the composer.json</p>
+    </div>
+<?php elseif (!$collector->getLogs()): ?>
     <div class="empty">
         <p>No log messages available.</p>
     </div>
@@ -28,8 +32,6 @@ $collector = $this->getCollector();
                 <?php endif;?>
             </div>
         </div>
-
-
 
         <div class="tab">
             <h3 class="tab-title">Deprecations <span class="badge"><?php echo $collector->countDeprecations()?></span></h3>

@@ -16,7 +16,7 @@ $originalIncludePath = get_include_path();
 
 $profilerDir = implode(DIRECTORY_SEPARATOR, [MAGENTO_ROOT, 'app', 'code', 'community', 'Ecocode', 'Profiler']);
 $profilerDir .= DIRECTORY_SEPARATOR;
-
+define('PROFILER_DIR', $profilerDir);
 
 $overwriteBasePath = $profilerDir . 'overwrite' . DIRECTORY_SEPARATOR;
 

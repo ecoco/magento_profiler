@@ -28,8 +28,11 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
 
     public function lateCollect()
     {
-        $this->data         = $this->computeErrorsCount();
-        $this->data['logs'] = $this->sanitizeLogs($this->logger->getLogs());
+        $this->data = [];
+        if ($this->logger) {
+            $this->data         = $this->computeErrorsCount();
+            $this->data['logs'] = $this->sanitizeLogs($this->logger->getLogs());
+        }
     }
 
     public function countErrors()
@@ -166,7 +169,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
 
     public function getLogCount()
     {
-        return $this->data['total_log_count'];
+        return isset($this->data['total_log_count']) ? $this->data['total_log_count'] : 0;
     }
 
     /**

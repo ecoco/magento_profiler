@@ -14,12 +14,14 @@ if (file_exists($autoloaderPath = BP . $ds . '../vendor/autoload.php') ||
 $originalIncludePath = get_include_path();
 
 
-$overwriteBasePath = [MAGENTO_ROOT, 'app', 'code', 'community', 'Ecocode', 'Profiler', 'overwrite'];
-$overwriteBasePath = implode(DIRECTORY_SEPARATOR, $overwriteBasePath) . DIRECTORY_SEPARATOR;
+$profilerDir = implode(DIRECTORY_SEPARATOR, [MAGENTO_ROOT, 'app', 'code', 'community', 'Ecocode', 'Profiler']);
+$profilerDir .= DIRECTORY_SEPARATOR;
 
 
-require_once BP . $ds . 'app'.$ds.'code'.$ds.'community'.$ds.'Ecocode'.$ds.'Profiler'.$ds.'functions.php';
-require_once BP . $ds . 'app'.$ds.'code'.$ds.'community'.$ds.'Ecocode'.$ds.'Profiler'.$ds.'functions.php';
+$overwriteBasePath = $profilerDir . 'overwrite' . DIRECTORY_SEPARATOR;
+
+
+require_once $profilerDir . 'functions.php';
 
 require_once $overwriteBasePath . 'Mage.php';
 

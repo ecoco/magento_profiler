@@ -1,10 +1,13 @@
 <?php
+if (!file_exists(PROFILER_OVERWRITE_DIR)) {
+    mkdir(PROFILER_OVERWRITE_DIR, 0777, true);
+}
 
 $mageRoot      = MAGENTO_ROOT . DIRECTORY_SEPARATOR;
-$mageVarDir    = $mageRoot . 'var' . DIRECTORY_SEPARATOR;
+$mageVarDir    = $mageRoot . 'var' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
 $mageFile      = $mageRoot . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
-$mageMd5        = md5_file($mageFile);
-$mageCacheFile = $mageVarDir . DIRECTORY_SEPARATOR . 'MageDev-' . $mageMd5 . '.php';
+$mageMd5       = md5_file($mageFile);
+$mageCacheFile = PROFILER_OVERWRITE_DIR . 'Original_Mage_' . getProfilerVersion() . '-' . $mageMd5 . '.php';
 
 if (!file_exists($mageCacheFile)) {
     $mageCode = file_get_contents($mageFile);

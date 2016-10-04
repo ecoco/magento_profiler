@@ -27,6 +27,10 @@ $statusColor = $collector->countErrors() ? 'red' : ($collector->countDeprecation
 
         <div class="sf-toolbar-info">
             <div class="sf-toolbar-info-piece">
+                <b>All</b>
+                <span class="sf-toolbar-status"><?php echo $logCount ?></span>
+            </div>
+            <div class="sf-toolbar-info-piece">
                 <b>Errors</b>
                 <span
                     class="sf-toolbar-status sf-toolbar-status-<?php echo $collector->countErrors() ? 'red' : '' ?>"><?php echo $collector->countErrors() ?></span>

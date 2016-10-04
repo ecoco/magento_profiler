@@ -27,6 +27,7 @@ Demo Stores:
 
 ## Installation
 
+### Composer (recommended)
 If you have not already configured [magento-composer-installer][1] add
 ```
 "extra": {
@@ -35,7 +36,26 @@ If you have not already configured [magento-composer-installer][1] add
 ```
 to your **composer.json**. If your magento root dir is the same directory as the one containing your **composer.json** use `"."` as the `magento-root-dir`
 
-`composer require-dev ecocode/magento-profiler`
+`composer require --dev ecocode/magento-profiler`
+
+### Manually
+Download the module and copy the **app** folder + "dev.php" into your magento 
+root directory
+
+If you install the module manually, it will miss some functionality until you install
+the dependencies. This is currently only possible via composer as we do need the composer autoloader.
+
+To install the dependencies run the following from your magento root dir or a parent directory:
+```
+composer require --dev symfony/debug 3.1
+composer require --dev symfony/yaml 3.1
+composer require --dev jdorn/sql-formatter 1.2
+composer require --dev monolog/monolog 1.11
+```
+
+### Magento Connect
+In progress
+
 
 ### Webserver Config
 It might be necessary to extend your webserver config to handle "dev.php" correctly
@@ -111,7 +131,7 @@ via your nginx or htaccess
 
 ## TODO
 * Session Data
-* Rewrites
+* Catch url redirects
 * Improve docs
 * "how to extend"
 
@@ -128,6 +148,10 @@ http {
     ...
 }
 ```
+
+## Need help?
+Feel free to contact me jk@ecocode.de
+
 
 ## Thanks to
 * [symfony/debug][2] for the awesome debug component

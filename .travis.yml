@@ -26,6 +26,9 @@ install:
   - ./n98-magerun.phar --version
 
   - composer require satooshi/php-coveralls:~1.0.1@stable
+
+  - export PATH=$PWD:$PATH
+  
 before_script:
   # Clean mysql database
   - mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot

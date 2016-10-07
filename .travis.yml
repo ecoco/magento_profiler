@@ -56,4 +56,4 @@ script:
   - vendor/bin/phpunit -c phpunit-prod.xml.dist && vendor/bin/phpunit -c phpunit-dev.xml.dist --coverage-clover ../logs/clover.xml
 
 after_success:
-  - travis_retry coveralls -v
+  - travis_retry vendor/bin/coveralls -v

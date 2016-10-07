@@ -25,8 +25,6 @@ install:
   - chmod +x n98-magerun.phar
   - ./n98-magerun.phar --version
 
-  - composer require satooshi/php-coveralls:~1.0.1@stable
-
   - export PATH=$PWD:$PATH
 
 before_script:
@@ -58,4 +56,4 @@ script:
   - vendor/bin/phpunit -c phpunit-prod.xml.dist && vendor/bin/phpunit -c phpunit-dev.xml.dist --coverage-clover ../logs/clover.xml
 
 after_success:
-  - travis_retry vendor/bin/coveralls -v
+  - travis_retry coveralls -v

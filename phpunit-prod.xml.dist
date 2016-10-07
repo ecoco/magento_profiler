@@ -15,9 +15,6 @@
             </exclude>
         </whitelist>
     </filter>
-    <logging>
-        <log type="coverage-html" target="./coverage" />
-    </logging>
     <php>
         <ini name="memory_limit" value="2047M"/>
     </php>

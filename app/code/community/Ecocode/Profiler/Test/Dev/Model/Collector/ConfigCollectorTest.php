@@ -33,7 +33,6 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_ConfigCollectorTest
         $this->assertGreaterThan(1, count($collector->getMagentoModules()));
 
         $this->assertGreaterThan(1, count($collector->geModulesByState(true)));
-        $this->assertCount(0, $collector->geModulesByState(false));
 
         $this->assertNotNull($collector->getMagentoVersion());
         $this->assertNotNull($collector->getPhpVersion());

@@ -106,14 +106,28 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
 
 
     /**
-     * @depends testControllerFrontSendResponseBefore
      */
-    public function testOnTerminate($data)
+    public function testOnTerminate()
     {
-        /** @var Ecocode_Profiler_Model_Observer $profiler */
-        $profiler = $data[0];
-        /** @var Ecocode_Profiler_Model_Observer $observer */
-        $observer = $data[1];
+        $observer = $this->getMockBuilder('Ecocode_Profiler_Model_Observer')
+            ->setMethods(['getProfiler'])
+            ->getMock();
+
+        $profilesProperty = new ReflectionProperty('Ecocode_Profiler_Model_Observer', 'profiles');
+        $profilesProperty->setAccessible(true);
+
+        $profile = new Ecocode_Profiler_Model_Profile('token');
+
+        $request = new Mage_Core_Controller_Request_Http();
+        $storage = $profilesProperty->getValue($observer);
+        $storage[$request] = $profile;
+
+
+        $profiler =$this->getMockBuilder('Ecocode_Profiler_Model_Profiler')
+            ->setMethods(['saveProfile'])
+            ->getMock();
+
+        $observer->method('getProfiler')->willReturn($profiler);
 
         $profiler->expects($this->once())
             ->method('saveProfile');

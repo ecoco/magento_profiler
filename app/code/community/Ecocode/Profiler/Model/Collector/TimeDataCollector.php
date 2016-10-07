@@ -30,7 +30,10 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
         return $this->data['total_time'];
     }
 
-
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function getName()
     {
         return 'time';

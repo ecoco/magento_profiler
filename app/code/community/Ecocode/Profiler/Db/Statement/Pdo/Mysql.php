@@ -6,13 +6,9 @@
  */
 class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_Mysql
 {
-    protected $ignoredFunctionCalls = [
-        'Mage_Core_Model_Resource_Db_Abstract::load',
-        'Mage_Eav_Model_Entity_Abstract::load',
-        'Mage_Catalog_Model_Resource_Abstract::load',
-        'Mage_Core_Model_Abstract::load',
-        'Varien_Data_Collection_Db::_fetchAll'
-    ];
+    protected $elapsedTime;
+    protected $params;
+    protected $result;
 
     /**
      * Executes statement with binding values to it.
@@ -24,11 +20,14 @@ class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_My
      */
     public function _executeWithBinding(array $params)
     {
-        $start  = microtime(true);
-        $result = parent::_executeWithBinding($params);
+        $this->params = $params;
+        $start        = microtime(true);
 
-        $this->log($params, microtime(true) - $start, $result);
-        return $result;
+        $this->result = parent::_executeWithBinding($params);
+
+        $this->elapsedTime = microtime(true) - $start;
+        $this->log();
+        return $this->result;
     }
 
     /**
@@ -40,21 +39,28 @@ class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_My
      */
     public function _execute(array $params = null)
     {
-        $start  = microtime(true);
-        $result = parent::_execute($params);
+        $this->params = $params;
+        $start        = microtime(true);
 
-        $this->log($params, microtime(true) - $start, $result);
+        $this->result = parent::_execute($params);
 
+        $this->elapsedTime = microtime(true) - $start;
+        $this->log();
 
-        return $result;
+        return $this->result;
     }
 
-    protected function log(array $params = null, $time, $result)
+    protected function log()
     {
-        $trace = $this->getTrace();
+        $this->getCollector()->logQuery($this);
+    }
 
-        Mage::getSingleton('ecocode_profiler/collector_mysqlDataCollector')
-            ->logQuery($this, $params, $time, $result, $trace);
+    /**
+     * @return Ecocode_Profiler_Model_Collector_MysqlDataCollector
+     */
+    public function getCollector()
+    {
+        return Mage::getSingleton('ecocode_profiler/collector_mysqlDataCollector');
     }
 
     public function getQueryString()
@@ -62,43 +68,27 @@ class Ecocode_Profiler_Db_Statement_Pdo_Mysql extends Varien_Db_Statement_Pdo_My
         return $this->_stmt->queryString;
     }
 
-    protected function getTrace()
+    /**
+     * @return mixed
+     */
+    public function getElapsedTime()
     {
-        if (!function_exists('debug_backtrace')) {
-            return false;
-        }
-        $backtrace = debug_backtrace();
-        //remove log
-
-        while ($this->_shouldRemoveTraceItem(reset($backtrace))) {
-            array_shift($backtrace);
-        }
-        $backtrace = array_slice($backtrace, 0, 10);
-        $backtrace = array_map(function ($item) {
-            unset($item['object'], $item['args'], $item['type']);
-            return $item;
-        }, $backtrace);
-
-        return $backtrace;
+        return $this->elapsedTime;
     }
 
-    protected function _shouldRemoveTraceItem($data)
+    /**
+     * @return mixed
+     */
+    public function getParams()
     {
-        if (!isset($data['class'], $data['function'])) {
-            return true;
-        }
+        return $this->params;
+    }
 
-        if (!isset($data['object'])) {
-            return false;
-        }
-
-        $functionIdent = $data['class'] . '::' . $data['function'];
-        if (in_array($functionIdent, $this->ignoredFunctionCalls)) {
-            return false;
-        }
-
-        $object = $data['object'];
-        return ($object instanceof Zend_Db_Adapter_Abstract
-            || $object instanceof Varien_Db_Statement_Pdo_Mysql);
+    /**
+     * @return mixed
+     */
+    public function getResult()
+    {
+        return $this->result;
     }
 }

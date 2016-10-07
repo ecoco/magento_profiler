@@ -7,6 +7,10 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
 
     protected $callLog = [];
 
+    /**
+     * @codeCoverageIgnore
+     * @return int
+     */
     public function getLoadCallThreshold()
     {
         return static::LOAD_CALL_THRESHOLD;
@@ -98,13 +102,13 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
     public function getTotalTime()
     {
 
-        return $this->data['total_time'];
+        return $this->getData('total_time', 0);
     }
 
     public function getCallLog()
     {
 
-        return $this->data['calls'];
+        return $this->getData('calls', []);
     }
 
 
@@ -143,10 +147,10 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
     protected function track($action, Varien_Object $object, $time = null)
     {
         $className  = get_class($object);
-        $classGroup = Mage::helper('ecocode_profiler')->getClassGroup($className);
-        $trace      = $this->getBacktrace();
+        $classGroup = $this->getHelper()->getClassGroup($className);
+        $trace      = $this->cleanBacktrace($this->getBacktrace(DEBUG_BACKTRACE_IGNORE_ARGS));
 
-        $data = [
+        $data       = [
             'action'      => $action,
             'class'       => $className,
             'class_group' => $classGroup,
@@ -161,13 +165,14 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
         $this->callLog[] = $data;
     }
 
-    protected function getBacktrace()
+    protected function cleanBacktrace(array $backtrace)
     {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        //remove log
-        while ($this->_shouldRemoveTraceItem(reset($backtrace))) {
+        $item = reset($backtrace);
+        while ($item && $this->shouldRemoveBacktrace($item)) {
             array_shift($backtrace);
+            $item = reset($backtrace);
         }
+
         $backtrace = array_map(function ($item) {
             unset($item['object'], $item['args'], $item['type']);
             return $item;
@@ -176,7 +181,8 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
         return $backtrace;
     }
 
-    protected function _shouldRemoveTraceItem($data)
+
+    protected function shouldRemoveBacktrace($data)
     {
         if (!is_array($data)) {
             return false;
@@ -186,18 +192,31 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
             return true;
         }
 
-        if ($data['class'] !== 'Mage_Core_Model_Resource_Db_Abstract' && $data['class'] !== 'Mage_Eav_Model_Entity_Abstract') {
+        if (!in_array($data['class'], ['Mage_Core_Model_Resource_Db_Abstract', 'Mage_Eav_Model_Entity_Abstract'])) {
             return true;
         }
 
-        if ($data['function'] !== 'load' && $data['function'] !== 'save' && $data['function'] !== 'delete') {
+        if (!in_array($data['function'], ['load', 'delete', 'save'])) {
             return true;
         }
 
         return false;
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Helper_Data
+     */
+    protected function getHelper()
+    {
+        return Mage::helper('ecocode_profiler');
+    }
 
+
+    /**
+     * @codeCoverageIgnore
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'model';

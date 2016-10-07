@@ -3,6 +3,8 @@
 class Ecocode_Profiler_Block_Collector_Layout_Panel
     extends Ecocode_Profiler_Block_Collector_Base
 {
+    protected $tree;
+
     private static $colors = [
         'block'    => '#dfd',
         'macro'    => '#ddf',
@@ -10,10 +12,10 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
         'big'      => '#d44',
     ];
 
-    public function renderTree($tree)
+    public function renderTree()
     {
         $html = '';
-        foreach ($tree as $node) {
+        foreach ($this->getCallTree() as $node) {
             $html .= $this->renderNode($node);
         }
 
@@ -52,6 +54,48 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
             }
         }
         return $str;
+    }
+
+
+    public function getCallTree()
+    {
+        if (!$this->tree) {
+            $this->tree = $this->createCallTree();
+        }
+
+        return $this->tree;
+    }
+
+    protected function createCallTree()
+    {
+        $tree            = [];
+        $totalRenderTime = $this->getTotalRenderTime();
+        foreach ($this->data['render_log'] as $id => &$node) {
+            $node['render_time_percent'] = $node['render_time_incl'] / $totalRenderTime;
+        }
+        foreach ($this->data['render_log'] as $id => &$node) {
+            $this->data['render_log'][$id] = $node;
+            if ($node['parent_id'] === false) {
+                $this->resolveChildren($node);
+                $tree[$id] = $node;
+            }
+        }
+
+        return $tree;
+    }
+
+    protected function resolveChildren(&$node)
+    {
+        $children = [];
+        if (isset($node['children'])) {
+            foreach ($node['children'] as $childId) {
+                $child = $this->data['render_log'][$childId];
+
+                $this->resolveChildren($child);
+                $children[$childId] = $child;
+            }
+        }
+        $node['children'] = $children;
     }
 
 

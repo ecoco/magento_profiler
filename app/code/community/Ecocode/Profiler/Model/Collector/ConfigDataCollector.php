@@ -12,7 +12,6 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
         $store   = Mage::app()->getStore();
         $website = Mage::app()->getWebsite();
 
-        $rewriteHelper = Mage::helper('ecocode_profiler/rewrite');
         $this->data    = [
             'store_id'                 => $store->getId(),
             'store_name'               => $store->getName(),
@@ -24,9 +23,6 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
             'token'                    => $this->retrieveToken($response),
             'magento_version'          => Mage::getVersion(),
             'magento_modules'          => $this->collectMagentoModules(),
-            'module_rewrites'          => $rewriteHelper->getRewrites(),
-            'module_rewrite_conflicts' => $rewriteHelper->getRewriteConflicts(),
-            'symfony_state'            => 'unknown',
             'php_version'              => PHP_VERSION,
             'xdebug_enabled'           => extension_loaded('xdebug'),
             'eaccel_enabled'           => extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'),
@@ -55,28 +51,37 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
 
     public function getMagentoVersion()
     {
-        return $this->data['magento_version'];
+        return $this->getData('magento_version');
     }
 
+    public function getStoreId()
+    {
+        return $this->getData('store_id');
+    }
 
     public function getStoreName()
     {
-        return $this->data['store_name'];
+        return $this->getData('store_name');
     }
 
     public function getStoreCode()
     {
-        return $this->data['store_code'];
+        return $this->getData('store_code');
+    }
+
+    public function getWebsiteId()
+    {
+        return $this->getData('website_id');
     }
 
     public function getWebsiteName()
     {
-        return $this->data['website_name'];
+        return $this->getData('website_name');
     }
 
     public function getWebsiteCode()
     {
-        return $this->data['website_code'];
+        return $this->getData('website_code');
     }
 
     /**
@@ -86,7 +91,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function getToken()
     {
-        return $this->data['token'];
+        return $this->getData('token');
     }
 
     /**
@@ -96,7 +101,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function getPhpVersion()
     {
-        return $this->data['php_version'];
+        return $this->getData('php_version');
     }
 
     /**
@@ -106,12 +111,12 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function isDeveloperMode()
     {
-        return $this->data['developer_mode'];
+        return $this->getData('developer_mode');
     }
 
     public function getMagentoModules()
     {
-        return $this->data['magento_modules'];
+        return $this->getData('magento_modules', []);
     }
 
     /**
@@ -132,7 +137,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasXDebug()
     {
-        return $this->data['xdebug_enabled'];
+        return $this->getData('xdebug_enabled');
     }
 
     /**
@@ -142,7 +147,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasEAccelerator()
     {
-        return $this->data['eaccel_enabled'];
+        return $this->getData('eaccel_enabled');
     }
 
     /**
@@ -152,7 +157,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasApc()
     {
-        return $this->data['apc_enabled'];
+        return $this->getData('apc_enabled');
     }
 
     /**
@@ -162,7 +167,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasZendOpcache()
     {
-        return $this->data['zend_opcache_enabled'];
+        return $this->getData('zend_opcache_enabled');
     }
 
     /**
@@ -172,7 +177,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasXCache()
     {
-        return $this->data['xcache_enabled'];
+        return $this->getData('xcache_enabled');
     }
 
     /**
@@ -182,7 +187,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function hasWinCache()
     {
-        return $this->data['wincache_enabled'];
+        return $this->getData('wincache_enabled');
     }
 
     /**
@@ -202,7 +207,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
      */
     public function getSapiName()
     {
-        return $this->data['sapi_name'];
+        return $this->getData('sapi_name');
     }
 
     public function retrieveToken(Mage_Core_Controller_Response_Http $response)
@@ -217,6 +222,10 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
         return $token;
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function getName()
     {
         return 'config';

@@ -5,12 +5,23 @@ loadRenamedClass('core/Mage/Eav/Model/Entity/Abstract.php', 'Original_Mage_Eav_M
 abstract class Mage_Eav_Model_Entity_Abstract extends
     Original_Mage_Eav_Model_Entity_Abstract
 {
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param       $event
+     * @param array $data
+     */
+    protected function dispatch($event, array $data = [])
+    {
+        Mage::dispatchDebugEvent($event, $data);
+    }
+
     public function load($object, $entityId, $attributes = [])
     {
         $start  = microtime(true);
         $result = parent::load($object, $entityId, $attributes);
 
-        Mage::dispatchDebugEvent('model_resource_db_load', [
+        $this->dispatch('model_resource_db_load', [
             'object' => $object,
             'time'   => microtime(true) - $start
         ]);
@@ -28,7 +39,7 @@ abstract class Mage_Eav_Model_Entity_Abstract extends
 
         if (!$object->isDeleted()) {
             //is captured separately
-            Mage::dispatchDebugEvent('model_resource_db_save', [
+            $this->dispatch('model_resource_db_save', [
                 'object' => $object,
                 'time'   => microtime(true) - $start
             ]);
@@ -48,13 +59,11 @@ abstract class Mage_Eav_Model_Entity_Abstract extends
         $start  = microtime(true);
         $result = parent::delete($object);
 
-        if (!$object->isDeleted()) {
-            //is captured separately
-            Mage::dispatchDebugEvent('model_resource_db_delete', [
-                'object' => $object,
-                'time'   => microtime(true) - $start
-            ]);
-        }
+        //is captured separately
+        $this->dispatch('model_resource_db_delete', [
+            'object' => $object,
+            'time'   => microtime(true) - $start
+        ]);
 
         return $result;
     }

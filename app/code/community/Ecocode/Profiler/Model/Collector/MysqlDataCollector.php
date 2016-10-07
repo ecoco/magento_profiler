@@ -3,14 +3,27 @@
 class Ecocode_Profiler_Model_Collector_MysqlDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {
-    protected $blockPanelName = 'ecocode_profiler/collector_mysql_panel';
+    const BACKTRACE_LIMIT = 10;
 
-    protected $_currentBlock;
+    protected $ignoredFunctionCalls = [
+        'Mage_Core_Model_Resource_Db_Abstract::load',
+        'Mage_Eav_Model_Entity_Abstract::load',
+        'Mage_Catalog_Model_Resource_Abstract::load',
+        'Mage_Core_Model_Abstract::load',
+        'Varien_Data_Collection_Db::_fetchAll'
+    ];
+
+    protected $ignoreInstanceOf = [
+        'Ecocode_Profiler_Model_Collector_MysqlDataCollector',
+        'Zend_Db_Statement',
+        'Zend_Db_Adapter_Abstract',
+        'Varien_Db_Statement_Pdo_Mysql'
+    ];
 
     protected $rawQueries     = [];
     protected $totalQueryTime = 0;
 
-    public function logQuery(Ecocode_Profiler_Db_Statement_Pdo_Mysql $statement, array $params = [], $time, $result, $trace = [])
+    public function logQuery(Ecocode_Profiler_Db_Statement_Pdo_Mysql $statement)
     {
         $connectionName   = 'unknown';
         $connectionConfig = $statement->getAdapter()->getConfig();
@@ -18,33 +31,36 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
             $connectionName = $connectionConfig['connection_name'];
         }
 
-        $this->totalQueryTime += $time;
+        $this->totalQueryTime += $statement->getElapsedTime();
         $this->rawQueries[] = [
             'sql'        => $statement->getQueryString(),
             'connection' => $connectionName,
             'statement'  => $statement,
-            'time'       => $time,
-            'params'     => $params,
-            'result'     => $result,
+            'time'       => $statement->getElapsedTime(),
+            'params'     => $statement->getParams(),
+            'result'     => $statement->getResult(),
             'context'    => $this->getContextId(),
-            'trace'      => $trace
+            'trace'      => $this->getTrace()
         ];
     }
 
 
     /**
-     * {@inheritdoc}
+     * @param Mage_Core_Controller_Request_Http  $request
+     * @param Mage_Core_Controller_Response_Http $response
+     * @param Exception|null                     $exception
+     *
+     * @return void
      */
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
         $this->data['nb_queries'] = count($this->rawQueries);
         $this->data['total_time'] = $this->totalQueryTime;
 
-        $queries = [];
+        $queries     = [];
         $connections = [];
 
         foreach ($this->rawQueries as $query) {
-            //@TODO add detection of type insert, delete etc
             unset($query['statement']);
             $connection = $query['connection'];
             if (!isset($connections[$connection])) {
@@ -54,7 +70,7 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
             $connections[$connection]++;
             $queries[] = $query;
         }
-        $this->data['queries'] = $queries;
+        $this->data['queries']          = $queries;
         $this->data['used_connections'] = $connections;
         $this->data;
     }
@@ -64,7 +80,8 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
         return $this->data['queries'];
     }
 
-    public function getConnectionData() {
+    public function getConnectionData()
+    {
         return $this->data['used_connections'];
     }
 
@@ -77,6 +94,36 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
     public function getQueryCount()
     {
         return $this->data['nb_queries'];
+    }
+
+
+    protected function getTrace()
+    {
+        $backtrace = $this->getBacktrace();
+        if ($backtrace === false) {
+            return [];
+        }
+
+        $backtrace = $this->cleanBacktrace($backtrace);
+
+        $backtrace = array_slice($backtrace, 0, self::BACKTRACE_LIMIT);
+        $backtrace = array_map(function ($item) {
+            unset($item['object'], $item['args'], $item['type']);
+            return $item;
+        }, $backtrace);
+
+        return $backtrace;
+    }
+
+    public function cleanBacktrace(array $backtrace)
+    {
+        return Mage::helper('ecocode_profiler')
+            ->cleanBacktrace(
+                $backtrace,
+                $this->ignoredFunctionCalls,
+                $this->ignoreInstanceOf
+
+            );
     }
 
     /**

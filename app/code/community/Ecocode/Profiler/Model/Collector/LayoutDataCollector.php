@@ -6,7 +6,6 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
     protected $renderLog      = [];
     protected $renderedBlocks = [];
     protected $currentBlock;
-    protected $tree;
 
     public function beforeToHtml(Varien_Event_Observer $observer)
     {
@@ -70,7 +69,7 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         $outputProperties = new ReflectionProperty('Mage_Core_Model_Layout', '_output');
         $outputProperties->setAccessible(true);
 
-        $layout       = Mage::app()->getLayout();
+        $layout       = $this->getLayout();
         $outputBlocks = [];
         foreach ($outputProperties->getValue($layout) as $name => $data) {
             $block          = $layout->getBlock($name);
@@ -126,67 +125,42 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
     public function getTotalRenderTime()
     {
-        return $this->data['render_time'];
+        return $this->getData('render_time', 0);
     }
+
     public function getBlocksNotRendered()
     {
-        return $this->data['blocks_not_rendered'];
+        return $this->getData('blocks_not_rendered', []);
     }
 
     public function getLayoutHandles()
     {
-        return $this->data['handles'];
+        return $this->getData('handles', []);
     }
 
     public function getBlocksCreatedCount()
     {
-        return $this->data['blocks_created_count'];
+        return $this->getData('blocks_created_count', []);
     }
 
     public function getBlocksRenderedCount()
     {
-        return $this->data['blocks_rendered_count'];
+        return $this->getData('blocks_rendered_count', 0);
     }
 
-    public function getCallTree()
+    /**
+     * @codeCoverageIgnore
+     * @return Mage_Core_Model_Layout
+     */
+    public function getLayout()
     {
-        if (!$this->tree) {
-            $this->tree = $this->createCallTree();
-        }
-        return $this->tree;
+        return Mage::app()->getLayout();
     }
 
-    protected function createCallTree()
-    {
-        $tree      = [];
-        $totalRenderTime = $this->getTotalRenderTime();
-        foreach($this->data['render_log'] as $id => &$node) {
-            $node['render_time_percent'] = $node['render_time_incl'] / $totalRenderTime;
-        }
-        foreach($this->data['render_log'] as $id => &$node) {
-            $this->data['render_log'][$id] = $node;
-            if ($node['parent_id'] === false) {
-                $this->resolveChildren($node);
-                $tree[$id] = $node;
-            }
-        }
-
-        return $tree;
-    }
-
-    protected function resolveChildren(&$node) {
-        $children = [];
-        if (isset($node['children'])) {
-            foreach($node['children'] as $childId) {
-                $child = $this->data['render_log'][$childId];
-
-                $this->resolveChildren($child);
-                $children[$childId] = $child;
-            }
-        }
-        $node['children'] = $children;
-    }
-
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function getName()
     {
         return 'layout';

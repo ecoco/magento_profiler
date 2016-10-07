@@ -11,12 +11,13 @@ class Ecocode_Profiler_Model_Collector_ContextDataCollector
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
         $this->data = ['list' => []];
+
         return $this;
     }
 
     public function lateCollect()
     {
-        $this->data = ['list' => Mage::helper('ecocode_profiler/context')->getList()];
+        $this->data = ['list' => $this->getContextHelper()->getList()];
     }
 
     public function getById($id)
@@ -30,7 +31,7 @@ class Ecocode_Profiler_Model_Collector_ContextDataCollector
 
     public function getList()
     {
-        return $this->data['list'];
+        return $this->getData('list', []);
     }
 
     public function getName()

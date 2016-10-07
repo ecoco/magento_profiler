@@ -6,7 +6,7 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Ecocode_Profiler_Helper_Code extends Mage_Core_Helper_Abstract
+class Ecocode_Profiler_Helper_Code
 {
     private $fileLinkFormat;
     private $rootDir;
@@ -14,13 +14,15 @@ class Ecocode_Profiler_Helper_Code extends Mage_Core_Helper_Abstract
 
     /**
      * Constructor.
-     *
+     * @param null        $format
+     * @param null        $rootDir
+     * @param null|string $charset
      */
-    public function __construct()
+    public function __construct($format = null, $rootDir = null, $charset = 'UTF-8')
     {
-        $this->fileLinkFormat = ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
-        $this->rootDir        = str_replace('/', DIRECTORY_SEPARATOR, dirname(Mage::getRoot())) . DIRECTORY_SEPARATOR;
-        $this->charset        = 'UTF-8';
+        $this->fileLinkFormat = $format ? $format : ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
+        $this->rootDir        = $rootDir ? $rootDir : str_replace('/', DIRECTORY_SEPARATOR, dirname(Mage::getRoot())) . DIRECTORY_SEPARATOR;
+        $this->charset        = $charset;
     }
 
     public function abbrClass($class)
@@ -174,14 +176,6 @@ class Ecocode_Profiler_Helper_Code extends Mage_Core_Helper_Abstract
         return preg_replace_callback('/in ("|&quot;)?(.+?)\1(?: +(?:on|at))? +line (\d+)/s', function ($match) {
             return 'in ' . $this->formatFile($match[2], $match[3]);
         }, $text);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'code';
     }
 
     protected static function fixCodeMarkup($line)

@@ -2,6 +2,9 @@
 /** @var Ecocode_Profiler_Model_Collector_ModelDataCollector $collector */
 $collector  = $this->getCollector();
 $operations = ['save', 'delete', 'load'];
+
+/** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
+$rendererHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
 
 
@@ -68,7 +71,7 @@ $operations = ['save', 'delete', 'load'];
                                 <?php endif; ?>
                             </div>
                             <?php if (isset($log['trace'])): ?>
-                                <?php echo Mage::helper('ecocode_profiler')->renderBackTrace($prefix . $index, $log['trace']) ?>
+                                <?php echo $rendererHelper->renderBackTrace($prefix . $index, $log['trace']) ?>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -122,7 +125,7 @@ $operations = ['save', 'delete', 'load'];
                                     <?php endif; ?>
                                 </div>
                                 <?php if (isset($log['trace'])): ?>
-                                    <?php echo Mage::helper('ecocode_profiler')->renderBackTrace($prefix . $index, $log['trace']) ?>
+                                    <?php echo $rendererHelper->renderBackTrace($prefix . $index, $log['trace']) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

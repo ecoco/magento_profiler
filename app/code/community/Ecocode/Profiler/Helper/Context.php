@@ -1,6 +1,7 @@
 <?php
 
 class Ecocode_Profiler_Helper_Context
+    extends Ecocode_Profiler_Helper_AbstractHelper
 {
     protected $stack = [];
 
@@ -13,9 +14,14 @@ class Ecocode_Profiler_Helper_Context
         $this->open(new Ecocode_Profiler_Model_Context('unknown'));
     }
 
+    /**
+     * open a new context
+     *
+     * @param Ecocode_Profiler_Model_ContextInterface $context
+     */
     public function open(Ecocode_Profiler_Model_ContextInterface $context)
     {
-        $id       = $context->getId();
+        $id = $context->getId();
         if ($current = $this->getCurrent()) {
             $context->setParentId($current->getId());
         }
@@ -24,13 +30,22 @@ class Ecocode_Profiler_Helper_Context
         $this->stack[$id] = $context;
     }
 
+    /**
+     * close a previously opened context
+     *
+     * @param Ecocode_Profiler_Model_ContextInterface $context
+     * @return $this
+     * @throws Exception
+     */
     public function close(Ecocode_Profiler_Model_ContextInterface $context)
     {
         $id = $context->getId();
         if (!isset($this->stack[$id])) {
-            throw new Exception('suxxs');
+            throw new \RuntimeException('unable to close unknown context');
         }
         unset($this->stack[$id]);
+
+        return $this;
     }
 
     public function getList()
@@ -62,20 +77,19 @@ class Ecocode_Profiler_Helper_Context
     {
         $context = $this->getContextById($contextId);
         return $this->getContextRenderer()
-            ->setData(['prefix' => $prefix, 'context' => $context])
-            ->toHtml();
+            ->render(['prefix' => $prefix, 'context' => $context]);
     }
 
     public function getContextById($id)
     {
-        $profile = Mage::registry('current_profile');
+        $profile = $this->getCurrentProfile();
         return $profile->getCollector('context')->getById($id);
     }
 
 
-
     /**
-     * @return Ecocode_Profiler_Block_BackTrace
+     * @return Ecocode_Profiler_Block_Renderer_Context
+     * @codeCoverageIgnore
      */
     public function getContextRenderer()
     {

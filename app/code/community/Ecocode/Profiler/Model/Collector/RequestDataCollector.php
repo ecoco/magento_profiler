@@ -80,6 +80,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
 
         $sessionMetadata   = [];
         $sessionAttributes = [];
+        //@TODO get all magento session singletons to split them by namespace
         $session           = null;
         $flashes           = [];
 
@@ -94,28 +95,22 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
                     }
                 }*/
 
-        $statusCode = $response->getHttpResponseCode();
-        if (isset($responseHeaders['Status'])) {
-            preg_match('/^[0-9]{3}/', $responseHeaders['Status'], $matches);
-            if ($matches) {
-                $statusCode = (int)reset($matches);
-            }
-        }
+        $statusCode = $this->detectStatusCode($response);
         $statusText = isset(self::$statusTexts[$statusCode]) ? self::$statusTexts[$statusCode] : '';
 
 
-        $contentType = isset($responseHeaders['content-type']) ? $responseHeaders['content-type'] : 'text/html';
+        $contentType = isset($responseHeaders['Content-Type']) ? $responseHeaders['Content-Type'] : 'text/html';
         $this->data  = [
             'method'             => $request->getMethod(),
             'content'            => $requestContent,
             'content_type'       => $contentType,
             'status_text'        => $statusText,
             'status_code'        => $statusCode,
-            'request_query'      => $this->collectRequestQuery(),
-            'request_request'    => $this->collectRequestData(),
+            'request_query'      => $this->collectRequestQuery($request),
+            'request_request'    => $this->collectRequestData($request),
             'request_headers'    => $requestHeaders,
-            'request_server'     => $_SERVER,
-            'request_cookies'    => Mage::getSingleton('core/cookie')->get(),
+            'request_server'     => $request->getServer(),
+            'request_cookies'    => $request->getCookie(),
             'request_attributes' => $requestAttributes,
             'response_headers'   => $responseHeaders,
             'session_metadata'   => $sessionMetadata,
@@ -126,17 +121,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             //'locale'             => $request->getLocale(),
         ];
 
-        if (isset($this->data['request_headers']['php-auth-pw'])) {
-            $this->data['request_headers']['php-auth-pw'] = '******';
-        }
-
-        if (isset($this->data['request_server']['PHP_AUTH_PW'])) {
-            $this->data['request_server']['PHP_AUTH_PW'] = '******';
-        }
-
-        if (isset($this->data['request_request']['_password'])) {
-            $this->data['request_request']['_password'] = '******';
-        }
+        $this->hideAuthData();
 
         $controllerData = $this->collectControllerData();
         if ($controllerData) {
@@ -159,6 +144,21 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
                 ]);
             }
         }*/
+    }
+
+    protected function hideAuthData()
+    {
+        if (isset($this->data['request_headers']['php-auth-pw'])) {
+            $this->data['request_headers']['php-auth-pw'] = '******';
+        }
+
+        if (isset($this->data['request_server']['PHP_AUTH_PW'])) {
+            $this->data['request_server']['PHP_AUTH_PW'] = '******';
+        }
+
+        if (isset($this->data['request_request']['_password'])) {
+            $this->data['request_request']['_password'] = '******';
+        }
     }
 
     public function getMethod()
@@ -254,8 +254,6 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
     /**
      * Gets the route name.
      *
-     * The _route request attributes is automatically set by the Router Matcher.
-     *
      * @return string The route
      */
     public function getRoute()
@@ -263,21 +261,49 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         return isset($this->data['request_attributes']['_route']) ? $this->data['request_attributes']['_route'] : '';
     }
 
+    /**
+     * @return string
+     */
+    public function getRequestUri()
+    {
+        return isset($this->data['request_attributes']['request_uri']) ? $this->data['request_attributes']['request_uri'] : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestString()
+    {
+        return isset($this->data['request_attributes']['request_string']) ? $this->data['request_attributes']['request_string'] : '';
+    }
+
+    /**
+     * @return string
+     */
     public function getRouteName()
     {
         return isset($this->data['request_attributes']['_route_name']) ? $this->data['request_attributes']['_route_name'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getModuleName()
     {
         return isset($this->data['request_attributes']['_module']) ? $this->data['request_attributes']['_module'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getControllerName()
     {
         return isset($this->data['request_attributes']['_controller']) ? $this->data['request_attributes']['_controller'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getActionName()
     {
         return isset($this->data['request_attributes']['_action']) ? $this->data['request_attributes']['_action'] : '';
@@ -285,8 +311,6 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
 
     /**
      * Gets the route parameters.
-     *
-     * The _route_params request attributes is automatically set by the RouterListener.
      *
      * @return array The parameters
      */
@@ -320,6 +344,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function getName()
     {
@@ -349,9 +374,25 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         return (string)$controller ?: 'n/a';
     }
 
+    protected function detectStatusCode(Mage_Core_Controller_Response_Http $response)
+    {
+        $statusCode = $response->getHttpResponseCode();
+        foreach ($response->getHeaders() as $header) {
+            if (substr($header['name'], 0, 5) === 'Http/') {
+                preg_match('/^[0-9]{3}/', $header['value'], $matches);
+                if ($matches) {
+                    $statusCode = (int)reset($matches);
+                }
+
+                break;
+            }
+        }
+        return $statusCode;
+    }
 
     protected function collectRequestAttributes(Mage_Core_Controller_Request_Http $request)
     {
+        //we need to use a reflection as Request->getParams() takes also get parameters into account
         $class = new ReflectionClass('Mage_Core_Controller_Request_Http');
         /** @var ReflectionProperty $property */
         $property = $class->getProperty('_params');
@@ -377,9 +418,6 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             $attributes['_route_params'] = $routeParams;
         }
 
-        $attributes['request_string'] = $request->getRequestString();
-        $attributes['request_uri']    = $request->getRequestUri();
-
 
         return $attributes;
     }
@@ -387,7 +425,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
     public function collectRequestHeaders(Mage_Core_Controller_Request_Http $request)
     {
         $headers = [];
-        foreach ($_SERVER as $key => $value) {
+        foreach ($request->getServer() as $key => $value) {
             if (substr($key, 0, 5) !== 'HTTP_') {
                 continue;
             }
@@ -397,27 +435,28 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         return $headers;
     }
 
-    public function collectRequestQuery()
+    public function collectRequestQuery(Mage_Core_Controller_Request_Http $request)
     {
-        $postData = [];
-        if (isset($_GET) && is_array($_GET)) {
-            $postData = $_GET;
+        $getData = $request->getQuery();
+        if ($getData === null) {
+            $getData = [];
         }
-        return $postData;
+        return $getData;
     }
 
 
-    public function collectRequestData()
+    public function collectRequestData(Mage_Core_Controller_Request_Http $request)
     {
-        $postData = [];
-        if (isset($_POST) && is_array($_POST)) {
-            $postData = $_POST;
+        $postData = $request->getPost();
+        if ($postData === null) {
+            $postData = [];
         }
         return $postData;
     }
 
     protected function collectControllerData()
     {
+        //use reflection to make sure we not init a front controller
         $class = new ReflectionClass('Mage_Core_Model_App');
         /** @var ReflectionProperty $property */
         $property = $class->getProperty('_frontController');

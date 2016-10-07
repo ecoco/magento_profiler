@@ -1,0 +1,26 @@
+<phpunit
+        bootstrap="app/code/community/Ecocode/Profiler/Test/Dev/bootstrap.php"
+        colors="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="Ecocode Magento Profiler">
+            <directory suffix="Test.php">app/code/community/Ecocode/Profiler/Test/Dev</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">app/code/community/Ecocode/Profiler</directory>
+            <exclude>
+                <directory suffix=".php">app/code/community/Ecocode/Profiler/Test</directory>
+                <file>app/code/community/Ecocode/Profiler/functions.php</file>
+                <file>app/code/community/Ecocode/Profiler/debug.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./coverage" />
+    </logging>
+    <php>
+        <ini name="memory_limit" value="2047M"/>
+    </php>
+</phpunit>

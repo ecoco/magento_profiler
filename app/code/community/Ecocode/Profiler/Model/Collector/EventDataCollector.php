@@ -11,22 +11,17 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
     {
         $this->data = [
             'called_listeners'  => [],
-            'fired_events'      => [],
-            'fired_event_count' => 0
+            'fired_events'      => []
         ];
     }
 
     public function lateCollect()
     {
-        $app = Mage::app();
-        if (!$app instanceof Ecocode_Profiler_Model_AppDev) {
-            return;
-        }
+        $app = $this->getApp();
 
         $this->data = [
             'called_listeners'  => $this->collectedCalledListeners($app),
-            'fired_events'      => $this->collectEvents($app),
-            'fired_event_count' => $app->getFiredEventCount()
+            'fired_events'      => $this->collectEvents($app)
         ];
     }
 
@@ -71,14 +66,27 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
 
     public function getCalledListeners()
     {
-        return $this->data['called_listeners'];
+        return $this->getData('called_listeners', []);
     }
 
     public function getFiredEvents()
     {
-        return $this->data['fired_events'];
+        return $this->getData('fired_events', []);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return Mage_Core_Model_App
+     */
+    public function getApp()
+    {
+        return Mage::app();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function getName()
     {
         return 'event';

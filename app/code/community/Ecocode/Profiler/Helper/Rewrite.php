@@ -6,7 +6,7 @@
  * taken from the awesome b98-magerun:
  * https://github.com/netz98/n98-magerun/blob/master/src/N98/Magento/Command/Developer/Module/Rewrite/ConflictsCommand.php#L49-L55
  */
-class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
+class Ecocode_Profiler_Helper_Rewrite
 {
     protected $_rewrites     = null;
     protected $_rewriteTypes = [
@@ -15,20 +15,49 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
         'models',
     ];
 
+    /**
+     * @codeCoverageIgnore
+     * @return SimpleXMLElement
+     */
+    public function getModules()
+    {
+        return Mage::getConfig()->getNode('modules')->children();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param $moduleName
+     * @param $file
+     * @return bool|SimpleXMLElement
+     */
+    public function getModuleConfigXml($moduleName, $file)
+    {
+        $file = Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . $file;
+        if (!is_readable($file)) {
+            return false;
+        }
+
+        $xml = \simplexml_load_file($file);
+        if (!$xml) {
+            return false;
+        }
+
+        return $xml;
+    }
 
     /**
      * Return all rewrites
      *
      * @return array
      */
-    public function getRewrites()
+    public function loadRewrites()
     {
         if ($this->_rewrites === null) {
-            $files      = ['config.xml', 'development.xml'];
+            $files     = ['config.xml', 'development.xml'];
             $prototype = $this->_rewriteTypes;
             $return    = array_combine($prototype, array_fill(0, count($prototype), []));
             // Load config of each module because modules can overwrite config each other. Global config is already merged
-            $modules = \Mage::getConfig()->getNode('modules')->children();
+            $modules = $this->getModules();
             foreach ($modules as $moduleName => $moduleData) {
                 // Check only active modules
                 if (!$moduleData->is('active')) {
@@ -36,12 +65,7 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
                 }
                 // Load config of module
                 foreach ($files as $file) {
-
-                    $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . $file;
-                    if (!is_readable($configXmlFile)) {
-                        continue;
-                    }
-                    $xml = \simplexml_load_file($configXmlFile);
+                    $xml = $this->getModuleConfigXml($moduleName, $file);
                     if (!$xml) {
                         continue;
                     }
@@ -63,13 +87,14 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
             }
             $this->_rewrites = $return;
         }
+
         return $this->_rewrites;
     }
 
     public function getRewriteConflicts()
     {
         $conflicts = [];
-        $rewrites  = $this->getRewrites();
+        $rewrites  = $this->loadRewrites();
         foreach ($rewrites as $type => $data) {
             if (!is_array($data)) {
                 continue;
@@ -132,10 +157,7 @@ class Ecocode_Profiler_Helper_Rewrite extends Mage_Core_Helper_Abstract
                 return Mage::getConfig()->getBlockClassName($class);
             case 'helpers':
                 return Mage::getConfig()->getHelperClassName($class);
-            case 'models': // fall-through intended
-            default:
-                /** @noinspection PhpParamsInspection */
-                return Mage::getConfig()->getModelClassName($class);
         }
+        return Mage::getConfig()->getModelClassName($class);
     }
 }

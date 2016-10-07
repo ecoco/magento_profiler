@@ -127,47 +127,6 @@ class Ecocode_Profiler_Model_Http_ResponseHeaderBag
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function hasCacheControlDirective($key)
-    {
-        return array_key_exists($key, $this->computedCacheControl);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCacheControlDirective($key)
-    {
-        return array_key_exists($key, $this->computedCacheControl) ? $this->computedCacheControl[$key] : null;
-    }
-
-
-    /**
-     * Removes a cookie from the array, but does not unset it in the browser.
-     *
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     */
-    public function removeCookie($name, $path = '/', $domain = null)
-    {
-        if (null === $path) {
-            $path = '/';
-        }
-
-        unset($this->cookies[$domain][$path][$name]);
-
-        if (empty($this->cookies[$domain][$path])) {
-            unset($this->cookies[$domain][$path]);
-
-            if (empty($this->cookies[$domain])) {
-                unset($this->cookies[$domain]);
-            }
-        }
-    }
-
-    /**
      * Returns an array with all cookies.
      *
      * @param string $format

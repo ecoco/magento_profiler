@@ -1,6 +1,6 @@
 <?php
 
-class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
+class Ecocode_Profiler_Model_Profiler
 {
     protected $storage;
 
@@ -8,7 +8,14 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
     protected $initialized    = false;
     protected $dataCollectors = null;
 
-    const URL_TOKEN_PARAMETER   = 'eco_token';
+    const URL_TOKEN_PARAMETER = 'eco_token';
+
+    public function __construct($storage = null)
+    {
+        if ($this->storage) {
+            $this->storage = $storage;
+        }
+    }
 
     public function init()
     {
@@ -43,8 +50,9 @@ class Ecocode_Profiler_Model_Profiler extends Mage_Core_Model_Abstract
     public function getDataCollectors()
     {
         if ($this->dataCollectors === null) {
-            $contextCollector                                   = Mage::getSingleton('ecocode_profiler/collector_contextDataCollector');
-            $this->dataCollectors                               = [];
+            $contextCollector     = Mage::getSingleton('ecocode_profiler/collector_contextDataCollector');
+            $this->dataCollectors = [];
+
             $this->dataCollectors[$contextCollector->getName()] = $contextCollector;
 
             $collectors = Mage::getConfig()->getNode('ecocode/profiler/collectors')->asArray();

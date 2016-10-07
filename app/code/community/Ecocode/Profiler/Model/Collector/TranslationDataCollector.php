@@ -5,8 +5,6 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
 {
     protected $_currentBlock;
 
-    protected $translations = [];
-
     protected $stateCounts = [
         'translated' => 0,
         'missing'    => 0,
@@ -15,37 +13,12 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
     ];
 
     /**
-     * @param       $locale
-     * @param       $code
-     * @param       $text
-     * @param       $translation
-     * @param       $state
-     * @param array $parameters
-     * @param null  $module
+     * @return Mage_Core_Model_Translate
      */
-    public function logTranslation(
-        $locale,
-        $code,
-        $text,
-        $translation,
-        $state,
-        $parameters = [],
-        $module = null,
-        $trace = []
-    )
+    protected function getTranslator()
     {
-        $this->translations[] = [
-            'locale'      => $locale,
-            'code'        => $code,
-            'text'        => $text,
-            'translation' => $translation,
-            'state'       => $state,
-            'parameters'  => $parameters,
-            'module'      => $module,
-            'trace'       => $trace,
-        ];
+        return Mage::getSingleton('core/translate');
     }
-
 
     /**
      * {@inheritdoc}
@@ -56,7 +29,7 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
         $this->data['state_counts'] = $this->stateCounts;
         $translations               = [];
 
-        foreach ($this->translations as $translation) {
+        foreach ($this->getTranslator()->getMessages() as $translation) {
             $translationId = $translation['code'];
             if (!isset($translations[$translationId])) {
                 $translation['count']         = 1;
@@ -81,12 +54,12 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
 
     public function getTranslations()
     {
-        return $this->data['translations'];
+        return $this->getData('translations', []);
     }
 
     public function getTranslationCount()
     {
-        return $this->data['translation_count'];
+        return $this->getData('translation_count', 0);
     }
 
     public function getStateCount($status = null)
@@ -106,6 +79,7 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function getName()
     {

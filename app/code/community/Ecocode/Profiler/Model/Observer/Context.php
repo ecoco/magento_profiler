@@ -42,6 +42,7 @@ class Ecocode_Profiler_Model_Observer_Context
     }
 
     /**
+     * @codeCoverageIgnore
      * @return Ecocode_Profiler_Helper_Context
      */
     public function getHelper()

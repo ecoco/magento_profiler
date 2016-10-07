@@ -1,6 +1,9 @@
 <?php
 $prefix        = $this->getData('prefix');
 $contextHelper = Mage::helper('ecocode_profiler/context');
+
+/** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
+$rendererHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
 <table class="alt queries-table">
     <thead>
@@ -51,7 +54,7 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
                 </div>
 
                 <?php if (isset($queryData['trace'])): ?>
-                    <?php echo Mage::helper('ecocode_profiler')->renderBackTrace($prefix . $index, $queryData['trace']) ?>
+                    <?php echo $rendererHelper->renderBackTrace($prefix . $index, $queryData['trace']) ?>
                 <?php endif; ?>
             </td>
         </tr>

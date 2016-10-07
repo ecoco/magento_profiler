@@ -35,28 +35,6 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //DONT SET WE ARE USING THE SYMFONY DEBUG ONE
     }
 
-    protected function _initModules()
-    {
-        //needed as the mysql collector needs to log queries before the config is loaded!!!
-        $this->_config->setNode('global/models/ecocode_profiler/class', 'Ecocode_Profiler_Model');
-        $this->_config->setNode('global/helpers/ecocode_profiler/class', 'Ecocode_Profiler_Helper');
-        if (!$this->_config->loadModulesCache()) {
-            $this->_config->loadModules();
-            if ($this->_config->isLocalConfigLoaded() && !$this->_shouldSkipProcessModulesUpdates()) {
-                Varien_Profiler::start('mage::app::init::apply_db_schema_updates');
-                Mage_Core_Model_Resource_Setup::applyAllUpdates();
-                Varien_Profiler::stop('mage::app::init::apply_db_schema_updates');
-            }
-            /* start  */
-            /* load development.xml for all modules if present */
-            $this->_config->loadModulesConfiguration(['development.xml'], $this->_config);
-            /* end */
-            $this->_config->loadDb();
-            $this->enableSymlinks();
-            $this->_config->saveCache();
-        }
-        return $this;
-    }
 
     /**
      * Initialize application cache instance
@@ -71,23 +49,6 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         $this->_config->setNode('global/models/core/rewrite/cache', 'Ecocode_Profiler_Model_Core_Cache');
         return parent::_initCache($cacheInitOptions);
     }
-
-    protected function enableSymlinks()
-    {
-        $dir = $this->_config->getModuleDir('etc', 'Ecocode_Profiler');
-        if (is_link($dir)) {
-            //due to magentos awesome "config->loadDb()" call we need to overwrite each store
-            //as the config gets copied over into all stores, so setting only the "default" is not enough
-            $this->_config->setNode('default/dev/template/allow_symlink', true);
-            foreach($this->_config->getNode('websites')->children() as $website) {
-                $website->setNode(Mage_Core_Block_Template::XML_PATH_TEMPLATE_ALLOW_SYMLINK, true);
-            }
-            foreach($this->_config->getNode('stores')->children() as $store) {
-                $store->setNode(Mage_Core_Block_Template::XML_PATH_TEMPLATE_ALLOW_SYMLINK, true);
-            }
-        }
-    }
-
 
     /**
      * start the profiler

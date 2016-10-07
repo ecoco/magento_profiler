@@ -6,24 +6,26 @@
  */
 class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    protected $backTraceRenderer;
-
     protected $configClassNameReflection;
     protected $classNameCache;
 
     /**
      * use the config class cache to retrieve the initial class group
      *
-     * @param $className
+     * @param string|object $className
      * @return string
      */
     public function getClassGroup($className)
     {
+        if (is_object($className)) {
+            $className = get_class($className);
+        }
+
         $classNames = $this->getClassNames();
         if (!isset($classNames[$className])) {
             $classNames = $this->getClassNames(true);
             if (!isset($classNames[$className])) {
-                return '';
+                return 'unknown';
             }
         }
         return $classNames[$className];
@@ -51,7 +53,11 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->classNameCache;
     }
 
-
+    /**
+     * @param string $token                                                        $token
+     * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector
+     * @return string
+     */
     public function getCollectorUrl($token, Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         return $this->getUrl($token, $collector->getName());
@@ -70,22 +76,49 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->_getUrl('_profiler/index/panel', $params);
     }
 
-    public function renderBackTrace($id, $trace)
+    /**
+     * removes all backtrace items until
+     * one does not match the rules defined
+     *
+     * @param array $backtrace
+     * @param array $ignoreCalls
+     * @param array $ignoreInstanceOf
+     * @return array
+     */
+    public function cleanBacktrace(array $backtrace, array $ignoreCalls = [], array $ignoreInstanceOf = [] )
     {
-        return $this->getBackTraceRenderer()
-            ->setData(['id' => $id, 'trace' => $trace])
-            ->toHtml();
+        $item = reset($backtrace);
+        while ($item && $this->_cleanBacktrace($item, $ignoreCalls, $ignoreInstanceOf)) {
+            array_shift($backtrace);
+            $item= reset($backtrace);
+        }
+
+        return $backtrace;
     }
 
-    /**
-     * @return Ecocode_Profiler_Block_BackTrace
-     */
-    public function getBackTraceRenderer()
+    public function _cleanBacktrace(array $data, array $ignoreCalls = [], array $ignoreInstanceOf = [] )
     {
-        if ($this->backTraceRenderer === null) {
-            $this->backTraceRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_backTrace');
+        //remove if not called from a class
+        if (!isset($data['class'], $data['function'])) {
+            return true;
         }
-        return $this->backTraceRenderer;
+
+        $functionIdent = $data['class'] . '::' . $data['function'];
+        if (in_array($functionIdent, $ignoreCalls)) {
+            return true;
+        }
+
+        if (!isset($data['object'])) {
+            return false;
+        }
+
+        foreach ($ignoreInstanceOf as $instance) {
+            if ($data['object'] instanceof $instance) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

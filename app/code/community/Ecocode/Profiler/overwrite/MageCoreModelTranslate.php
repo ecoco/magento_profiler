@@ -8,7 +8,15 @@ loadRenamedClass('core/Mage/Core/Model/Translate.php', 'Original_Mage_Core_Model
  */
 class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 {
+    const STATE_TRANSLATED = 'translated';
+    const STATE_FALLBACK   = 'fallback';
+    const STATE_MISSING    = 'missing';
+    const STATE_INVALID    = 'invalid';
+
     protected $currentMessage = null;
+
+    protected $messages = [];
+
 
     public function translate($args)
     {
@@ -36,7 +44,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
             if ($trace && $this->traceHasFunctionCall($trace, 'getTranslateJson')) {
                 //dont log invalid as strings are used with empty placeholders is intended here
             } else {
-                $this->currentMessage['state'] = 'invalid';
+                $this->currentMessage['state'] = self::STATE_INVALID;
             }
         }
 
@@ -54,12 +62,12 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 
         $translated = parent::_getTranslatedString($text, $code);
         if (array_key_exists($code, $this->_data)) {
-            $state = 'translated';
+            $state = self::STATE_TRANSLATED;
         } elseif (array_key_exists($text, $this->_data)) {
-            $state = 'fallback';
+            $state = self::STATE_FALLBACK;
             $this->addTrace();
         } else {
-            $state = 'missing';
+            $state = self::STATE_MISSING;
             $this->addTrace();
         }
 
@@ -69,19 +77,23 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
         return $translated;
     }
 
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
     protected function log()
     {
-        Mage::getSingleton('ecocode_profiler/collector_translationDataCollector')
-            ->logTranslation(
-                $this->currentMessage['locale'],
-                $this->currentMessage['code'],
-                $this->currentMessage['text'],
-                $this->currentMessage['translation'],
-                $this->currentMessage['state'],
-                $this->currentMessage['parameters'],
-                $this->currentMessage['module'],
-                $this->currentMessage['trace']
-            );
+        $this->messages[] = [
+            'locale'      => $this->currentMessage['locale'],
+            'code'        => $this->currentMessage['code'],
+            'text'        => $this->currentMessage['text'],
+            'translation' => $this->currentMessage['translation'],
+            'state'       => $this->currentMessage['state'],
+            'parameters'  => $this->currentMessage['parameters'],
+            'module'      => $this->currentMessage['module'],
+            'trace'       => $this->currentMessage['trace']
+        ];
     }
 
     /**
@@ -116,10 +128,6 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      */
     protected function addTrace()
     {
-        if (!function_exists('debug_backtrace')) {
-            return [];
-        }
-
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
 
         while (($trace = reset($backtrace)) && (!isset($trace['function']) || $trace['function'] !== '__')) {

@@ -24,8 +24,6 @@ class Mage_Core_Model_Resource extends
             if (!isset($config['connection_name'])) {
                 $config['connection_name'] = $name;
                 $this->configProperty->setValue($connection, $config);
-            } else {
-                print "";
             }
         }
 

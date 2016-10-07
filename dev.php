@@ -62,7 +62,8 @@ $mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 's
 
 
 $options = [
-    'cache' => ['id_prefix' => 'dev']
+    'cache'        => ['id_prefix' => 'dev'],
+    'config_model' => 'Ecocode_Profiler_Model_Core_Config'
 ];
 Mage::run($mageRunCode, $mageRunType, $options);
 

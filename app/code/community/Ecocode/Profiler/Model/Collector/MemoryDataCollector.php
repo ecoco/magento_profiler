@@ -4,12 +4,20 @@ class Ecocode_Profiler_Model_Collector_MemoryDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_LateDataCollectorInterface
 {
-    public function __construct()
+    /**
+     * @return string
+     */
+    protected function getCurrentMemoryLimit()
     {
-        $this->data = [
-            'memory'       => 0,
-            'memory_limit' => $this->convertToBytes(ini_get('memory_limit')),
-        ];
+        return ini_get('memory_limit');
+    }
+
+    /**
+     * @return int
+     */
+    protected function getCurrentPeakMemoryUsage()
+    {
+        return memory_get_peak_usage(true);
     }
 
     /**
@@ -17,6 +25,11 @@ class Ecocode_Profiler_Model_Collector_MemoryDataCollector
      */
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
+        $this->data = [
+            'memory'       => 0,
+            'memory_limit' => $this->convertToBytes($this->getCurrentMemoryLimit()),
+        ];
+
         $this->updateMemoryUsage();
     }
 
@@ -53,10 +66,11 @@ class Ecocode_Profiler_Model_Collector_MemoryDataCollector
      */
     public function updateMemoryUsage()
     {
-        $this->data['memory'] = memory_get_peak_usage(true);
+        $this->data['memory'] = $this->getCurrentPeakMemoryUsage();
     }
 
     /**
+     * @codeCoverageIgnore
      * {@inheritdoc}
      */
     public function getName()

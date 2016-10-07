@@ -1,0 +1,58 @@
+sudo: false
+language: php
+php:
+  - 5.5
+
+env:
+  - MAGENTO_VERSION=magento-mirror-1.9.2.4
+# - MAGENTO_VERSION=magento-mirror-1.8.1.0
+#  - MAGENTO_VERSION=magento-mirror-1.7.0.2
+
+services:
+  - mysql
+
+# Deletes build directory and adds new tools
+install:
+  # Clean build directory
+  - rm -rf build; mkdir build; cd build
+
+  # install modman
+  - bash < <(wget -q --no-check-certificate -O - https://raw.github.com/colinmollenhour/modman/master/modman-installer)
+  - modman --version
+
+  # install n98-magerun
+  - wget https://files.magerun.net/n98-magerun.phar
+  - chmod +x n98-magerun.phar
+  - ./n98-magerun.phar --version
+
+  - composer require satooshi/php-coveralls:~1.0.1@stable
+before_script:
+  # Clean mysql database
+  - mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
+
+  - cd $TRAVIS_BUILD_DIR/build
+
+  # Install Magento
+  - n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
+  - mkdir -p magento/var/log
+
+  # Install our module
+  - cd $TRAVIS_BUILD_DIR/build/magento
+  - n98-magerun.phar sys:info
+
+  - modman init
+  - modman link $TRAVIS_BUILD_DIR
+
+  - cp $TRAVIS_BUILD_DIR/composer.json .
+  - composer install
+
+script:
+  - mkdir -p build/logs
+
+  - cd $TRAVIS_BUILD_DIR/build/magento
+  - cp $TRAVIS_BUILD_DIR/phpunit-prod.xml.dist .
+  - cp $TRAVIS_BUILD_DIR/phpunit-dev.xml.dist .
+  - phpunit -c phpunit-prod.xml.dist && phpunit -c phpunit-dev.xml.dist --coverage-clover ../logs/clover.xml
+
+after_success:
+  - travis_retry vendor/bin/coveralls -v

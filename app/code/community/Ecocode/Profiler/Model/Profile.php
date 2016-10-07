@@ -42,16 +42,6 @@ class Ecocode_Profiler_Model_Profile
     }
 
     /**
-     * Sets the token.
-     *
-     * @param string $token The token
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
      * Gets the token.
      *
      * @return string The token

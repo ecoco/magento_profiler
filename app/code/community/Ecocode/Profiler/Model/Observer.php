@@ -16,36 +16,6 @@ class Ecocode_Profiler_Model_Observer
         $this->profiles = new \SplObjectStorage();
     }
 
-    /**
-     * @return Ecocode_Profiler_Model_Profiler
-     */
-    public function getProfiler()
-    {
-        if (!$this->profiler) {
-            $this->profiler = Mage::getSingleton('ecocode_profiler/profiler');
-        }
-
-        return $this->profiler;
-    }
-
-
-    public function startProfiler()
-    {
-        //to early to detect if this is the admin store
-        $path = Mage::app()->getRequest()->getPathInfo();
-        if (substr($path, 0, 10) === '/_profiler') {
-            return;
-        }
-        //this wont work if you use a custom url and we cant tell by now 
-        //which one is configured. even if we read the local.xml manually it can still be set
-        //in the database, so for now 80/20 solution :)
-        if (substr($path, 0, 6) === '/admin') {
-            return;
-        }
-
-        $this->getProfiler()->init();
-    }
-
     public function controllerFrontSendResponseBefore(Varien_Event_Observer $observer)
     {
         if (!$this->getProfiler()->isEnabled()) {
@@ -81,7 +51,7 @@ class Ecocode_Profiler_Model_Observer
     public function onTerminate(Varien_Event_Observer $observer)
     {
         foreach ($this->profiles as $request) {
-            $this->profiler->saveProfile($this->profiles[$request]);
+            $this->getProfiler()->saveProfile($this->profiles[$request]);
         }
     }
 
@@ -102,7 +72,7 @@ class Ecocode_Profiler_Model_Observer
         $pos     = strripos($content, '</body>');
 
         if (false !== $pos) {
-            $layout = Mage::app()->getLayout();
+            $layout = $this->getLayout();
             /** @var Ecocode_Profiler_Block_Toolbar $toolbarBlock */
             $toolbarBlock = $layout
                 ->createBlock('ecocode_profiler/toolbar', 'profiler_toolbar')
@@ -120,5 +90,28 @@ class Ecocode_Profiler_Model_Observer
             $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
             $response->setBody($content);
         }
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Model_Profiler
+     */
+    protected function getProfiler()
+    {
+        if (!$this->profiler) {
+            $this->profiler = Mage::getSingleton('ecocode_profiler/profiler');
+        }
+
+        return $this->profiler;
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     * @return Mage_Core_Model_Layout
+     */
+    protected function getLayout()
+    {
+        return Mage::app()->getLayout();
     }
 }

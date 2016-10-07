@@ -6,6 +6,17 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends
     Original_Mage_Core_Model_Resource_Db_Abstract
 {
     /**
+     * @codeCoverageIgnore
+     *
+     * @param       $event
+     * @param array $data
+     */
+    protected function dispatch($event, array $data = [])
+    {
+        Mage::dispatchDebugEvent($event, $data);
+    }
+
+    /**
      * overwrite load function as "_afterLoad" etc can be overwritten
      *
      * @param Mage_Core_Model_Abstract $object
@@ -18,7 +29,7 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends
         $start  = microtime(true);
         $result = parent::load($object, $value, $field);
 
-        Mage::dispatchDebugEvent('model_resource_db_load', [
+        $this->dispatch('model_resource_db_load', [
             'object' => $object,
             'time'   => microtime(true) - $start
         ]);
@@ -39,7 +50,7 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends
 
         if (!$object->isDeleted()) {
             //is captured separately
-            Mage::dispatchDebugEvent('model_resource_db_save', [
+            $this->dispatch('model_resource_db_save', [
                 'object' => $object,
                 'time'   => microtime(true) - $start
             ]);
@@ -61,7 +72,7 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends
 
         if (!$object->isDeleted()) {
             //is captured separately
-            Mage::dispatchDebugEvent('model_resource_db_delete', [
+            $this->dispatch('model_resource_db_delete', [
                 'object' => $object,
                 'time'   => microtime(true) - $start
             ]);

@@ -51,12 +51,6 @@ class Ecocode_Profiler_Block_Toolbar
         return $blocks;
     }
 
-
-    public function _toHtml()
-    {
-        return parent::_toHtml();
-    }
-
     /**
      * @return Ecocode_Profiler_Model_Profile
      */

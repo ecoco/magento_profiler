@@ -40,6 +40,15 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
     }
 
     /**
+     * @param      $key
+     * @param null $default
+     * @return mixed
+     */
+    protected function getData($key, $default = null)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : $default;
+    }
+    /**
      * @return integer
      */
     public function getContextId()
@@ -57,5 +66,14 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
         }
 
         return $this->contextHelper;
+    }
+
+    protected function getBacktrace($options = DEBUG_BACKTRACE_PROVIDE_OBJECT)
+    {
+        if (!function_exists('debug_backtrace')) {
+            return false;
+        }
+
+        return debug_backtrace($options);
     }
 }

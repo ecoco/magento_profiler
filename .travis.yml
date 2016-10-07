@@ -28,7 +28,7 @@ install:
   - composer require satooshi/php-coveralls:~1.0.1@stable
 
   - export PATH=$PWD:$PATH
-  
+
 before_script:
   # Clean mysql database
   - mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
@@ -55,7 +55,7 @@ script:
   - cd $TRAVIS_BUILD_DIR/build/magento
   - cp $TRAVIS_BUILD_DIR/phpunit-prod.xml.dist .
   - cp $TRAVIS_BUILD_DIR/phpunit-dev.xml.dist .
-  - phpunit -c phpunit-prod.xml.dist && phpunit -c phpunit-dev.xml.dist --coverage-clover ../logs/clover.xml
+  - vendor/bin/phpunit -c phpunit-prod.xml.dist && vendor/bin/phpunit -c phpunit-dev.xml.dist --coverage-clover ../logs/clover.xml
 
 after_success:
   - travis_retry vendor/bin/coveralls -v

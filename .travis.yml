@@ -1,6 +1,7 @@
 sudo: false
 language: php
 php:
+  - 7.0
   - 5.6
   - 5.5
 
@@ -46,8 +47,11 @@ before_script:
   - modman link $TRAVIS_BUILD_DIR
 
   - cp $TRAVIS_BUILD_DIR/composer.json .
+  #make php7 possible
+  - 'sed -i ''s/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/'' composer.json'
   - composer install
-
+  - composer config -g repositories.firegento composer https://packages.firegento.com
+  - composer require inchoo/php7
 script:
   - cd $TRAVIS_BUILD_DIR
   - mkdir -p build/logs

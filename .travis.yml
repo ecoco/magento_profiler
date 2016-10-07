@@ -57,4 +57,4 @@ script:
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
-  - travis_retry magento/vendor/bin/coveralls -v
+  - travis_retry build/magento/vendor/bin/coveralls -v

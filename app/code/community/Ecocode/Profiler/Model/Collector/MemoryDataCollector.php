@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Collector_MemoryDataCollector
+ */
 class Ecocode_Profiler_Model_Collector_MemoryDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_LateDataCollectorInterface

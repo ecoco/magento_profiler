@@ -1,6 +1,6 @@
 <?php
 
-loadRenamedClass('core/Mage/Core/Model/Translate.php', 'Original_Mage_Core_Model_Translate');
+Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Core/Model/Translate.php', 'Original_Mage_Core_Model_Translate');
 
 /**
  * @author ecocode GmbH <jk@ecocode.de>

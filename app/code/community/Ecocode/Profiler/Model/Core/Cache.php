@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * Class Ecocode_Profiler_Model_Core_Cache
+ */
 class Ecocode_Profiler_Model_Core_Cache extends Mage_Core_Model_Cache
 {
     protected $log = [];

@@ -109,4 +109,3 @@ class Ecocode_Profiler_Test_Dev_Model_Overwrite_MageEavModelEntityAbstractTest
         $entityAbstract->delete($product, 1);
     }
 }
-

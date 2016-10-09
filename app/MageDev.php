@@ -21,8 +21,7 @@ define('PROFILER_DIR', $profilerDir);
 $overwriteBasePath = $profilerDir . 'overwrite' . DIRECTORY_SEPARATOR;
 
 
-require_once $profilerDir . 'functions.php';
-
+require_once $profilerDir . 'Helper' . DIRECTORY_SEPARATOR . 'Data.php';
 require_once $overwriteBasePath . 'Mage.php';
 
 //load overwrites so we can get around the autoloader

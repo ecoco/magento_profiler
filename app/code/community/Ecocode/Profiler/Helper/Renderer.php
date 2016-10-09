@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * Class Ecocode_Profiler_Helper_Renderer
+ */
 class Ecocode_Profiler_Helper_Renderer
     extends Mage_Core_Helper_Abstract
 {

@@ -16,7 +16,7 @@ if (class_exists('Debug')) {
     }
 
     Debug::enable();
-    $errorHandler  = new MagentoErrorHandler(new BufferingLogger());
+    $errorHandler = new MagentoErrorHandler(new BufferingLogger());
     $errorHandler->throwAt(-1, true);
 
     ErrorHandler::register($errorHandler);

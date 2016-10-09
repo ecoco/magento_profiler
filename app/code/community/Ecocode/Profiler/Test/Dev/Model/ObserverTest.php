@@ -61,9 +61,9 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
         /** @var Ecocode_Profiler_Model_Observer $observer */
         $observer->controllerFrontSendResponseBefore($eventObserver);
 
-        $headers = $response->getHeaders();
+        $headers         = $response->getHeaders();
         $tokenLinkHeader = false;
-        foreach($headers as $header) {
+        foreach ($headers as $header) {
             if ($header['name'] === 'X-Debug-Token-Link') {
                 $tokenLinkHeader = $header;
                 break;
@@ -91,7 +91,7 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
 
         $observer->method('getProfiler')->willReturn($profiler);
 
-        if  ($profiler->isEnabled()) {
+        if ($profiler->isEnabled()) {
             $observer->expects($this->once())
                 ->method('injectToolbar');
         } else {
@@ -118,12 +118,12 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
 
         $profile = new Ecocode_Profiler_Model_Profile('token');
 
-        $request = new Mage_Core_Controller_Request_Http();
-        $storage = $profilesProperty->getValue($observer);
+        $request           = new Mage_Core_Controller_Request_Http();
+        $storage           = $profilesProperty->getValue($observer);
         $storage[$request] = $profile;
 
 
-        $profiler =$this->getMockBuilder('Ecocode_Profiler_Model_Profiler')
+        $profiler = $this->getMockBuilder('Ecocode_Profiler_Model_Profiler')
             ->setMethods(['saveProfile'])
             ->getMock();
 
@@ -138,7 +138,7 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
 
     public function testInjectToolbar()
     {
-        $layout = new Mage_Core_Model_Layout();
+        $layout   = new Mage_Core_Model_Layout();
         $observer = $this->getMockBuilder('Ecocode_Profiler_Model_Observer')
             ->setMethods(['getLayout'])
             ->getMock();
@@ -148,7 +148,7 @@ class Ecocode_Profiler_Test_Dev_Model_ObserverTest
         $injectToolbarMethod = new ReflectionMethod('Ecocode_Profiler_Model_Observer', 'injectToolbar');
         $injectToolbarMethod->setAccessible(true);
 
-        $request = new Mage_Core_Controller_Request_Http();
+        $request  = new Mage_Core_Controller_Request_Http();
         $response = new Ecocode_Profiler_Test_Dev_Fixtures_ResponseHttp();
         $response->setBody('<html><body>Some Content</body></html>');
 

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Collector_ModelDataCollector
+ */
 class Ecocode_Profiler_Model_Collector_ModelDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {

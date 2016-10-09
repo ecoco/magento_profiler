@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Collector_LogDataCollector
+ */
 class Ecocode_Profiler_Model_Collector_LogDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_LateDataCollectorInterface

@@ -26,22 +26,24 @@ $_SERVER['SCRIPT_NAME']     = $_baseDir . DS . 'index.php';
 $_SERVER['SCRIPT_FILENAME'] = $_baseDir . DS . 'index.php';
 
 
-
-
 //flag to check for unittets
 define('BASE_TESTS_PATH', realpath(dirname(__FILE__)));
 require_once BASE_TESTS_PATH . '/../TestHelper.php';
 
+$options = [
+    'cache'        => ['id_prefix' => 'test-prod']
+];
 Mage::app()->cleanCache();
+Mage::app('', 'store', $options);
 // Removing Varien Autoload, to prevent errors with PHPUnit components
-spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+spl_autoload_unregister([\Varien_Autoload::instance(), 'autoload']);
 spl_autoload_register(function ($className) {
     $filePath = strtr(
         ltrim($className, '\\'),
-        array(
+        [
             '\\' => '/',
             '_'  => '/'
-        )
+        ]
     );
     @include $filePath . '.php';
 });

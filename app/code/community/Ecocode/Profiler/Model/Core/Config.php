@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Core_Config
+ */
 class Ecocode_Profiler_Model_Core_Config extends Mage_Core_Model_Config
 {
 

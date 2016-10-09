@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Collector_AbstractDataCollector
+ */
 abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_DataCollectorInterface,
     Serializable

@@ -14,7 +14,7 @@
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class Ecocode_Profiler_Helper_ValueExporter
- extends Mage_Core_Helper_Abstract
+    extends Mage_Core_Helper_Abstract
 {
     /**
      * Converts a PHP value to a string.

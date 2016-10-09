@@ -46,26 +46,6 @@ class Ecocode_Profiler_Block_Collector_Log_Panel
                 }
             }
             $this->logGroups = $logGroups;
-
-            /** @var Ecocode_Profiler_Model_Collector_LogDataCollector $collector */
-            /*            $collector = $this->getCollector();
-                        $logGroups = [];
-                        foreach ($collector->getLogs() as $entry) {
-                            list($file, $level, $message) = $entry;
-                            if (!isset($logGroups[$file])) {
-                                $logGroups[$file] = [
-                                    'name' => basename($file, '.log'),
-                                    'file' => $file,
-                                    'logs' => []
-                                ];
-                            }
-
-                            $logGroups[$file]['logs'][] = [
-                                'level'   => $level,
-                                'message' => $message
-                            ];
-                        }
-                        $this->logGroups = $logGroups;*/
         }
 
         return $this->logGroups;

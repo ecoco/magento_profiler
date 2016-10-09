@@ -3,8 +3,6 @@
 class Ecocode_Profiler_Test_Dev_Model_Collector_RewriteDataCollectorTest
     extends TestHelper
 {
-
-
     public function testCollect()
     {
         $rewriteHelperMock = $this->getMockBuilder('Ecocode_Profiler_Helper_Rewrite')

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Profiler
+ */
 class Ecocode_Profiler_Model_Profiler
 {
     protected $storage;

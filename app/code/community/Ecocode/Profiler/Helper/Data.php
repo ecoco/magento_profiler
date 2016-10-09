@@ -2,12 +2,81 @@
 
 /**
  * Class Ecocode_Profiler_Helper_Data
- *
  */
-class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
+class Ecocode_Profiler_Helper_Data
 {
+    protected static $version;
+    protected static $overwriteDirectory;
+
     protected $configClassNameReflection;
     protected $classNameCache;
+
+    public static function getOverwriteDir()
+    {
+        if (self::$overwriteDirectory === null) {
+            self::$overwriteDirectory = MAGENTO_ROOT . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
+        }
+
+        if (!file_exists(self::$overwriteDirectory)) {
+            mkdir(self::$overwriteDirectory, 0775, true);
+        }
+
+        return self::$overwriteDirectory;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getVersion()
+    {
+        if (self::$version === null && class_exists('Mage')) {
+            //try to load from magento
+            $config = Mage::getConfig()->getModuleConfig('Ecocode_Profiler');
+            if ($config && $config->version) {
+                self::$version = (string)$config->version;
+            }
+        }
+
+        if (self::$version === null) {
+            //try to load it from the config directly
+            $configFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'config.xml';
+            $xml        = file_get_contents($configFile);
+            preg_match('/<version>([0-9\.]+)<\/version>/', $xml, $matches);
+            if (!$matches) {
+                throw new RuntimeException('unable to determinate profiler version');
+            }
+            self::$version = $matches[1];
+        }
+
+        return self::$version;
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $className
+     */
+    public static function loadRenamedClass($fileName, $className)
+    {
+
+        $ds         = DIRECTORY_SEPARATOR;
+        $sourceFile = MAGENTO_ROOT . $ds . 'app' . $ds . 'code' . $ds . $fileName;
+        $sourceMd5  = md5_file($sourceFile);
+
+
+        $fileName  = sprintf('%s-%s-%s.php', $className, self::getVersion(), $sourceMd5);
+        $cacheFile = self::getOverwriteDir() . $fileName;
+
+        if (!file_exists($cacheFile)) {
+            $code = file_get_contents($sourceFile);
+
+            $code = preg_replace('/class ([^\s]+)/', 'class ' . $className, $code);
+
+
+            file_put_contents($cacheFile, $code);
+        }
+
+        require_once $cacheFile;
+    }
 
     /**
      * use the config class cache to retrieve the initial class group
@@ -42,9 +111,9 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $classNameCache = $this->configClassNameReflection->getValue(Mage::getConfig());
-        foreach($classNameCache as $groupRoot) {
+        foreach ($classNameCache as $groupRoot) {
             foreach ($groupRoot as $module => $classNames) {
-                foreach($classNames as $class => $className) {
+                foreach ($classNames as $class => $className) {
                     $this->classNameCache[$className] = $module . '/' . $class;
                 }
             }
@@ -54,7 +123,7 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * @param string $token                                                        $token
+     * @param string                                                  $token $token
      * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector
      * @return string
      */
@@ -73,7 +142,7 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
             $params['panel'] = $panel;
         }
 
-        return $this->_getUrl('_profiler/index/panel', $params);
+        return Mage::getUrl('_profiler/index/panel', $params);
     }
 
     /**
@@ -85,18 +154,18 @@ class Ecocode_Profiler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param array $ignoreInstanceOf
      * @return array
      */
-    public function cleanBacktrace(array $backtrace, array $ignoreCalls = [], array $ignoreInstanceOf = [] )
+    public function cleanBacktrace(array $backtrace, array $ignoreCalls = [], array $ignoreInstanceOf = [])
     {
         $item = reset($backtrace);
         while ($item && $this->_cleanBacktrace($item, $ignoreCalls, $ignoreInstanceOf)) {
             array_shift($backtrace);
-            $item= reset($backtrace);
+            $item = reset($backtrace);
         }
 
         return $backtrace;
     }
 
-    public function _cleanBacktrace(array $data, array $ignoreCalls = [], array $ignoreInstanceOf = [] )
+    public function _cleanBacktrace(array $data, array $ignoreCalls = [], array $ignoreInstanceOf = [])
     {
         //remove if not called from a class
         if (!isset($data['class'], $data['function'])) {

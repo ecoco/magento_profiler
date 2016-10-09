@@ -2,7 +2,6 @@
 
 /**
  * Class Ecocode_Profiler_Model_Observer_Context
- *
  */
 class Ecocode_Profiler_Model_Observer_Context
 {

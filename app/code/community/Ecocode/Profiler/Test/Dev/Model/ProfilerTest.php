@@ -6,22 +6,6 @@ class Ecocode_Profiler_Test_Dev_Model_ProfilerTest extends TestHelper
     private $tmp;
     /** @var Ecocode_Profiler_Model_Profiler_FileStorage */
     private $storage;
-//
-//    public function testCollect()
-//    {
-//        $request = new Request();
-//        $request->query->set('foo', 'bar');
-//        $response  = new Response('', 204);
-//        $collector = new Ecocode_Profiler_Model_Collector_RequestDataCollector();
-//
-//        $profiler = new Ecocode_Profiler_Model_Profiler($this->storage);
-//        $profiler->add($collector);
-//        $profile = $profiler->collect($request, $response);
-//
-//        $this->assertSame(204, $profile->getStatusCode());
-//        $this->assertSame('GET', $profile->getMethod());
-//        $this->assertEquals(['foo' => 'bar'], $profiler->get('request')->getRequestQuery()->all());
-//    }
 
     public function testFindWorksWithDates()
     {

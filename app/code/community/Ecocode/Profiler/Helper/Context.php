@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Helper_Context
+ */
 class Ecocode_Profiler_Helper_Context
     extends Ecocode_Profiler_Helper_AbstractHelper
 {

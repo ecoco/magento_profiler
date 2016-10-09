@@ -1,9 +1,11 @@
 <?php
+
 class TestHelper extends PHPUnit_Framework_TestCase
 {
     static $mageAppReflection;
 
     protected $reInetMage = false;
+
     /**
      * @beforeClass
      */
@@ -13,9 +15,10 @@ class TestHelper extends PHPUnit_Framework_TestCase
 
     }
 
-    public function initAppOnMageClass($class, $force = false) {
+    public function initAppOnMageClass($class, $force = false)
+    {
         $mageReflectionClass = new \ReflectionClass($class);
-        $properties = $mageReflectionClass->getStaticProperties();
+        $properties          = $mageReflectionClass->getStaticProperties();
 
         if ($force) {
             $reflectedProperty = $mageReflectionClass->getProperty('_app');
@@ -25,17 +28,11 @@ class TestHelper extends PHPUnit_Framework_TestCase
 
         if (!isset($properties['_app']) || $force) {
             $options = [
-                'cache' => ['id_prefix' => 'test'],
+                'cache'        => ['id_prefix' => 'test'],
                 'config_model' => 'Ecocode_Profiler_Model_Core_Config'
             ];
             $class::app('', 'store', $options);
         }
-    }
-
-    protected function tearDown()
-    {
-
-
     }
 
     /**
@@ -50,6 +47,4 @@ class TestHelper extends PHPUnit_Framework_TestCase
 
         return $observer;
     }
-
-
 }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Interface Ecocode_Profiler_Model_Collector_DataCollectorInterface
+ */
 interface Ecocode_Profiler_Model_Collector_DataCollectorInterface
 {
     public function init();

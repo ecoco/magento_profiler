@@ -1,6 +1,6 @@
 <?php
 
-loadRenamedClass('core/Mage/Core/Model/Store.php', 'Original_Mage_Core_Model_Store');
+Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Core/Model/Store.php', 'Original_Mage_Core_Model_Store');
 
 
 class Mage_Core_Model_Store extends

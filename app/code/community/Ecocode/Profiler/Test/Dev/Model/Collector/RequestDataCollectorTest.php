@@ -155,6 +155,4 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_RequestDataCollectorTest
         $this->assertEquals('catalog', $collector->getRouteName());
         $this->assertEquals(['id' => '13'], $collector->getRouteParams());
     }
-
-
 }

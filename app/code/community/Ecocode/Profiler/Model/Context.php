@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Context
+ */
 class Ecocode_Profiler_Model_Context
     implements Ecocode_Profiler_Model_ContextInterface
 {

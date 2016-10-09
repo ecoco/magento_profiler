@@ -2,7 +2,6 @@
 
 /**
  * Class Ecocode_Profiler_Helper_Sql
- *
  */
 class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
 {
@@ -97,5 +96,4 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
 
         return $this->formattedQueriesCache[$cacheKey] = $html;
     }
-
 }

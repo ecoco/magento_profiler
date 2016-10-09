@@ -197,3 +197,4 @@ class Ecocode_Profiler_Helper_Code
         return $line;
     }
 }
+

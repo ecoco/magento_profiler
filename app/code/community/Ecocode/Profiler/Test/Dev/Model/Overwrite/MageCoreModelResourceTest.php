@@ -26,5 +26,4 @@ class Ecocode_Profiler_Test_Dev_Model_Overwrite_MageCoreModelResourceTest
         $this->assertEquals('core_read', $connectionConfig['connection_name']);
 
     }
-
 }

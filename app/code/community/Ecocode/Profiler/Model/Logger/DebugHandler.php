@@ -57,3 +57,4 @@ class Ecocode_Profiler_Model_Logger_DebugHandler extends TestHandler
         return $cnt;
     }
 }
+

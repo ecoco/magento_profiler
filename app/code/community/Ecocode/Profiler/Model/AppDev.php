@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_AppDev
+ */
 class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
 {
     protected $eventsFiredCount = 0;

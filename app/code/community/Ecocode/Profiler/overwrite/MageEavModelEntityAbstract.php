@@ -1,6 +1,6 @@
 <?php
 
-loadRenamedClass('core/Mage/Eav/Model/Entity/Abstract.php', 'Original_Mage_Eav_Model_Entity_Abstract');
+Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Eav/Model/Entity/Abstract.php', 'Original_Mage_Eav_Model_Entity_Abstract');
 
 abstract class Mage_Eav_Model_Entity_Abstract extends
     Original_Mage_Eav_Model_Entity_Abstract

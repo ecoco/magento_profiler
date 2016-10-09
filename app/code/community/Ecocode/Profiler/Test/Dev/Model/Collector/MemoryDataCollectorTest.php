@@ -53,7 +53,6 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_MemoryDataCollectorTest
             ->willReturn(100000);
 
 
-
         $collector->collect(
             new Mage_Core_Controller_Request_Http(),
             new Mage_Core_Controller_Response_Http()
@@ -69,5 +68,4 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_MemoryDataCollectorTest
         $collector->lateCollect();
         $this->assertGreaterThan(0, $collector->getMemory());
     }
-
 }

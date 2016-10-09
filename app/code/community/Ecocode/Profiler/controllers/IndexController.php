@@ -25,7 +25,6 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
     public function searchAction()
     {
-        $profiler = $this->getProfiler();
         $request  = $this->getRequest();
 
         $ip     = preg_replace('/[^:\d\.]/', '', $request->getParam('ip'));
@@ -112,7 +111,6 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
 
         $panel = $request->getParam('panel', 'request');
-        $page  = $request->getParam('page', 'home');
 
         if ('latest' === $token && $latest = current($profiler->find(null, null, 1, null, null, null))) {
             $token = $latest['token'];
@@ -153,6 +151,5 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
     public function phpinfoAction()
     {
         phpinfo();
-        die();
     }
 }

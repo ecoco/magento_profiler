@@ -10,7 +10,7 @@ if ((!isset($_SERVER['ALLOW_PROFILER']) || $_SERVER['ALLOW_PROFILER'] !== '1') &
 }
 
 if (version_compare(phpversion(), '5.4.0', '<') === true) {
-    die('ERROR: Whoops, it looks like you have an invalid PHP version. Magento supports PHP 5.4.0 or newer.');
+    throw new RuntimeException('ERROR: Whoops, it looks like you have an invalid PHP version. Magento supports PHP 5.4.0 or newer.');
 }
 
 
@@ -27,12 +27,7 @@ $mageFilename    = MAGENTO_ROOT . '/app/MageDev.php';
 $maintenanceFile = 'maintenance.flag';
 
 if (!file_exists($mageFilename)) {
-    if (is_dir('downloader')) {
-        header("Location: downloader");
-    } else {
-        echo $mageFilename . " was not found";
-    }
-    exit;
+    throw new RuntimeException($mageFilename  . " was not found");
 }
 
 if (file_exists($maintenanceFile)) {
@@ -44,13 +39,11 @@ if (file_exists($maintenanceFile)) {
 require_once $mageFilename;
 require_once PROFILER_DIR . 'debug.php';
 
-#Varien_Profiler::enable();
 
 if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
     Mage::setIsDeveloperMode(true);
 }
 
-#ini_set('display_errors', 1);
 
 umask(0);
 

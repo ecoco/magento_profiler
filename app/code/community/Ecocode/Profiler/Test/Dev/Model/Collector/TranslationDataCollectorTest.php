@@ -76,6 +76,4 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_TranslationDataCollectorTest
 
         return $collector;
     }
-
-
 }

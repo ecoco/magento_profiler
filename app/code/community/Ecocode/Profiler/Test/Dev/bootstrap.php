@@ -33,20 +33,20 @@ define('BASE_TESTS_PATH', realpath(dirname(__FILE__)));
 require_once BASE_TESTS_PATH . '/../TestHelper.php';
 
 $options = [
-    'cache' => ['id_prefix' => 'dev'],
+    'cache'        => ['id_prefix' => 'test-dev'],
     'config_model' => 'Ecocode_Profiler_Model_Core_Config'
 ];
 Mage::app('', 'store', $options);
 
 // Removing Varien Autoload, to prevent errors with PHPUnit components
-spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+spl_autoload_unregister([\Varien_Autoload::instance(), 'autoload']);
 spl_autoload_register(function ($className) {
     $filePath = strtr(
         ltrim($className, '\\'),
-        array(
+        [
             '\\' => '/',
             '_'  => '/'
-        )
+        ]
     );
     @include $filePath . '.php';
 });

@@ -1,6 +1,6 @@
 <?php
 
-loadRenamedClass('core/Mage/Core/Model/Resource.php', 'Original_Mage_Core_Model_Resource');
+Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Core/Model/Resource.php', 'Original_Mage_Core_Model_Resource');
 
 
 class Mage_Core_Model_Resource extends

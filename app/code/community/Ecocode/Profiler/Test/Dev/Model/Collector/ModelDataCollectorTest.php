@@ -174,6 +174,4 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_ModelDataCollectorTest
 
         $this->assertEquals($expect, $shouldRemove);
     }
-
-
 }

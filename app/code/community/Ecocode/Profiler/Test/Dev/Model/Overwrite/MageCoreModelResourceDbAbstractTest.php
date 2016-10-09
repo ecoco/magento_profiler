@@ -26,7 +26,7 @@ class Ecocode_Profiler_Test_Dev_Model_Overwrite_MageCoreModelResourceDbAbstract
             ->method('dispatch')
             ->with(
                 $this->equalTo('model_resource_db_load'),
-                $this->callback(function($subject) use ($visitor) {
+                $this->callback(function ($subject) use ($visitor) {
                     return $subject['object'] === $visitor && isset($subject['time']);
                 })
             );
@@ -60,7 +60,7 @@ class Ecocode_Profiler_Test_Dev_Model_Overwrite_MageCoreModelResourceDbAbstract
             ->method('dispatch')
             ->with(
                 $this->equalTo('model_resource_db_save'),
-                $this->callback(function($subject) use ($visitor) {
+                $this->callback(function ($subject) use ($visitor) {
                     return $subject['object'] === $visitor && isset($subject['time']);
                 })
             );
@@ -107,14 +107,12 @@ class Ecocode_Profiler_Test_Dev_Model_Overwrite_MageCoreModelResourceDbAbstract
             ->method('dispatch')
             ->with(
                 $this->equalTo('model_resource_db_delete'),
-                $this->callback(function($subject) use ($visitor) {
+                $this->callback(function ($subject) use ($visitor) {
                     return $subject['object'] === $visitor && isset($subject['time']);
                 })
             );
 
 
-
         $resourceLog->delete($visitor, 1);
     }
 }
-

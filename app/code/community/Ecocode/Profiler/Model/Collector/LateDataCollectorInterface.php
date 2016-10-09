@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Interface Ecocode_Profiler_Model_Collector_LateDataCollectorInterface
+ */
 interface Ecocode_Profiler_Model_Collector_LateDataCollectorInterface
 {
     /**

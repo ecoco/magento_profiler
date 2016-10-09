@@ -28,7 +28,7 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_EventDataCollectorTest
             ->willReturn($app);
 
         $preDispatchData = json_decode('{"observers":{"log":{"type":"","model":"log\/visitor","method":"initByRequest","args":[]},"pagecache":{"type":"","model":"pagecache\/observer","method":"processPreDispatch","args":[]}}}', true);
-        $events = ['global' => ['controller_action_predispatch' => $preDispatchData]];
+        $events          = ['global' => ['controller_action_predispatch' => $preDispatchData]];
 
         $app->dispatchEvent('resource_get_tablename', []);
         $app->dispatchEvent('controller_action_predispatch', []);
@@ -65,5 +65,4 @@ class Ecocode_Profiler_Test_Dev_Model_Collector_EventDataCollectorTest
 
         return $collectorMock;
     }
-
 }

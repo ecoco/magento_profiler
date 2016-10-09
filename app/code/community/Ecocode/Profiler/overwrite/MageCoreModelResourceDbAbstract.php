@@ -1,6 +1,6 @@
 <?php
 
-loadRenamedClass('core/Mage/Core/Model/Resource/Db/Abstract.php', 'Original_Mage_Core_Model_Resource_Db_Abstract');
+Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Core/Model/Resource/Db/Abstract.php', 'Original_Mage_Core_Model_Resource_Db_Abstract');
 
 abstract class Mage_Core_Model_Resource_Db_Abstract extends
     Original_Mage_Core_Model_Resource_Db_Abstract

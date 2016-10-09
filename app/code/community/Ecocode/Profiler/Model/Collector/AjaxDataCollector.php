@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_Collector_AjaxDataCollector
+ */
 class Ecocode_Profiler_Model_Collector_AjaxDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {

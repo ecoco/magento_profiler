@@ -63,6 +63,4 @@ class Ecocode_Profiler_Test_Dev_Model_Observer_ContextTest
 
         return $block;
     }
-
-
 }

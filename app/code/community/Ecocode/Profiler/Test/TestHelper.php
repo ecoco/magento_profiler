@@ -6,33 +6,66 @@ class TestHelper extends PHPUnit_Framework_TestCase
 
     protected $reInetMage = false;
 
+    protected $mageDefaultProperties = [
+        '_registry' => [],
+        '_isDownloader' => false,
+        '_isDeveloperMode' => false,
+        'headersSentThrowsException' => true,
+    ];
+
     /**
      * @beforeClass
      */
     protected function setUp()
     {
-        $this->initAppOnMageClass('Mage', $this->reInetMage);
-
+        $this->initAppOnMageClass($this->reInetMage);
     }
 
-    public function initAppOnMageClass($class, $force = false)
+    public function resetMage()
     {
-        $mageReflectionClass = new \ReflectionClass($class);
+        if (!isset($this->mageDefaultProperties['_appRoot'])) {
+            //save to original mage root
+            $this->mageDefaultProperties['_appRoot'] = Mage::getRoot();
+        }
+        $mageReflectionClass = new \ReflectionClass('Mage');
         $properties          = $mageReflectionClass->getStaticProperties();
+
+        foreach($properties as $key => $value) {
+            $reflectedProperty = $mageReflectionClass->getProperty($key);
+            $reflectedProperty->setAccessible(true);
+            $value = null;
+            if (isset($this->mageDefaultProperties[$key])) {
+                $value = $this->mageDefaultProperties[$key];
+            }
+            $reflectedProperty->setValue($value);
+        }
+        $this->initApp();
+    }
+
+    public function initAppOnMageClass($force = false)
+    {
+        $mageReflectionClass = new \ReflectionClass('Mage');
 
         if ($force) {
             $reflectedProperty = $mageReflectionClass->getProperty('_app');
             $reflectedProperty->setAccessible(true);
             $reflectedProperty->setValue(null);
         }
+        $this->initApp();
+    }
 
-        if (!isset($properties['_app']) || $force) {
-            $options = [
-                'cache'        => ['id_prefix' => 'test'],
-                'config_model' => 'Ecocode_Profiler_Model_Core_Config'
-            ];
-            $class::app('', 'store', $options);
+    protected function initApp(Mage_Core_Model_App $app = null)
+    {
+        $options = [
+            'cache'        => ['id_prefix' => 'dev-test'],
+            'config_model' => 'Ecocode_Profiler_Model_Core_Config'
+        ];
+        if ($app) {
+            $app->init('', 'store', $options);
+        } else {
+            Mage::app('', 'store', $options);
         }
+
     }
 
     /**
@@ -46,5 +79,13 @@ class TestHelper extends PHPUnit_Framework_TestCase
         $observer->setEvent($event);
 
         return $observer;
+    }
+
+    public function getProtectedValue($object, $property)
+    {
+        $property = new ReflectionProperty(get_class($object), $property);
+        $property->setAccessible(true);
+
+        return $property->getValue($object);
     }
 }

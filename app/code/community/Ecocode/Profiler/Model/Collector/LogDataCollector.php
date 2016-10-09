@@ -7,6 +7,24 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_LateDataCollectorInterface
 {
+    private $errorNames = [
+        E_DEPRECATED        => 'E_DEPRECATED',
+        E_USER_DEPRECATED   => 'E_USER_DEPRECATED',
+        E_NOTICE            => 'E_NOTICE',
+        E_USER_NOTICE       => 'E_USER_NOTICE',
+        E_STRICT            => 'E_STRICT',
+        E_WARNING           => 'E_WARNING',
+        E_USER_WARNING      => 'E_USER_WARNING',
+        E_COMPILE_WARNING   => 'E_COMPILE_WARNING',
+        E_CORE_WARNING      => 'E_CORE_WARNING',
+        E_USER_ERROR        => 'E_USER_ERROR',
+        E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
+        E_COMPILE_ERROR     => 'E_COMPILE_ERROR',
+        E_PARSE             => 'E_PARSE',
+        E_ERROR             => 'E_ERROR',
+        E_CORE_ERROR        => 'E_CORE_ERROR',
+    ];
+
     protected $logger;
 
     /**
@@ -23,7 +41,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
         $this->data = [
-            'entries'     => [],
+            'logs'        => [],
             'total_count' => 0
         ];
     }
@@ -34,7 +52,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
         $this->data = [];
         if ($this->logger) {
             $this->data         = $this->computeErrorsCount();
-            $this->data['logs'] = $this->sanitizeLogs($this->logger->getLogs());
+            $this->data['logs'] = $this->sanitizeLogs($this->getLogger()->getLogs());
         }
     }
 
@@ -138,15 +156,16 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
 
     private function computeErrorsCount()
     {
-        $count = [
-            'total_log_count'   => count($this->logger->getLogs()),
-            'error_count'       => $this->logger->countErrors(),
+        $logger = $this->getLogger();
+        $count  = [
+            'total_log_count'   => count($logger->getLogs()),
+            'error_count'       => $logger->countErrors(),
             'deprecation_count' => 0,
             'scream_count'      => 0,
             'priorities'        => [],
         ];
 
-        foreach ($this->logger->getLogs() as $log) {
+        foreach ($logger->getLogs() as $log) {
             if (isset($count['priorities'][$log['priority']])) {
                 ++$count['priorities'][$log['priority']]['count'];
             } else {
@@ -175,7 +194,19 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
         return isset($this->data['total_log_count']) ? $this->data['total_log_count'] : 0;
     }
 
+
     /**
+     * @codeCoverageIgnore
+     * {@inheritdoc}
+     */
+    protected function getLogger()
+    {
+        return $this->logger;
+    }
+
+
+    /**
+     * @codeCoverageIgnore
      * {@inheritdoc}
      */
     public function getName()

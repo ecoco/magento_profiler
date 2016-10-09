@@ -1,14 +1,16 @@
 <?php
 
-class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_AbstractController
+class Ecocode_Profiler_CacheController
+    extends Ecocode_Profiler_Controller_AbstractController
 {
     public function clearAction()
     {
+        $app   = $this->getApp();
         $types = $this->getRequest()->getParam('types', '');
         $types = explode(',', $types);
 
         foreach ($types as $type) {
-            Mage::app()->getCacheInstance()->cleanType($type);
+            $app->getCacheInstance()->cleanType($type);
         }
 
         $this->getResponse()
@@ -18,7 +20,7 @@ class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_Abstr
 
     public function clearAllAction()
     {
-        Mage::app()->getCacheInstance()->flush();
+        $this->getApp()->getCacheInstance()->flush();
 
         $this->getResponse()
             ->setHeader('content-type', 'application/json')
@@ -49,7 +51,8 @@ class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_Abstr
 
     protected function setCacheStatus(array $types, $status)
     {
-        $allTypes = Mage::app()->getCacheInstance()->getTypes();
+        $app      = $this->getApp();
+        $allTypes = $app->getCacheInstance()->getTypes();
         $allTypes = array_map(function ($type) {
             return $type->getData('status');
         }, $allTypes);
@@ -62,7 +65,7 @@ class Ecocode_Profiler_CacheController extends Ecocode_Profiler_Controller_Abstr
             }
         }
         if ($updatedTypes > 0) {
-            Mage::app()->saveUseCache($allTypes);
+            $app->saveUseCache($allTypes);
         }
     }
 }

@@ -11,18 +11,38 @@ class Ecocode_Profiler_Controller_AbstractController
 
     public function preDispatch()
     {
-        if (!Mage::app() instanceof Ecocode_Profiler_Model_AppDev) {
-            header('HTTP/1.0 403 Forbidden');
-            exit('You are not allowed to access this file. Check ' . basename(__FILE__) . ' for more information.');
+        $app = $this->getApp();
+        //should not be needed as we do not include development.xml
+        //in production anyway
+        if (!$app instanceof Ecocode_Profiler_Model_AppDev) {
+            throw new \RuntimeException('You are not allowed to access this file. Check ' . basename(__FILE__) . ' for more information.');
         }
 
-        Mage::app()->getConfig()->setNode('frontend/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type', 'disabled');
-        Mage::app()->getConfig()->setNode('frontend/events/core_block_abstract_to_html_after/observers/ecocode_profiler_context/type', 'disabled');
+        /** @var Mage_Core_Model_Config $config */
+        $config = $app->getConfig();
+
+        //disable before/after to html observer as its quiet costly
+        $config->setNode('frontend/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type', 'disabled');
+        $config->setNode('frontend/events/core_block_abstract_to_html_after/observers/ecocode_profiler_context/type', 'disabled');
+
         parent::preDispatch();
         return $this;
     }
 
-    public function getProfiler()
+    /**
+     * @codeCoverageIgnore
+     * @return Mage_Core_Model_App
+     */
+    protected function getApp()
+    {
+        return Mage::app();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Model_Profiler
+     */
+    protected function getProfiler()
     {
         if (!$this->profiler) {
             $this->profiler = Mage::getSingleton('ecocode_profiler/profiler');

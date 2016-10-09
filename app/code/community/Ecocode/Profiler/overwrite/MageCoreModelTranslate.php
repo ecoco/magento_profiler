@@ -35,7 +35,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 
         $translation = parent::translate($args);
         if ($translation === '') {
-            //@TODO log?
+            //just return nothing we can do here? maybe log a stacktrace?
             return $translation;
         }
 

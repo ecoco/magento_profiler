@@ -145,7 +145,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
         $panelBlock->setCollector($collector);
 
-        $this->renderLayout();
+        return $this->renderLayout();
     }
 
     public function phpinfoAction()

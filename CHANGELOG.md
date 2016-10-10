@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-1.0.2
+1.1.0
 -----
 * improved logger, will now also display deprecations
 * added unit tests

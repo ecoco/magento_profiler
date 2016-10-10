@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Block_Collector_Layout_Panel
+ */
 class Ecocode_Profiler_Block_Collector_Layout_Panel
     extends Ecocode_Profiler_Block_Collector_Base
 {

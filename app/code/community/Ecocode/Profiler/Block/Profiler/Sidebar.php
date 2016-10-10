@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Block_Profiler_Sidebar
+ */
 class Ecocode_Profiler_Block_Profiler_Sidebar
     extends Mage_Core_Block_Template
 {

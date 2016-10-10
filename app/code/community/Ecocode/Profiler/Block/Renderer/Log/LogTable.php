@@ -2,7 +2,6 @@
 
 /**
  * Class Ecocode_Profiler_Block_Renderer_Log_LogTable
- *
  */
 class Ecocode_Profiler_Block_Renderer_Log_LogTable
     extends Ecocode_Profiler_Block_Renderer_AbstractRenderer

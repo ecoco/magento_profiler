@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Block_Collector_Base
+ */
 class Ecocode_Profiler_Block_Collector_Base
     extends Mage_Core_Block_Template
 {

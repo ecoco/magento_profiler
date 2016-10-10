@@ -1,17 +1,17 @@
 <phpunit
-        bootstrap="app/code/community/Ecocode/Profiler/Test/Prod/bootstrap.php"
+        bootstrap="app/code/community/Ecocode/Profiler/Tests/Prod/bootstrap.php"
         colors="true"
         verbose="true">
     <testsuites>
         <testsuite name="Ecocode Magento Profiler">
-            <directory suffix="Test.php">app/code/community/Ecocode/Profiler/Test/Prod</directory>
+            <directory suffix="Test.php">app/code/community/Ecocode/Profiler/Tests/Prod</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">app/code/community/Ecocode/Profiler</directory>
             <exclude>
-                <directory suffix=".php">app/code/community/Ecocode/Profiler/Test</directory>
+                <directory suffix=".php">app/code/community/Ecocode/Profiler/Tests</directory>
             </exclude>
         </whitelist>
     </filter>

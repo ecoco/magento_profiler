@@ -1,0 +1,8 @@
+exclude_patterns:
+    - 'dev.php'
+    - '*.css.phtml'
+    - '*.js.phtml'
+
+rules:
+    php.psr1:
+        enabled: false

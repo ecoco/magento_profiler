@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Block_Profiler_Sidebar_Menu
+ */
 class Ecocode_Profiler_Block_Profiler_Sidebar_Menu extends Mage_Core_Block_Template
 {
     protected $profile = null;

@@ -81,4 +81,3 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends
         return $result;
     }
 }
-

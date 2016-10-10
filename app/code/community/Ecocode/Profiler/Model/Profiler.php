@@ -135,7 +135,7 @@ class Ecocode_Profiler_Model_Profiler
             }
         }
 
-        if (!($ret = $this->getStorage()->write($profile))) {
+        if (!$this->getStorage()->write($profile)) {
             throw new Exception('Unable to store the profiler information.', ['configured_storage' => get_class($this->storage)]);
         }
 

@@ -2,7 +2,6 @@
 
 /**
  * Class Ecocode_Profiler_Block_Renderer_Context
- *
  */
 class Ecocode_Profiler_Block_Renderer_Mysql_QueryTable
     extends Ecocode_Profiler_Block_Renderer_AbstractRenderer

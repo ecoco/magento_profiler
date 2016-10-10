@@ -2,7 +2,6 @@
 
 /**
  * Class Ecocode_Profiler_Block_Collector_Log_Panel
- *
  */
 class Ecocode_Profiler_Block_Collector_Log_Panel
     extends Ecocode_Profiler_Block_Collector_Base

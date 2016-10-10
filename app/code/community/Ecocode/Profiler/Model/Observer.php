@@ -47,7 +47,7 @@ class Ecocode_Profiler_Model_Observer
         $this->injectToolbar($response, $request, $token);
     }
 
-    public function onTerminate(Varien_Event_Observer $observer)
+    public function onTerminate()
     {
         foreach ($this->profiles as $request) {
             $this->getProfiler()->saveProfile($this->profiles[$request]);

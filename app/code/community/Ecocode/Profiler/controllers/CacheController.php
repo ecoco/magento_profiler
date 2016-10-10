@@ -53,7 +53,7 @@ class Ecocode_Profiler_CacheController
     {
         $app      = $this->getApp();
         $allTypes = $app->getCacheInstance()->getTypes();
-        $allTypes = array_map(function ($type) {
+        $allTypes = array_map(function (Varien_Object $type) {
             return $type->getData('status');
         }, $allTypes);
 

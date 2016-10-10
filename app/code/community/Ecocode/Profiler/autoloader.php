@@ -5,6 +5,8 @@ class Ecocode_Profiler_Autoloader
 {
     public static $autoloader;
 
+    /** @var Closure  */
+    protected $includeFile;
     protected $classMap = [];
 
 
@@ -23,7 +25,7 @@ class Ecocode_Profiler_Autoloader
      */
     public function register($prepend = false)
     {
-        spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+        spl_autoload_register([$this, 'loadClass'], true, $prepend);
     }
 
     /**
@@ -31,14 +33,23 @@ class Ecocode_Profiler_Autoloader
      */
     public function unregister()
     {
-        spl_autoload_unregister(array($this, 'loadClass'));
+        spl_autoload_unregister([$this, 'loadClass']);
     }
 
     public function loadClass($class)
     {
         if (isset($this->classMap[$class])) {
-            ecocodeAutoloaderIncludeFile($this->classMap[$class]);
-
+            /**
+             * Scope isolated include.
+             *
+             * Prevents access to $this/self from included files.
+             *
+             * @param $file
+             */
+            $includeFile = function ($file) {
+                include $file;
+            };
+            $includeFile($this->classMap[$class]);
             return true;
         }
     }
@@ -47,21 +58,11 @@ class Ecocode_Profiler_Autoloader
     {
         if (strpos($file, '/') !== 0) {
             $overwriteDir = __DIR__ . DIRECTORY_SEPARATOR . 'overwrite' . DIRECTORY_SEPARATOR;
-            $file = $overwriteDir . $file;
+            $file         = $overwriteDir . $file;
         }
         $this->classMap[$className] = $file;
 
         return $this;
     }
-}
 
-
-/**
- * Scope isolated include.
- *
- * Prevents access to $this/self from included files.
- */
-function ecocodeAutoloaderIncludeFile($file)
-{
-    include $file;
 }

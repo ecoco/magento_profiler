@@ -68,4 +68,3 @@ abstract class Mage_Eav_Model_Entity_Abstract extends
         return $result;
     }
 }
-

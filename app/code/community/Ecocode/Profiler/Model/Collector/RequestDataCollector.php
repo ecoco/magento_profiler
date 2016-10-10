@@ -84,10 +84,11 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         $sessionMetadata   = [];
         $sessionAttributes = [];
         //@TODO get all magento session singletons to split them by namespace
-        $session           = null;
         $flashes           = [];
 
-        /*        if (false && $request->hasSession()) {
+        /*
+        $session           = null
+        if (false && $request->hasSession()) {
                     $session = $request->getSession();
                     if ($session->isStarted()) {
                         $sessionMetadata['Created']   = date(DATE_RFC822, $session->getMetadataBag()->getCreated());

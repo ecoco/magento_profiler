@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/ecoco/magento_profiler.svg?branch=master)](https://travis-ci.org/ecoco/magento_profiler)
 [![Coverage Status](https://coveralls.io/repos/github/ecoco/magento_profiler/badge.svg?branch=master)](https://coveralls.io/github/ecoco/magento_profiler?branch=master)
+[![Code Climate](https://codeclimate.com/github/ecoco/magento_profiler/badges/gpa.svg)](https://codeclimate.com/github/ecoco/magento_profiler)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f86c6354-5604-4472-8c59-daa3f71dad54/mini.png)](https://insight.sensiolabs.com/projects/f86c6354-5604-4472-8c59-daa3f71dad54)
 
 The ecocode profiler provides a development toolbar for Magento which displays a wide range of metrics and page load data for all the pages of the shop. It gives you direct access to the page's database queries, memory usage, events, requests, layout rendering, translation resolution and many other useful statistics. It is also easily extendable if you need to track additional metrics.
 

@@ -6,6 +6,7 @@ if ((!isset($_SERVER['ALLOW_PROFILER']) || $_SERVER['ALLOW_PROFILER'] !== '1') &
     )
 ) {
     header('HTTP/1.0 403 Forbidden');
+    //exit here, if you do not deploy the profiler on production you can comment these lines
     exit('You are not allowed to access this file. Check ' . basename(__FILE__) . ' for more information.');
 }
 
@@ -30,14 +31,9 @@ if (!file_exists($mageFilename)) {
     throw new RuntimeException($mageFilename  . " was not found");
 }
 
-if (file_exists($maintenanceFile)) {
-    include_once dirname(__FILE__) . '/errors/503.php';
-    exit;
-
-}
-
 require_once $mageFilename;
 require_once PROFILER_DIR . 'debug.php';
+
 
 
 if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {

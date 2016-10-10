@@ -16,8 +16,7 @@ define('MAGENTO_ROOT', $_baseDir);
 require_once $_baseDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
 
 if (!Mage::isInstalled()) {
-    echo 'Magento Unit Tests can run only on installed version';
-    exit(1);
+    throw new RuntimeException('Magento Unit Tests can run only on installed version');
 }
 
 
@@ -45,5 +44,8 @@ spl_autoload_register(function ($className) {
             '_'  => '/'
         ]
     );
-    @include $filePath . '.php';
+    $file = $filePath . '.php';
+    if (stream_resolve_include_path($file)) {
+        include $filePath . '.php';
+    }
 });

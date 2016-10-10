@@ -31,6 +31,7 @@ if (!file_exists($mageCacheFile)) {
 
 require_once $mageCacheFile;
 
+
 class Mage extends MageOriginal
 {
     protected static $_logChannels = [];
@@ -119,3 +120,5 @@ class Mage extends MageOriginal
         return static::$_registry;
     }
 }
+
+Mage::register('original_include_path', get_include_path());

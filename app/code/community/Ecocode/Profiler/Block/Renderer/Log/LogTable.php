@@ -33,7 +33,7 @@ class Ecocode_Profiler_Block_Renderer_Log_LogTable
         return isset($this->_data['is_deprecation']) ? $this->_data['is_deprecation'] : false;
     }
 
-    public function getIsChannelDefined()
+    public function isChannelDefined()
     {
         $logs = $this->getLogs();
         $log  = reset($logs);

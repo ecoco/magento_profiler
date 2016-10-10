@@ -127,6 +127,11 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         return $this->getData('render_time', 0);
     }
 
+    public function getRenderLog()
+    {
+        return $this->getData('render_log', []);
+    }
+
     public function getBlocksNotRendered()
     {
         return $this->getData('blocks_not_rendered', []);
@@ -146,6 +151,8 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
     {
         return $this->getData('blocks_rendered_count', 0);
     }
+
+
 
     /**
      * @codeCoverageIgnore

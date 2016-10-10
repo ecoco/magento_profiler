@@ -29,9 +29,9 @@ class Ecocode_Profiler_Helper_Data
      */
     public static function getVersion()
     {
-        if (self::$version === null && class_exists('Mage')) {
+        if (self::$version === null && class_exists('Mage') && $config = Mage::getConfig()) {
             //try to load from magento
-            $config = Mage::getConfig()->getModuleConfig('Ecocode_Profiler');
+            $config = $config->getModuleConfig('Ecocode_Profiler');
             if ($config && $config->version) {
                 self::$version = (string)$config->version;
             }

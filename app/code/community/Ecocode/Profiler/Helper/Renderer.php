@@ -6,7 +6,7 @@
 class Ecocode_Profiler_Helper_Renderer
     extends Mage_Core_Helper_Abstract
 {
-    protected $renderer = [];
+    protected $backTraceRenderer;
 
     public function get($name)
     {

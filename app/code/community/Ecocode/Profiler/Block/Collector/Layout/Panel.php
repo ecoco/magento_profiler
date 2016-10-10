@@ -37,7 +37,7 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
             }
             $prefix .= $sibling ? '│ ' : '  ';
         }
-        $percent = $node['render_time_percent'] * 100;
+        $percent = $node['render_time_percent'] *= 100;
 
         if (false && $node['render_time'] * 1000 < 1) {
             $str = $start . "\n";
@@ -68,15 +68,18 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
 
     protected function createCallTree()
     {
-        $tree            = [];
-        $totalRenderTime = $this->getTotalRenderTime();
-        foreach ($this->data['render_log'] as $id => &$node) {
+        $tree = [];
+        /** @var Ecocode_Profiler_Model_Collector_LayoutDataCollector $collector */
+        $collector       = $this->getCollector();
+        $totalRenderTime = $collector->getTotalRenderTime();
+        $nodeList       = $collector->getRenderLog();
+        foreach ($nodeList as $id => &$node) {
             $node['render_time_percent'] = $node['render_time_incl'] / $totalRenderTime;
         }
-        foreach ($this->data['render_log'] as $id => &$node) {
-            $this->data['render_log'][$id] = $node;
+        foreach ($nodeList as $id => &$node) {
+            $renderLog[$id] = $node;
             if ($node['parent_id'] === false) {
-                $this->resolveChildren($node);
+                $this->resolveChildren($node, $nodeList);
                 $tree[$id] = $node;
             }
         }
@@ -84,14 +87,14 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
         return $tree;
     }
 
-    protected function resolveChildren(&$node)
+    protected function resolveChildren(&$node, array $nodeList)
     {
         $children = [];
         if (isset($node['children'])) {
             foreach ($node['children'] as $childId) {
-                $child = $this->data['render_log'][$childId];
+                $child = $nodeList[$childId];
 
-                $this->resolveChildren($child);
+                $this->resolveChildren($child, $nodeList);
                 $children[$childId] = $child;
             }
         }

@@ -1,5 +1,8 @@
 # Ecocode Profiler - Magento 1.x Web Profiler
 
+[![Build Status](https://travis-ci.org/ecoco/magento_profiler.svg?branch=master)](https://travis-ci.org/ecoco/magento_profiler)
+[![Coverage Status](https://coveralls.io/repos/github/ecoco/magento_profiler/badge.svg?branch=master)](https://coveralls.io/github/ecoco/magento_profiler?branch=master)
+
 The ecocode profiler provides a development toolbar for Magento which displays a wide range of metrics and page load data for all the pages of the shop. It gives you direct access to the page's database queries, memory usage, events, requests, layout rendering, translation resolution and many other useful statistics. It is also easily extendable if you need to track additional metrics.
 
 This profiler is based on the awesome [Symfony WebProfiler][4].
@@ -7,7 +10,7 @@ The concept and code of the WebProfiler have been ported to assist with Magento 
 
 
 ## Requirements
-* php >= 5.4
+* php >= 5.5.9
 * magento < 2
 
 Tested with magento 

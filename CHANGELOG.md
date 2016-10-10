@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+next version
+-----
+* improved logger, will now also display deprecations
+* added unit tests
+* small toolbar adjustments
+* general clean up
+* cleaned up overwrite logic
+
 1.0.1
 -----
 

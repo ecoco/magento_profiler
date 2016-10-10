@@ -80,7 +80,7 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
             $node['render_time_percent'] = $node['render_time_incl'] / $totalRenderTime;
         }
         foreach ($nodeList as $id => &$node) {
-            $renderLog[$id] = $node;
+            $nodeList[$id] = $node;
             if ($node['parent_id'] === false) {
                 $this->resolveChildren($node, $nodeList);
                 $tree[$id] = $node;

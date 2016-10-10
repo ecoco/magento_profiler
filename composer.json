@@ -3,6 +3,13 @@
     "description": "Web Profiler for Magento 1.x",
     "license": "MIT",
     "type": "magento-module",
+    "keywords": ["Magento", "logging", "performance", "toolbar", "profiler"],
+    "homepage": "https://github.com/ecoco/magento_profiler",
+    "support": {
+        "wiki": "https://github.com/ecoco/magento_profiler/wiki",
+        "issues": "https://github.com/ecoco/magento_profiler/issues",
+        "source": "https://github.com/ecoco/magento_profiler"
+    },
     "authors": [
         {
             "name": "Justus Krapp",

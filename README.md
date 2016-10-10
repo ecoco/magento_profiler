@@ -29,6 +29,7 @@ Demo Stores:
 
 ![Profiler](/docs/image/profiler.jpg "Profiler")
 
+[More Images](docs/images.md)
 
 ## Installation
 
@@ -93,7 +94,7 @@ time to time to verify the result.
 * Mysql
   * Display of all queries with syntax highlighting and stack traces to locate the origin
   * Queries by context so you can easily determine the origin block
-  * Detection of identical queries that can be avoided
+  * **Detection of identical** queries that can be avoided
   * Metrics for "mysql crud" operations
   * Support for multiple database connections
 * Events
@@ -116,7 +117,7 @@ time to time to verify the result.
   * Display of all `Mage::log` calls
 * Models
   * Display of all model load, delete and save calls
-  * Detection of "load" calls within loops!
+  * **Detection of "load" calls within loops!**
 * Cache
   * Display of current cache configuration including the option to enable/disable and flush from the profiler
   * Display of all cache calls including not-for-cache **hits** and **misses**

@@ -10,6 +10,10 @@ env:
   - MAGENTO_VERSION=magento-mirror-1.8.1.0
   - MAGENTO_VERSION=magento-mirror-1.7.0.2
 
+matrix:
+  include:
+    - env: MAGENTO_VERSION=magento-mirror-1.9.2.4 NO_DEPS=1
+
 services:
   - mysql
 
@@ -30,28 +34,8 @@ install:
   - export PATH=$PWD:$PATH
 
 before_script:
-  # Clean mysql database
-  - mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
+  - ./travis-install.sh
 
-  - cd $TRAVIS_BUILD_DIR/build
-
-  # Install Magento
-  - n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
-  - mkdir -p magento/var/log
-
-  # Install our module
-  - cd $TRAVIS_BUILD_DIR/build/magento
-  - n98-magerun.phar sys:info
-
-  - modman init
-  - modman link $TRAVIS_BUILD_DIR
-
-  - cp $TRAVIS_BUILD_DIR/composer.json .
-  #make php7 possible
-  - 'sed -i ''s/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/'' composer.json'
-  - composer install
-  - composer config -g repositories.firegento composer https://packages.firegento.com
-  - composer require inchoo/php7
 script:
   - cd $TRAVIS_BUILD_DIR
   - mkdir -p build/logs

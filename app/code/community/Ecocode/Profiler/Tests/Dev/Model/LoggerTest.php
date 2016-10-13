@@ -5,6 +5,15 @@ use Monolog\Handler\TestHandler;
 class Ecocode_Profiler_Tests_Dev_Model_LoggerTest
     extends TestHelper
 {
+    protected function setUp()
+    {
+        if (!class_exists('Monolog\Handler\TestHandler')) {
+            $this->markTestSkipped(
+                'Monolog not installed skipping.'
+            );
+        }
+    }
+
     public function testMageLog()
     {
         $handler = new Ecocode_Profiler_Model_Logger_DebugHandler();

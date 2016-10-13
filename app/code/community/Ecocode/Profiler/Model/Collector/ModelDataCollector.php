@@ -90,12 +90,12 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
             $traceHashList[$traceHash]['total_time'] += $item['time'];
         }
 
-        $traceHashList = array_filter($traceHashList, function ($v) {
-            return $v['count'] > 1;
+        $traceHashList = array_filter($traceHashList, function ($trace) {
+            return $trace['count'] > 1;
         });
 
-        usort($traceHashList, function ($a, $b) {
-            return $b['count'] - $a['count'];
+        usort($traceHashList, function ($trace1, $trace2) {
+            return $trace2['count'] - $trace1['count'];
         });
 
         return array_values($traceHashList);

@@ -8,13 +8,13 @@ class Ecocode_Profiler_Helper_Data
     protected static $version;
     protected static $overwriteDirectory;
 
-    protected $configClassNameReflection;
+    protected $configClassReflection;
     protected $classNameCache;
 
     public static function getOverwriteDir()
     {
         if (self::$overwriteDirectory === null) {
-            self::$overwriteDirectory = MAGENTO_ROOT . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
+            self::$overwriteDirectory = join(DIRECTORY_SEPARATOR, [MAGENTO_ROOT, 'var', 'cache', '']);
         }
 
         if (!file_exists(self::$overwriteDirectory)) {
@@ -39,7 +39,7 @@ class Ecocode_Profiler_Helper_Data
 
         if (self::$version === null) {
             //try to load it from the config directly
-            $configFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'config.xml';
+            $configFile = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'etc', 'config.xml']);
             $xml        = file_get_contents($configFile);
             preg_match('/<version>([0-9\.]+)<\/version>/', $xml, $matches);
             if (!$matches) {
@@ -103,12 +103,12 @@ class Ecocode_Profiler_Helper_Data
         if ($this->classNameCache !== null && $reload === false) {
             return $this->classNameCache;
         }
-        if ($this->configClassNameReflection === null) {
-            $this->configClassNameReflection = new ReflectionProperty('Mage_Core_Model_Config', '_classNameCache');
-            $this->configClassNameReflection->setAccessible(true);
+        if ($this->configClassReflection === null) {
+            $this->configClassReflection = new ReflectionProperty('Mage_Core_Model_Config', '_classNameCache');
+            $this->configClassReflection->setAccessible(true);
         }
 
-        $classNameCache = $this->configClassNameReflection->getValue(Mage::getConfig());
+        $classNameCache = $this->configClassReflection->getValue(Mage::getConfig());
         foreach ($classNameCache as $groupRoot) {
             foreach ($groupRoot as $module => $classNames) {
                 foreach ($classNames as $class => $className) {
@@ -155,7 +155,7 @@ class Ecocode_Profiler_Helper_Data
     public function cleanBacktrace(array $backtrace, array $ignoreCalls = [], array $ignoreInstanceOf = [])
     {
         $item = reset($backtrace);
-        while ($item && $this->_cleanBacktrace($item, $ignoreCalls, $ignoreInstanceOf)) {
+        while ($item && $this->shouldRemoveBacktraceItem($item, $ignoreCalls, $ignoreInstanceOf)) {
             array_shift($backtrace);
             $item = reset($backtrace);
         }
@@ -163,7 +163,7 @@ class Ecocode_Profiler_Helper_Data
         return $backtrace;
     }
 
-    public function _cleanBacktrace(array $data, array $ignoreCalls = [], array $ignoreInstanceOf = [])
+    protected function shouldRemoveBacktraceItem(array $data, array $ignoreCalls = [], array $ignoreInstanceOf = [])
     {
         //remove if not called from a class
         if (!isset($data['class'], $data['function'])) {

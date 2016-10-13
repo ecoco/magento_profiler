@@ -147,8 +147,8 @@ class Ecocode_Profiler_Model_Profiler_FileStorage
         $data = [
             'token'        => $profile->getToken(),
             'parent'       => $profile->getParentToken(),
-            'children'     => array_map(function (Ecocode_Profiler_Model_Profile $p) {
-                return $p->getToken();
+            'children'     => array_map(function (Ecocode_Profiler_Model_Profile $profile) {
+                return $profile->getToken();
             }, $profile->getChildren()),
             'data'         => $profile->getCollectors(),
             'ip'           => $profile->getIp(),

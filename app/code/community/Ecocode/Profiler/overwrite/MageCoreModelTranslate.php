@@ -101,9 +101,10 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      *
      * @param array  $data
      * @param string $scope
+     * @param bool   $forceReload
      * @return Mage_Core_Model_Translate
      */
-    protected function _addData($data, $scope)
+    protected function _addData($data, $scope, $forceReload = false)
     {
         foreach ($data as $key => $value) {
 

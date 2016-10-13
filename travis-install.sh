@@ -18,7 +18,6 @@ n98-magerun.phar sys:info
 modman init
 modman link $TRAVIS_BUILD_DIR
 
-
 cp $TRAVIS_BUILD_DIR/composer.json .
 
 #add magento-root-dir directive

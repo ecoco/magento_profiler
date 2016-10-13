@@ -12,7 +12,8 @@ env:
 
 matrix:
   include:
-    - env: MAGENTO_VERSION=magento-mirror-1.9.2.4 NO_DEPS=1
+    - php: 7.0
+      env: MAGENTO_VERSION=magento-mirror-1.9.2.4 NO_DEPS=1
 
 services:
   - mysql
@@ -34,6 +35,7 @@ install:
   - export PATH=$PWD:$PATH
 
 before_script:
+  - cd $TRAVIS_BUILD_DIR
   - ./travis-install.sh
 
 script:

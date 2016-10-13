@@ -21,7 +21,7 @@ modman link $TRAVIS_BUILD_DIR
 cp $TRAVIS_BUILD_DIR/composer.json .
 
 #add magento-root-dir directive
-'sed -i ''s/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/'' composer.json'
+sed -i 's/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/' composer.json
 
 if [ $NO_DEPS ];
 then

@@ -18,10 +18,7 @@ n98-magerun.phar sys:info
 modman init
 modman link $TRAVIS_BUILD_DIR
 
-cp $TRAVIS_BUILD_DIR/composer.json .
 
-#add magento-root-dir directive
-sed -i 's/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/' composer.json
 
 if [ $NO_DEPS ];
 then
@@ -29,6 +26,11 @@ then
     composer require phpunit/phpunit
     composer require satooshi/php-coveralls
 else
+    cp $TRAVIS_BUILD_DIR/composer.json .
+
+    #add magento-root-dir directive
+    sed -i 's/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/' composer.json
+
     composer install
 fi
 

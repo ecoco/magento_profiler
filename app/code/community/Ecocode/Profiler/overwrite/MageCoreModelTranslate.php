@@ -20,14 +20,14 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 
     public function translate($args)
     {
-        $_args                = $args;
+        $argsCopy             = $args;
         $this->currentMessage = [
             'locale' => $this->_locale,
             'module' => null,
             'trace'  => []
         ];
 
-        $text = array_shift($_args);
+        $text = array_shift($argsCopy);
 
         if ($text instanceof Mage_Core_Model_Translate_Expr) {
             $this->currentMessage['module'] = $text->getModule();
@@ -39,7 +39,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
             return $translation;
         }
 
-        if (@vsprintf($this->currentMessage['translation'], $_args) === false) {
+        if (@vsprintf($this->currentMessage['translation'], $argsCopy) === false) {
             $trace = $this->addTrace();
             if ($trace && $this->traceHasFunctionCall($trace, 'getTranslateJson')) {
                 //dont log invalid as strings are used with empty placeholders is intended here
@@ -48,7 +48,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
             }
         }
 
-        $this->currentMessage['parameters']  = $_args;
+        $this->currentMessage['parameters']  = $argsCopy;
         $this->currentMessage['translation'] = $translation;
 
         $this->log();
@@ -103,7 +103,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      * @param string $scope
      * @return Mage_Core_Model_Translate
      */
-    protected function _addData($data, $scope, $forceReload = false)
+    protected function _addData($data, $scope)
     {
         foreach ($data as $key => $value) {
 

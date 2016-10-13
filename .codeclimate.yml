@@ -9,8 +9,12 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-  phpcodesniffer:
-    enabled: true
+    config:
+      file_extensions: "php"
+      rulesets: "phpmd-ruleset.xml"
+#disable check class camelCaseFirst
+#  phpcodesniffer:
+#    enabled: true
 
 ratings:
   paths:

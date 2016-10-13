@@ -48,12 +48,12 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
             $this->queries[] = $queryData;
         }
 
-        usort($this->queriesByContext, function ($a, $b) {
-            return $b['count'] - $a['count'];
+        usort($this->queriesByContext, function ($context1, $context2) {
+            return $context2['count'] - $context1['count'];
         });
 
-        usort($this->identicalQueries, function ($a, $b) {
-            return $b['count'] - $a['count'];
+        usort($this->identicalQueries, function ($query1, $query2) {
+            return $query2['count'] - $query1['count'];
         });
 
         $this->identicalQueries = array_filter($this->identicalQueries, function ($item) {

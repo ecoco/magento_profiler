@@ -155,7 +155,7 @@ class Ecocode_Profiler_Tests_Dev_Model_ObserverTest
         $injectToolbarMethod->invoke($observer, $response, $request);
 
         $this->assertContains('Some Content', $response->getBody());
-        $this->assertContains('<!-- START of Ecocode Web Debug Toolbar -->', $response->getBody());
+        $this->assertContains('<!-- START of ecocode Web Debug Toolbar -->', $response->getBody());
 
         $this->assertNotFalse($layout->getBlock('profiler_toolbar'));
         $this->assertNotFalse($layout->getBlock('profiler_base_js'));

@@ -3,7 +3,7 @@
         colors="true"
         verbose="true">
     <testsuites>
-        <testsuite name="Ecocode Magento Profiler">
+        <testsuite name="ecocode Magento Profiler">
             <directory suffix="Test.php">app/code/community/Ecocode/Profiler/Tests/Dev</directory>
         </testsuite>
     </testsuites>

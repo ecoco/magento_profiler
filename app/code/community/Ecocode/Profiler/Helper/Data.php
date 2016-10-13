@@ -62,15 +62,12 @@ class Ecocode_Profiler_Helper_Data
         $sourceFile = MAGENTO_ROOT . $ds . 'app' . $ds . 'code' . $ds . $fileName;
         $sourceMd5  = md5_file($sourceFile);
 
-
         $fileName  = sprintf('%s-%s-%s.php', $className, self::getVersion(), $sourceMd5);
         $cacheFile = self::getOverwriteDir() . $fileName;
 
         if (!file_exists($cacheFile)) {
             $code = file_get_contents($sourceFile);
-
             $code = preg_replace('/class ([^\s]+)/', 'class ' . $className, $code);
-
 
             file_put_contents($cacheFile, $code);
         }
@@ -97,6 +94,7 @@ class Ecocode_Profiler_Helper_Data
                 return 'unknown';
             }
         }
+
         return $classNames[$className];
     }
 

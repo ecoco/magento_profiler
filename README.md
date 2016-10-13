@@ -1,4 +1,4 @@
-# Ecocode Profiler - Magento 1.x Web Profiler
+# ecocode Profiler - Magento 1.x Web Profiler
 
 [![Build Status](https://travis-ci.org/ecoco/magento_profiler.svg?branch=master)](https://travis-ci.org/ecoco/magento_profiler)
 [![Coverage Status](https://coveralls.io/repos/github/ecoco/magento_profiler/badge.svg?branch=master)](https://coveralls.io/github/ecoco/magento_profiler?branch=master)

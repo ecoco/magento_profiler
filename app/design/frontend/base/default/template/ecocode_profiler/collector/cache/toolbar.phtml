@@ -33,14 +33,14 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
                     <?php if ($currentStatus): ?>
                         <a href="#"
                            data-url="<?php echo Mage::getUrl('_profiler/cache/clear', ['types' => $cache['id']]) ?>"
-                           class="btn btn-sm ajax-action">Clear</a> /
+                           class="ajax-action">Clear</a> /
                         <a href="#"
                            data-url="<?php echo Mage::getUrl('_profiler/cache/disable', ['types' => $cache['id']]) ?>"
-                           class="btn btn-sm ajax-action">Disable</a>
+                           class="ajax-action">Disable</a>
                     <?php else: ?>
                         <a href="#"
                            data-url="<?php echo Mage::getUrl('_profiler/cache/enable', ['types' => $cache['id']]) ?>"
-                           class="btn btn-sm ajax-action">Enable</a>
+                           class="ajax-action">Enable</a>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>

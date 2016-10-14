@@ -6,6 +6,11 @@ class Ecocode_Profiler_Tests_Dev_Model_Overwrite_MageTest
 {
     public function testGetLogger()
     {
+        if (!class_exists('Monolog\Handler\TestHandler')) {
+            $this->markTestSkipped(
+                'Monolog not installed skipping.'
+            );
+        }
         $logger = Mage::getLogger();
 
         $this->assertInstanceOf('Ecocode_Profiler_Model_Logger', $logger);
@@ -16,6 +21,11 @@ class Ecocode_Profiler_Tests_Dev_Model_Overwrite_MageTest
 
     public function testLog()
     {
+        if (!class_exists('Monolog\Handler\TestHandler')) {
+            $this->markTestSkipped(
+                'Monolog not installed skipping.'
+            );
+        }
         $logger = Mage::getLogger();
 
         $this->assertCount(0, $logger->getLogs());

@@ -35,7 +35,7 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
 
     public function setErrorHandler($handler)
     {
-        if (!class_exists('\Symfony\Component\Debug\Debug')) {
+        if (!@class_exists('\Symfony\Component\Debug\Debug')) {
             //only call if symfony debug is not available
             parent::setErrorHandler($handler);
         }

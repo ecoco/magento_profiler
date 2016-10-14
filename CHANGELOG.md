@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+next version
+-----
+* fixed an exception in debug mode when block output is suppressed with "disable module output"
+* fixed an exception when logging and monolog is not installed
+
 1.1.0
 -----
 * improved logger, will now also display deprecations

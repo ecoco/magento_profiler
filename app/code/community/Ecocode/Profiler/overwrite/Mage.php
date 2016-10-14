@@ -66,8 +66,9 @@ class Mage extends MageOriginal
     protected static function getNewLogger($channel)
     {
         if (!@class_exists('\Monolog\Logger')) {
-            return false;
+            return new Ecocode_Profiler_Model_NullLogger();
         }
+
         if (static::$loggerDebugHandler === null) {
             static::$loggerDebugHandler = new Ecocode_Profiler_Model_Logger_DebugHandler();
         }

@@ -19,7 +19,7 @@ use Monolog\Handler\TestHandler;
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
 class Ecocode_Profiler_Model_Logger_DebugHandler extends TestHandler
-    implements Ecocode_Profiler_Model_DebugLoggerInterface
+    implements Ecocode_Profiler_Model_Logger_DebugHandlerInterface
 {
     /**
      * {@inheritdoc}

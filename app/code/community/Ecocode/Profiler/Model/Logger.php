@@ -18,7 +18,7 @@ use Monolog\Logger as BaseLogger;
  */
 class Ecocode_Profiler_Model_Logger
     extends BaseLogger
-    implements Ecocode_Profiler_Model_DebugLoggerInterface
+    implements Ecocode_Profiler_Model_LoggerInterface
 {
 
     protected static $levelMap = [
@@ -64,14 +64,14 @@ class Ecocode_Profiler_Model_Logger
     }
 
     /**
-     * Returns a DebugLoggerInterface instance if one is registered with this logger.
+     * Returns a Ecocode_Profiler_Model_Logger_DebugHandlerInterface instance if one is registered with this logger.
      *
-     * @return Ecocode_Profiler_Model_DebugLoggerInterface|null A DebugLoggerInterface instance or null if none is registered
+     * @return Ecocode_Profiler_Model_Logger_DebugHandlerInterface|null A DebugLoggerInterface instance or null if none is registered
      */
     private function getDebugLogger()
     {
         foreach ($this->handlers as $handler) {
-            if ($handler instanceof Ecocode_Profiler_Model_DebugLoggerInterface) {
+            if ($handler instanceof Ecocode_Profiler_Model_Logger_DebugHandlerInterface) {
                 return $handler;
             }
         }

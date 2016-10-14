@@ -56,8 +56,6 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
         $this->renderedBlocks[$id] = $block;
         $this->renderLog[$id]      = $data;
-
-
     }
 
     /**
@@ -70,32 +68,16 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
 
         $layout       = $this->getLayout();
         $outputBlocks = [];
+
         foreach ($outputProperties->getValue($layout) as $name => $data) {
             $block          = $layout->getBlock($name);
             $outputBlocks[] = $block->getData('profiler_id');
         }
 
-        $totalTime = 0;
-        foreach ($this->renderLog as &$data) {
-            $renderTimeExcl = $data['render_time_incl'];
-            foreach ($data['children'] as $childId) {
-                $child = $this->renderLog[$childId];
-                $renderTimeExcl -= $child['render_time_incl'];
-            }
-            $data['render_time'] = $renderTimeExcl;
+        $this->clearRenderLog();
+        $totalTime         = $this->collectTimingData();
+        $notRenderedBlocks = $this->collectNotRenderedBlocks();
 
-            $totalTime += $data['render_time'];
-        }
-
-        $renderedCount     = 0;
-        $notRenderedBlocks = [];
-        foreach ($layout->getAllBlocks() as $block) {
-            if ($block->getData('profiler_id')) {
-                $renderedCount++;
-            } else {
-                $notRenderedBlocks[] = $this->getBaseBlockData($block);
-            }
-        }
         $this->data = [
             'handles'                   => $layout->getUpdate()->getHandles(),
             'blocks_created_count'      => count($layout->getAllBlocks()),
@@ -107,7 +89,50 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
             'render_time'               => $totalTime
 
         ];
+
         return $this;
+    }
+
+    protected function collectNotRenderedBlocks()
+    {
+        $notRenderedBlocks = [];
+
+        foreach ($this->getLayout()->getAllBlocks() as $block) {
+            /** @var Mage_Core_Block_Abstract $block */
+            if (!$block->getData('profiler_id')) {
+                $notRenderedBlocks[] = $this->getBaseBlockData($block);
+            }
+        }
+
+        return $notRenderedBlocks;
+    }
+
+    protected function clearRenderLog()
+    {
+        foreach ($this->renderLog as $id => &$data) {
+            if (!isset($data['stop_render'])) {
+                //block is not rendered, so unset it
+                unset($this->renderLog[$id]);
+                continue;
+            }
+        }
+    }
+
+    protected function collectTimingData()
+    {
+        $totalTime = 0;
+        foreach ($this->renderLog as $id => &$data) {
+            $renderTimeExcl = $data['render_time_incl'];
+            foreach ($data['children'] as $childId) {
+                $child = $this->renderLog[$childId];
+                $renderTimeExcl -= $child['render_time_incl'];
+            }
+            $data['render_time'] = $renderTimeExcl;
+
+            $totalTime += $data['render_time'];
+        }
+
+        return $totalTime;
     }
 
     protected function getBaseBlockData(Mage_Core_Block_Abstract $block)
@@ -151,7 +176,6 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
     {
         return $this->getData('blocks_rendered_count', 0);
     }
-
 
 
     /**

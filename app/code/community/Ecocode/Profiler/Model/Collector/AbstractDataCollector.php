@@ -11,31 +11,29 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
 
     protected $contextHelper;
 
-
     public function init()
     {
         //fill if needed
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function serialize()
     {
         return serialize($this->data);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @param string $data
+     */
     public function unserialize($data)
     {
         $this->data = unserialize($data);
     }
 
-    public function getBlockPanelName()
-    {
-        return $this->getName() . '_panel';
-    }
-
-    public function getBlockMenuName()
-    {
-        return $this->getName() . '_menu';
-    }
 
     public function getBlockToolbarName()
     {

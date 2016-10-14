@@ -1,5 +1,8 @@
 <phpunit
         bootstrap="app/code/community/Ecocode/Profiler/Tests/Dev/bootstrap.php"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
         colors="true"
         verbose="true">
     <testsuites>

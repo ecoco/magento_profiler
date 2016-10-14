@@ -3,7 +3,7 @@ use Symfony\Component\Debug\BufferingLogger;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\Debug\ErrorHandler;
 
-if (class_exists('\Symfony\Component\Debug\Debug')) {
+if (@class_exists('\Symfony\Component\Debug\Debug')) {
     class MagentoErrorHandler extends ErrorHandler
     {
         public function handleException($exception, array $error = null)

@@ -2,11 +2,11 @@
 
 
 /**
- * DebugLoggerInterface.
+ * Ecocode_Profiler_Model_Logger_DebugHandlerInterface.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface Ecocode_Profiler_Model_DebugLoggerInterface
+interface Ecocode_Profiler_Model_Logger_DebugHandlerInterface
 {
     /**
      * Returns an array of logs.

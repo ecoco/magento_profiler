@@ -150,7 +150,6 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
 
     public function testCollect()
     {
-        /** @var Ecocode_Profiler_Model_Collector_LayoutDataCollector $collector */
         $collector = $this->getMockBuilder('Ecocode_Profiler_Model_Collector_LayoutDataCollector')
             ->setMethods(['getLayout'])
             ->getMock();
@@ -181,6 +180,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
 
         $parentBlock->setChild('test-child', $childBlock);
 
+        /** @var Ecocode_Profiler_Model_Collector_LayoutDataCollector $collector */
         foreach ($blocks as $block) {
             $event->setData('block', $block);
             $collector->beforeToHtml($observer);
@@ -196,6 +196,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
             new Mage_Core_Controller_Response_Http()
         );
 
+
         $this->assertCount(2, $collector->getLayoutHandles());
         $this->assertEquals(3, $collector->getBlocksCreatedCount());
         $this->assertEquals(2, $collector->getBlocksRenderedCount());
@@ -204,6 +205,50 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
         $this->assertCount(1, $blocksNotRendered);
         $this->assertEquals('block-3', $blocksNotRendered[0]['name']);
         $this->assertGreaterThan(0, $collector->getTotalRenderTime());
+    }
+
+    /**
+     * should not throw an exception for undefined index
+     */
+    public function testUnclosedBlockContext()
+    {
+        $testBlock = new Mage_Core_Block_Template();
+
+        $observer = $this->getObserver(['block' => $testBlock]);
+
+        $collector = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
+
+        $collector->beforeToHtml($observer);
+
+
+        $collector->collect(
+            new Mage_Core_Controller_Request_Http(),
+            new Mage_Core_Controller_Response_Http()
+        );
+
+        $this->assertEquals(0, $collector->getTotalRenderTime());
+    }
+
+    public function testClearRenderLog()
+    {
+        $testBlock = new Mage_Core_Block_Template();
+
+        $observer = $this->getObserver(['block' => $testBlock]);
+
+        $collector = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
+
+        $collector->beforeToHtml($observer);
+
+        $collector->beforeToHtml($observer);
+        $collector->afterToHtml($observer);
+
+
+        $collector->collect(
+            new Mage_Core_Controller_Request_Http(),
+            new Mage_Core_Controller_Response_Http()
+        );
+
+        $this->assertCount(1, $collector->getRenderLog());
     }
 
     /**

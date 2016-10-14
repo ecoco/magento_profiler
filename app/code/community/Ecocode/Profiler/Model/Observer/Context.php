@@ -13,6 +13,11 @@ class Ecocode_Profiler_Model_Observer_Context
         $event = $observer->getEvent();
         $block = $event->getData('block');
 
+        if (!$this->canOpenBlockContext($block)) {
+            //do not open block context as it would not get closed
+            return;
+        }
+
         $data = [
             'class'  => get_class($block),
             'module' => $block->getModuleName()
@@ -30,6 +35,7 @@ class Ecocode_Profiler_Model_Observer_Context
         $event = $observer->getEvent();
         $block = $event->getData('block');
 
+        /** @var Ecocode_Profiler_Model_Context $context */
         if ($context = $block->getData('__context')) {
             if ($block instanceof Mage_Core_Block_Template) {
                 $context->addData('template', $block->getTemplate());
@@ -51,5 +57,19 @@ class Ecocode_Profiler_Model_Observer_Context
         }
 
         return $this->helper;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param Mage_Core_Block_Abstract $block
+     * @return bool
+     */
+    public function canOpenBlockContext(Mage_Core_Block_Abstract $block)
+    {
+        if (Mage::getStoreConfig('advanced/modules_disable_output/' . $block->getModuleName())) {
+            return false;
+        }
+
+        return true;
     }
 }

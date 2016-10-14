@@ -1,9 +1,12 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Tests_Dev_Model_Collector_LogDataCollectorTest
+ *
+ */
 class Ecocode_Profiler_Tests_Dev_Model_Collector_LogDataCollectorTest
     extends TestHelper
 {
-
     public function testCollect()
     {
         /** @var Ecocode_Profiler_Model_Collector_LogDataCollector $collector */
@@ -21,6 +24,11 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LogDataCollectorTest
 
     public function testLateCollect()
     {
+        if (!class_exists('Monolog\Handler\TestHandler')) {
+            $this->markTestSkipped(
+                'Monolog not installed skipping.'
+            );
+        }
         $logHandler = new Ecocode_Profiler_Model_Logger_DebugHandler();
         $logger     = new Ecocode_Profiler_Model_Logger('test', [$logHandler]);
 

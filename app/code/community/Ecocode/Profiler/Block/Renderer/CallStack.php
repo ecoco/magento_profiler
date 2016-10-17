@@ -5,12 +5,12 @@
  *
  * @method getBag
  */
-class Ecocode_Profiler_Block_Renderer_BackTrace
+class Ecocode_Profiler_Block_Renderer_CallStack
     extends Ecocode_Profiler_Block_Renderer_AbstractRenderer
 {
     public function _construct()
     {
-        $this->setTemplate('ecocode_profiler/back-trace.phtml');
+        $this->setTemplate('ecocode_profiler/renderer/call-stack.phtml');
         parent::_construct();
     }
 
@@ -32,5 +32,12 @@ class Ecocode_Profiler_Block_Renderer_BackTrace
         }
 
         return $trace;
+    }
+
+    public function shouldWarp()
+    {
+        $wrap = $this->getData('wrap');
+
+        return $wrap === null ? true : $wrap;
     }
 }

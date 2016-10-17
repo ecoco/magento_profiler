@@ -21,6 +21,7 @@ class Ecocode_Profiler_Block_Toolbar
         if ($this->getProfile()) {
             return $this->getProfile()->getToken();
         }
+
         return false;
     }
 
@@ -30,6 +31,7 @@ class Ecocode_Profiler_Block_Toolbar
             $this->collectors = $this->getProfile()->getCollectors();
 
         }
+
         return $this->collectors;
     }
 
@@ -52,6 +54,7 @@ class Ecocode_Profiler_Block_Toolbar
     }
 
     /**
+     * @codeCoverageIgnore
      * @return Ecocode_Profiler_Model_Profile
      */
     public function getProfile()

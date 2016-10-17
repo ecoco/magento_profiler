@@ -14,6 +14,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Profiler_FileStorageTest
     extends \TestHelper
 {
     private $tmpDir;
+    /** @var Ecocode_Profiler_Model_Profiler_FileStorage */
     private $storage;
 
     protected function setUp()

@@ -129,13 +129,13 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      */
     protected function addTrace()
     {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20);
 
         while (($trace = reset($backtrace)) && (!isset($trace['function']) || $trace['function'] !== '__')) {
             array_shift($backtrace);
         }
 
-        return $this->currentMessage['trace'] = array_slice($backtrace, 0, 5);
+        return $this->currentMessage['trace'] = array_slice($backtrace, 0, 10);
     }
 
     /**

@@ -1,7 +1,13 @@
 <?php
 /** @var Ecocode_Profiler_Helper_ValueExporter $valueExporter */
 $valueExporter = $this->helper('ecocode_profiler/valueExporter');
-$prefix        = 'trans-' . uniqid(); ?>
+$prefix        = 'trans-' . uniqid();
+
+/** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
+$rendererHelper = Mage::helper('ecocode_profiler/renderer');
+?>
+
+
 <table>
     <thead>
     <tr>
@@ -16,7 +22,7 @@ $prefix        = 'trans-' . uniqid(); ?>
     <?php foreach ($this->getData('messages') as $index => $message): ?>
         <tr>
             <td class="font-normal text-small"><?php echo $message['locale'] ?></td>
-            <td class="font-normal text-small text-bold"><?php echo $message['module'] ?></td>
+            <td class="font-normal text-small text-bold nowrap"><?php echo $message['module'] ?></td>
             <td class="font-normal text-small"><?php echo $message['count'] ?></td>
             <td>
                 <?php echo $message['code'] ?>
@@ -47,25 +53,15 @@ $prefix        = 'trans-' . uniqid(); ?>
             <tr class="hidden" id="traces-<?php echo $prefix . $index ?>">
                 <td colspan="3"></td>
                 <td colspan="2">
-                    <div id="stack-<?php echo $prefix . $index ?>" class="hiddenx">
+                    <div id="stack-<?php echo $prefix . $index ?>">
                         <table class="">
                             <tbody>
-                            <?php foreach ($message['traces'] as $j => $trace): ?>
+                            <?php foreach (array_values($message['traces']) as $j => $trace): ?>
                                 <tr>
                                     <td class="nowrap">#<?php echo $j + 1 ?></td>
+                                    <td class="nowrap"><?php echo $trace['count']?>x</td>
                                     <td>
-                                        <ul class="sf-call-stack ">
-                                            <?php foreach ($trace as $item): ?>
-                                                <li>
-                                                    <?php echo isset($item['class']) ? $item['class'] . '::' : '' ?><?php echo $item['function'] ?>
-                                                    <br>
-                                                    <?php if (isset($item['file'])): ?>
-                                                        <small><?php echo $item['file'] ?>
-                                                            ::<?php echo $item['line'] ?></small>
-                                                    <?php endif; ?>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </ul>
+                                        <?php echo $rendererHelper->renderCallStack($j + 1, $trace['trace'], false) ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -19,7 +19,8 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
     public function _construct()
     {
         //ban cache usage as we dont need the cache and it causes some overhead
-        Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
+        //only ban it here as we would get some issues on the cache panel
+        $this->banBlockCacheUsage();
 
         $this->setTemplate('ecocode_profiler/collector/mysql/panel.phtml');
         parent::_construct();
@@ -66,10 +67,7 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
 
     protected function processType(array &$queryData)
     {
-        $sql  = $queryData['sql'];
-        $type = explode(' ', $sql, 2);
-        $type = reset($type);
-        $type = strtolower($type);
+        $type = $this->getQueryType($queryData['sql']);
 
         if (isset($this->queryCountByType[$type])) {
             $this->queryCountByType[$type]++;
@@ -78,11 +76,24 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         $queryData['type'] = $type;
     }
 
+    protected function getQueryType($sql)
+    {
+        $type = explode(' ', $sql, 2);
+        $type = reset($type);
+        $type = strtolower($type);
+
+        return $type;
+    }
+
     protected function processIdentical(array $queryData)
     {
-        $queryId = md5($queryData['sql'] . implode(',', $queryData['params']));
+        $queryId = $this->getQueryId($queryData);
+        $time    = $queryData['time'];
+        $trace   = $queryData['trace'];
 
         if (!isset($this->identicalQueries[$queryId])) {
+            //unset query specif data
+            unset($queryData['time'], $queryData['trace']);
             $this->identicalQueries[$queryId] = [
                 'id'         => $queryId,
                 'count'      => 0,
@@ -92,10 +103,24 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
             ];
         }
         $this->identicalQueries[$queryId]['count']++;
-        $this->identicalQueries[$queryId]['total_time'] += $queryData['time'];
-        $this->identicalQueries[$queryId]['traces'][] = $queryData['trace'];
+        $this->identicalQueries[$queryId]['total_time'] += $time;
+        $this->identicalQueries[$queryId]['traces'][] = $trace;
     }
 
+    /**
+     * @param array $queryData
+     * @return string
+     */
+    protected function getQueryId(array $queryData)
+    {
+        $params = isset($queryData['params']) ? $queryData['params'] : [];
+
+        return md5($queryData['sql'] . implode(',', $params));
+    }
+
+    /**
+     * @param array $queryData
+     */
     protected function processContext(array $queryData)
     {
         $contextKey = $queryData['context'];
@@ -147,6 +172,7 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
             $this->prepareQueryData();
             $this->queryCountByType = array_filter($this->queryCountByType);
         }
+
         return $this->queryCountByType;
     }
 
@@ -155,6 +181,7 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
         if ($this->queriesByContext === null) {
             $this->prepareQueryData();
         }
+
         return $this->queriesByContext;
     }
 
@@ -179,5 +206,13 @@ class Ecocode_Profiler_Block_Collector_Mysql_Panel
             $this->queryTableRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_mysql_queryTable');
         }
         return $this->queryTableRenderer;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    protected function banBlockCacheUsage()
+    {
+        Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
     }
 }

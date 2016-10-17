@@ -26,7 +26,11 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
     /**
      * {@inheritdoc}
      */
-    public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
+    public function collect(
+        Mage_Core_Controller_Request_Http $request,
+        Mage_Core_Controller_Response_Http $response,
+        \Exception $exception = null
+    )
     {
 
         $this->data['state_counts'] = $this->stateCounts;
@@ -34,23 +38,37 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
 
         foreach ($this->getTranslator()->getMessages() as $translation) {
             $translationId = $translation['code'];
+            $parameters    = $translation['parameters'];
+
             if (!isset($translations[$translationId])) {
-                $translation['count']         = 1;
-                $translation['parameters']    = !empty($translation['parameters']) ? [$translation['parameters']] : [];
-                $translation['traces']        = !empty($translation['trace']) ? [$translation['trace']] : [];
-                unset($translation['trace']);
+                $translation['count']         = 0;
+                $translation['parameters']    = [];
+                $translation['traces']        = [];
                 $translations[$translationId] = $translation;
                 $this->data['state_counts'][$translation['state']]++;
-            } else {
-                if (!empty($translation['parameters'])) {
-                    $translations[$translationId]['parameters'][] = $translation['parameters'];
-                }
-                if (!empty($translation['trace'])) {
-                    $translations[$translationId]['traces'][] = $translation['trace'];
-                }
-                $translations[$translationId]['count']++;
             }
+
+            if (!empty($parameters)) {
+                $translations[$translationId]['parameters'][] = $parameters;
+            }
+
+            if (!empty($translation['trace'])) {
+                $traceId = md5(serialize($translation['trace']));
+
+                //do not capture traces multiple times
+                if (!isset($translations[$translationId]['traces'][$traceId])) {
+                    $translations[$translationId]['traces'][$traceId] = [
+                        'id'    => $traceId,
+                        'count' => 0,
+                        'trace' => $translation['trace']
+                    ];
+                }
+                $translations[$translationId]['traces'][$traceId]['count']++;
+            }
+
+            $translations[$translationId]['count']++;
         }
+
         $this->data['translations']      = $translations;
         $this->data['translation_count'] = count($translations);
     }

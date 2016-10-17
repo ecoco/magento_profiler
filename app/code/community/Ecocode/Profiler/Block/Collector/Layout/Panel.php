@@ -75,12 +75,14 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
         /** @var Ecocode_Profiler_Model_Collector_LayoutDataCollector $collector */
         $collector       = $this->getCollector();
         $totalRenderTime = $collector->getTotalRenderTime();
-        $nodeList       = $collector->getRenderLog();
+        $nodeList        = $collector->getRenderLog();
+
         foreach ($nodeList as $id => &$node) {
             $node['render_time_percent'] = $node['render_time_incl'] / $totalRenderTime;
         }
+
         foreach ($nodeList as $id => &$node) {
-            $nodeList[$id] = $node;
+            //$nodeList[$id] = $node;
             if ($node['parent_id'] === false) {
                 $this->resolveChildren($node, $nodeList);
                 $tree[$id] = $node;

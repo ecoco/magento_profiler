@@ -12,7 +12,7 @@ class Ecocode_Profiler_Model_Profile
     /**
      * @var \Ecocode_Profiler_Model_Collector_DataCollectorInterface[]
      */
-    protected $collectors = array();
+    protected $collectors = [];
 
     protected $ip;
     protected $method;
@@ -29,7 +29,7 @@ class Ecocode_Profiler_Model_Profile
     /**
      * @var Ecocode_Profiler_Model_Profile[]
      */
-    protected $children = array();
+    protected $children = [];
 
     /**
      * Constructor.
@@ -202,7 +202,7 @@ class Ecocode_Profiler_Model_Profile
      */
     public function setChildren(array $children)
     {
-        $this->children = array();
+        $this->children = [];
         foreach ($children as $child) {
             $this->addChild($child);
         }
@@ -254,7 +254,7 @@ class Ecocode_Profiler_Model_Profile
      */
     public function setCollectors(array $collectors)
     {
-        $this->collectors = array();
+        $this->collectors = [];
         foreach ($collectors as $collector) {
             $this->addCollector($collector);
         }
@@ -284,6 +284,6 @@ class Ecocode_Profiler_Model_Profile
 
     public function __sleep()
     {
-        return array('token', 'parent', 'children', 'collectors', 'ip', 'method', 'url', 'time', 'statusCode', 'collectTime');
+        return ['token', 'parent', 'children', 'collectors', 'ip', 'method', 'url', 'time', 'statusCode', 'collectTime'];
     }
 }

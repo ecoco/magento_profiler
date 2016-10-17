@@ -9,6 +9,9 @@ $codeHelper = Mage::helper('ecocode_profiler/code');
 
 /** @var Ecocode_Profiler_Helper_ValueExporter $valueExporter */
 $valueExporter = Mage::helper('ecocode_profiler/valueExporter');
+
+/** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
+$rendererHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
 <table class="logs" xmlns="http://www.w3.org/1999/html">
     <thead>
@@ -56,48 +59,18 @@ $valueExporter = Mage::helper('ecocode_profiler/valueExporter');
                 <?php if ($this->isDeprecation()): ?>
                     <?php $stack = isset($log['context']['stack']) ? $log['context']['stack'] : []; ?>
                     <?php array_shift($stack); //remove the error handler from stack ?>
-                    <?php $stackId = 'sf-call-stack-' . $this->getCategory() . '-' . $index; ?>
+                    <?php $stackId = $this->getCategory() . '-' . $index; ?>
 
                     <?php if (isset($log['context']['errorCount'])): ?>
                         <span class="text-small text-bold">(<?php echo $log['context']['errorCount'] ?> times)</span>
                     <?php endif; ?>
 
                     <?php if ($stack): ?>
-                        <button class="btn-link text-small sf-toggle" data-toggle-selector="#<?php echo $stackId ?>"
+                        <button class="btn-link text-small sf-toggle" data-toggle-selector="#stack-<?php echo $stackId ?>"
                                 data-toggle-alt-content="Hide stack trace">Show stack trace
                         </button>
+                        <?php echo $rendererHelper->renderCallStack($stackId, $stack) ?>
                     <?php endif; ?>
-
-                    <ul class="sf-call-stack hidden" id="<?php echo $stackId ?>">
-                        <?php foreach ($stack as $index => $call): ?>
-                            <?php
-                            $from = '-';
-                            if (isset($call['class'])) {
-                                $from = $codeHelper->abbrClass($call['class']) . '::' . $codeHelper->abbrMethod($call['function']);
-                            } elseif (isset($call['function'])) {
-                                $from = $codeHelper->abbrMethod($call['function']);
-                            } elseif (isset($call['file'])) {
-                                $from = $call['file'];
-                            }
-
-                            $fileName = null;
-                            if (isset($call['file'], $call['line'])) {
-                                $fileName = str_replace('\\', '/', $call['file']);
-                                $fileName = explode('/', $fileName);
-                                $fileName = end($fileName);
-                            }
-                            ?>
-
-                            <li>
-                                <?php echo $from; ?>
-                                <?php if ($fileName): ?>
-                                    <span
-                                        class="text-small">(called from <?php echo $codeHelper->formatFile($call['file'], $call['line'], $fileName) ?>
-                                        )</span>
-                                <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
                 <?php else: ?>
                     <?php if (!empty($log['context'])): ?>
                         <?php $contextId = 'context-' . $this->getCategory() . '-' . $index; ?>

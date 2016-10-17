@@ -71,7 +71,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
                                 <?php endif; ?>
                             </div>
                             <?php if (isset($log['trace'])): ?>
-                                <?php echo $rendererHelper->renderBackTrace($prefix . $index, $log['trace']) ?>
+                                <?php echo $rendererHelper->renderCallStack($prefix . $index, $log['trace']) ?>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -125,7 +125,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
                                     <?php endif; ?>
                                 </div>
                                 <?php if (isset($log['trace'])): ?>
-                                    <?php echo $rendererHelper->renderBackTrace($prefix . $index, $log['trace']) ?>
+                                    <?php echo $rendererHelper->renderCallStack($prefix . $index, $log['trace']) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

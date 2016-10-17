@@ -6,29 +6,29 @@
 class Ecocode_Profiler_Helper_Renderer
     extends Mage_Core_Helper_Abstract
 {
-    protected $backTraceRenderer;
+    protected $renderer = [];
 
-    public function get($name)
+    public function renderCallStack($id, $trace, $wrap = true)
     {
-
-    }
-
-
-    public function renderBackTrace($id, $trace)
-    {
-        return $this->getBackTraceRenderer()
-            ->setData(['id' => $id, 'trace' => $trace])
+        return $this->getInstance('callStack')
+            ->setData(['id' => $id, 'trace' => $trace, 'wrap' => $wrap])
             ->toHtml();
     }
 
     /**
-     * @return Ecocode_Profiler_Block_Renderer_BackTrace
+     * @param $name
+     * @return Ecocode_Profiler_Block_Renderer_CallStack
      */
-    public function getBackTraceRenderer()
+    public function getInstance($name)
     {
-        if ($this->backTraceRenderer === null) {
-            $this->backTraceRenderer = Mage::app()->getLayout()->createBlock('ecocode_profiler/renderer_backTrace');
+        if (strpos($name, '/') === false) {
+            $name = 'ecocode_profiler/renderer_' . $name;
         }
-        return $this->backTraceRenderer;
+
+        if (!isset($this->renderer[$name])) {
+            $this->renderer[$name] = Mage::app()->getLayout()->createBlock($name);
+        }
+
+        return $this->renderer[$name];
     }
 }

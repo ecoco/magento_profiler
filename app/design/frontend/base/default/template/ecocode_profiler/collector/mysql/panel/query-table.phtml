@@ -54,7 +54,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
                 </div>
 
                 <?php if (isset($queryData['trace'])): ?>
-                    <?php echo $rendererHelper->renderBackTrace($prefix . $index, $queryData['trace']) ?>
+                    <?php echo $rendererHelper->renderCallStack($prefix . $index, $queryData['trace']) ?>
                 <?php endif; ?>
             </td>
         </tr>

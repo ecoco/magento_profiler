@@ -6,9 +6,12 @@ $collector             = $this->getCollector();
 $identicalQueries      = $this->getIdenticalQueries();
 $identicalQueriesCount = count($identicalQueries);
 
-$queriesByContext = $this->getByContext();
-$contextHelper    = Mage::helper('ecocode_profiler/context');
-$queryTableRenderer    = $this->getQueryTableRenderer();
+$queriesByContext   = $this->getByContext();
+$contextHelper      = Mage::helper('ecocode_profiler/context');
+$queryTableRenderer = $this->getQueryTableRenderer();
+
+/** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
+$rendererHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
 
 
@@ -197,18 +200,7 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
                                             <tr>
                                                 <td class="nowrap">#<?php echo $j + 1 ?></td>
                                                 <td>
-                                                    <ul class="sf-call-stack ">
-                                                        <?php foreach ($trace as $item): ?>
-                                                            <li>
-                                                                <?php echo isset($item['class']) ? $item['class'] : '' ?>
-                                                                ::<?php echo $item['function'] ?><br>
-                                                                <?php if (isset($item['file'])): ?>
-                                                                    <small><?php echo $item['file'] ?>
-                                                                        ::<?php echo $item['line'] ?></small>
-                                                                <?php endif; ?>
-                                                            </li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
+                                                    <?php echo $rendererHelper->renderCallStack($j + 1, $trace, false) ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -262,15 +254,17 @@ $queryTableRenderer    = $this->getQueryTableRenderer();
 </script>
 <style>
     <?php foreach ($connections as $name => $queryCount): ?>
-        #all-queries[data-connection="<?php echo $name ?>"] tbody > tr:not([data-connection="<?php echo $name ?>"]) {
-            display: none;
-        }
+    #all-queries[data-connection="<?php echo $name ?>"] tbody > tr:not([data-connection="<?php echo $name ?>"]) {
+        display: none;
+    }
+
     <?php endforeach; ?>
 
     <?php foreach ($this->getQueryCountByType() as $name => $queryCount): ?>
-        #all-queries[data-type="<?php echo $name ?>"] tbody > tr:not([data-type="<?php echo $name ?>"]) {
-            display: none;
-        }
+    #all-queries[data-type="<?php echo $name ?>"] tbody > tr:not([data-type="<?php echo $name ?>"]) {
+        display: none;
+    }
+
     <?php endforeach; ?>
 
     #all-queries span[data-toggle="query-type"],

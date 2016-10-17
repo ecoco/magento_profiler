@@ -5,23 +5,27 @@ class Ecocode_Profiler_Autoloader
 {
     public static $autoloader;
 
-    /** @var Closure  */
+    /** @var Closure */
     protected $includeFile;
     protected $classMap = [];
 
-
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Autoloader
+     */
     public static function getAutoloader()
     {
         if (self::$autoloader === null) {
             self::$autoloader = new Ecocode_Profiler_Autoloader();
         }
+
         return self::$autoloader;
     }
 
     /**
      * Registers this instance as an autoloader.
-     *
      * @param bool $prepend Whether to prepend the autoloader or not
+     * @codeCoverageIgnore
      */
     public function register($prepend = false)
     {
@@ -30,6 +34,7 @@ class Ecocode_Profiler_Autoloader
 
     /**
      * Unregisters this instance as an autoloader.
+     * @codeCoverageIgnore
      */
     public function unregister()
     {
@@ -50,8 +55,11 @@ class Ecocode_Profiler_Autoloader
                 include $file;
             };
             $includeFile($this->classMap[$class]);
+
             return true;
         }
+
+        return false;
     }
 
     public function addOverwrite($className, $file)
@@ -60,6 +68,7 @@ class Ecocode_Profiler_Autoloader
             $overwriteDir = __DIR__ . DIRECTORY_SEPARATOR . 'overwrite' . DIRECTORY_SEPARATOR;
             $file         = $overwriteDir . $file;
         }
+
         $this->classMap[$className] = $file;
 
         return $this;

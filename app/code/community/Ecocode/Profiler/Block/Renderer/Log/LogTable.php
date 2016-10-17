@@ -36,6 +36,7 @@ class Ecocode_Profiler_Block_Renderer_Log_LogTable
     {
         $logs = $this->getLogs();
         $log  = reset($logs);
+        
         return isset($log['channel']);
     }
 }

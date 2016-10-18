@@ -44,6 +44,7 @@ class Ecocode_Profiler_Model_Observer
             $response->setHeader('X-Debug-Token-Link', $url);
         }
 
+
         $this->injectToolbar($response, $request, $token);
     }
 
@@ -102,6 +103,17 @@ class Ecocode_Profiler_Model_Observer
         }
 
         return $this->profiler;
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function checkRedirect()
+    {
+        if (Mage::getSingleton('ecocode_profiler/session')->getData('eco_redirect')) {
+            Mage::app()->getRequest()->setParam('_redirected', true);
+        }
     }
 
 

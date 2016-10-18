@@ -6,6 +6,8 @@
 class Ecocode_Profiler_Model_Collector_ConfigDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {
+    /** @var Ecocode_Profiler_Helper_Data */
+    protected $helper;
 
     /**
      * {@inheritdoc}
@@ -15,25 +17,25 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
         $store   = Mage::app()->getStore();
         $website = Mage::app()->getWebsite();
 
-        $this->data    = [
-            'store_id'                 => $store->getId(),
-            'store_name'               => $store->getName(),
-            'store_code'               => $store->getCode(),
-            'website_id'               => $website->getId(),
-            'website_name'             => $website->getName(),
-            'website_code'             => $website->getCode(),
-            'developer_mode'           => Mage::getIsDeveloperMode(),
-            'token'                    => $this->retrieveToken($response),
-            'magento_version'          => Mage::getVersion(),
-            'magento_modules'          => $this->collectMagentoModules(),
-            'php_version'              => PHP_VERSION,
-            'xdebug_enabled'           => extension_loaded('xdebug'),
-            'eaccel_enabled'           => extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'),
-            'apc_enabled'              => extension_loaded('apc') && ini_get('apc.enabled'),
-            'xcache_enabled'           => extension_loaded('xcache') && ini_get('xcache.cacher'),
-            'wincache_enabled'         => extension_loaded('wincache') && ini_get('wincache.ocenabled'),
-            'zend_opcache_enabled'     => extension_loaded('Zend OPcache') && ini_get('opcache.enable'),
-            'sapi_name'                => PHP_SAPI,
+        $this->data = [
+            'store_id'             => $store->getId(),
+            'store_name'           => $store->getName(),
+            'store_code'           => $store->getCode(),
+            'website_id'           => $website->getId(),
+            'website_name'         => $website->getName(),
+            'website_code'         => $website->getCode(),
+            'developer_mode'       => Mage::getIsDeveloperMode(),
+            'token'                => $this->retrieveToken($response),
+            'magento_version'      => Mage::getVersion(),
+            'magento_modules'      => $this->collectMagentoModules(),
+            'php_version'          => PHP_VERSION,
+            'xdebug_enabled'       => extension_loaded('xdebug'),
+            'eaccel_enabled'       => extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'),
+            'apc_enabled'          => extension_loaded('apc') && ini_get('apc.enabled'),
+            'xcache_enabled'       => extension_loaded('xcache') && ini_get('xcache.cacher'),
+            'wincache_enabled'     => extension_loaded('wincache') && ini_get('wincache.ocenabled'),
+            'zend_opcache_enabled' => extension_loaded('Zend OPcache') && ini_get('opcache.enable'),
+            'sapi_name'            => PHP_SAPI,
         ];
 
     }
@@ -215,14 +217,7 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
 
     public function retrieveToken(Mage_Core_Controller_Response_Http $response)
     {
-        $token = null;
-        foreach ($response->getHeaders() as $header) {
-            if ($header['name'] === 'X-Debug-Token') {
-                $token = $header['value'];
-                break;
-            }
-        }
-        return $token;
+        return $this->getHelper()->getTokenFromResponse($response);
     }
 
     /**
@@ -233,5 +228,4 @@ class Ecocode_Profiler_Model_Collector_ConfigDataCollector
     {
         return 'config';
     }
-
 }

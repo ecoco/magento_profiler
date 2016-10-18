@@ -5,6 +5,9 @@ next version
 -----
 * fixed an exception in debug mode when block output is suppressed with "disable module output"
 * fixed an exception when logging and monolog is not installed
+* unified call stack rendering
+* improved request collector to capture also redirects
+* improved support for "xdebug.file_link_format" to also work with urls like "http://localhost:63342/api/file/%f:%l"
 
 1.1.0
 -----

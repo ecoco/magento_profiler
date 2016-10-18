@@ -10,6 +10,7 @@ class Ecocode_Profiler_Helper_Data
 
     protected $configClassReflection;
     protected $classNameCache;
+    protected $profilerSession;
 
     public static function getOverwriteDir()
     {
@@ -188,4 +189,28 @@ class Ecocode_Profiler_Helper_Data
         return false;
     }
 
+    public function getTokenFromResponse(Mage_Core_Controller_Response_Http $response)
+    {
+        $token = null;
+        foreach ($response->getHeaders() as $header) {
+            if ($header['name'] === 'X-Debug-Token') {
+                $token = $header['value'];
+                break;
+            }
+        }
+        return $token;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Model_Session
+     */
+    public function getSession()
+    {
+        if ($this->profilerSession === null) {
+            $this->profilerSession = Mage::getSingleton('ecocode_profiler/session');
+        }
+
+        return $this->profilerSession;
+    }
 }

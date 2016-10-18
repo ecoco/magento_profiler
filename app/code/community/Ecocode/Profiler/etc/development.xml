@@ -61,6 +61,15 @@
             </profiler>
         </routers>
         <events>
+            <controller_action_predispatch>
+                <observers>
+                    <ecocode_profiler_check_redirect>
+                        <type>singleton</type>
+                        <class>ecocode_profiler/observer</class>
+                        <method>checkRedirect</method>
+                    </ecocode_profiler_check_redirect>
+                </observers>
+            </controller_action_predispatch>
             <controller_front_send_response_before>
                 <observers>
                     <ecocode_profiler>

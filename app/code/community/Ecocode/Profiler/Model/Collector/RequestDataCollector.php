@@ -84,7 +84,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         $sessionMetadata   = [];
         $sessionAttributes = [];
         //@TODO get all magento session singletons to split them by namespace
-        $flashes           = [];
+        $flashes = [];
 
         /*
         $session           = null
@@ -132,22 +132,32 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             $this->data['controller'] = $controllerData;
         }
 
-        /*if (null !== $session && $session->isStarted()) {
-            if ($request->attributes->has('_redirected')) {
-                $this->data['redirect'] = $session->remove('sf_redirect');
+        $this->collectRedirectData($request, $response);
+    }
+
+    protected function collectRedirectData(
+        Mage_Core_Controller_Request_Http $request,
+        Mage_Core_Controller_Response_Http $response
+    )
+    {
+        /** @var $session Ecocode_Profiler_Model_Session $session */
+        $session = $this->getHelper()->getSession();
+        if (null !== $session) {
+            if ($request->getParam('_redirected')) {
+                $this->data['redirect'] = $session->getData('eco_redirect', true);
             }
 
             if ($response->isRedirect()) {
-                $session->set('sf_redirect', [
-                    'token'       => $response->headers->get('x-debug-token'),
-                    'route'       => $request->attributes->get('_route', 'n/a'),
+                $session->setData('eco_redirect', [
+                    'token'       => $this->getHelper()->getTokenFromResponse($response),
+                    'route'       => $this->getRoute(),
                     'method'      => $request->getMethod(),
-                    'controller'  => $this->parseController($request->attributes->get('_controller')),
-                    'status_code' => $statusCode,
-                    'status_text' => Response::$statusTexts[(int)$statusCode],
+                    'controller'  => $this->getController(),
+                    'status_code' => $this->getStatusCode(),
+                    'status_text' => $this->getStatusText(),
                 ]);
             }
-        }*/
+        }
     }
 
     protected function hideAuthData()
@@ -331,7 +341,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
      */
     public function getController()
     {
-        return $this->data['controller'];
+        return $this->getData('controller', []);
     }
 
     /**
@@ -342,7 +352,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
      */
     public function getRedirect()
     {
-        return isset($this->data['redirect']) ? $this->data['redirect'] : false;
+        return $this->getData('redirect', false);
     }
 
 
@@ -365,19 +375,50 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
     protected function parseController($controller)
     {
         if (is_object($controller)) {
-            $r = new \ReflectionClass($controller);
+            /** @var Mage_Core_Controller_Varien_Front $controller */
+
+            if ($controller->getData('action')) {
+                /** @var Mage_Core_Controller_Varien_Action $actionController */
+                $actionController = $controller->getData('action');
+
+                /** @var Mage_Core_Controller_Request_Http $request */
+                $request = $actionController->getRequest();
+
+                if ($actionController->hasAction($request->getActionName())) {
+                    $actionReflection = new \ReflectionMethod(
+                        $actionController,
+                        $actionController->getActionMethodName($request->getActionName())
+                    );
+
+                    return [
+                        'class'  => get_class($actionController),
+                        'method' => $actionReflection->getName(),
+                        'file'   => $actionReflection->getFileName(),
+                        'line'   => $actionReflection->getStartLine(),
+                    ];
+                }
+            }
+
+            $controllerReflection = new \ReflectionClass($controller);
 
             return [
-                'class'  => $r->getName(),
+                'class'  => $controllerReflection->getName(),
                 'method' => null,
-                'file'   => $r->getFileName(),
-                'line'   => $r->getStartLine(),
+                'file'   => $controllerReflection->getFileName(),
+                'line'   => $controllerReflection->getStartLine(),
             ];
         }
 
         return (string)$controller ?: 'n/a';
     }
 
+    /**
+     * Magento is not very good in setting the right response code
+     * so we help out a bit by checking the actual header that is send
+     *
+     * @param Mage_Core_Controller_Response_Http $response
+     * @return int
+     */
     protected function detectStatusCode(Mage_Core_Controller_Response_Http $response)
     {
         $statusCode = $response->getHttpResponseCode();
@@ -422,13 +463,13 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             $attributes['_route_params'] = $routeParams;
         }
 
-
         return $attributes;
     }
 
     public function collectRequestHeaders(Mage_Core_Controller_Request_Http $request)
     {
         $headers = [];
+
         foreach ($request->getServer() as $key => $value) {
             if (substr($key, 0, 5) !== 'HTTP_') {
                 continue;
@@ -436,26 +477,23 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             $header           = str_replace(' ', '-', (str_replace('_', ' ', strtolower(substr($key, 5)))));
             $headers[$header] = $value;
         }
+
         return $headers;
     }
 
     public function collectRequestQuery(Mage_Core_Controller_Request_Http $request)
     {
-        $getData = $request->getQuery();
-        if ($getData === null) {
-            $getData = [];
-        }
-        return $getData;
+        $queryData = $request->getQuery();
+
+        return $queryData ? $queryData : [];
     }
 
 
     public function collectRequestData(Mage_Core_Controller_Request_Http $request)
     {
         $postData = $request->getPost();
-        if ($postData === null) {
-            $postData = [];
-        }
-        return $postData;
+
+        return $postData ? $postData : [];
     }
 
     protected function collectControllerData()
@@ -468,7 +506,9 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
 
         $app        = Mage::app();
         $controller = $property->getValue($app);
+
         if ($controller) {
+            /** @var Mage_Core_Controller_Varien_Action */
             return $this->parseController($controller);
         }
 

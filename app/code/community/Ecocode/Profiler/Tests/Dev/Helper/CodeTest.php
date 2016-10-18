@@ -15,7 +15,7 @@ class Ecocode_Profiler_Tests_Dev_Helper_CodeTest
     
     public function testFormatFile()
     {
-        $expected = sprintf('<a href="txmt://open?url=file://%s&amp;line=25" title="Click to open this file" class="file_link">%s at line 25</a>', __FILE__, __FILE__);
+        $expected = sprintf('<a target="profiler_link_target" href="txmt://open?url=file://%s&amp;line=25" title="Click to open this file" class="file_link">%s at line 25</a>', __FILE__, __FILE__);
         $this->assertEquals($expected, $this->helper->formatFile(__FILE__, 25));
     }
 

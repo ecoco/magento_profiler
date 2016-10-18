@@ -3,11 +3,13 @@
 class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
     extends TestHelper
 {
-    public function testCollect()
+    protected $request;
+    protected $response;
+    /** @var  Ecocode_Profiler_Model_Collector_RequestDataCollector */
+    protected $collector;
+
+    public function setUp()
     {
-        $collector = new Ecocode_Profiler_Model_Collector_RequestDataCollector();
-
-
         $request = $this->getMockBuilder('Mage_Core_Controller_Request_Http')
             ->setMethods(['getMethod', 'getServer', 'getCookie'])
             ->getMock();
@@ -24,6 +26,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
         $request->method('getServer')->willReturn($serverData);
         $request->method('getCookie')->willReturn($cookieData);
 
+        /** @var Mage_Core_Controller_Request_Http $request */
         $request->setRequestUri('/dev.php/electronics.html');
         $request->setBaseUrl('/dev.php');
         $request->setPathInfo();
@@ -43,10 +46,18 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
         $response->setHeader('content-Type', 'application/json');
         $response->setHeader('X-DEBUG-TOKEN', 'XXX');
 
+        $this->request  = $request;
+        $this->response = $response;
 
+        $this->collector = $collector = new Ecocode_Profiler_Model_Collector_RequestDataCollector();
+    }
+
+    public function testCollect()
+    {
+        $collector = $this->collector;
         $collector->collect(
-            $request,
-            $response
+            $this->request,
+            $this->response
         );
 
         $this->assertEquals('GET', $collector->getMethod());
@@ -59,12 +70,16 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
         );
 
         $this->assertEquals(
-            $serverData,
+            [
+                'REDIRECT_STATUS'      => 200,
+                'HTTP_HOST'            => 'profiler.test',
+                'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch',
+            ],
             $collector->getRequestServer()->all()
         );
 
         $this->assertEquals(
-            $cookieData,
+            ['frontend' => 'session-key'],
             $collector->getRequestCookies()->all()
         );
 
@@ -75,11 +90,47 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
         //no get data
         $this->assertEmpty($collector->getRequestQuery());
 
+        //no redirect
+        $this->assertEmpty($collector->getRedirect());
+
         $this->assertCount(4, $collector->getController());
 
         $this->assertInstanceOf('Ecocode_Profiler_Model_Http_ResponseHeaderBag', $collector->getResponseHeaders());
 
         return $collector;
+    }
+
+    /**
+     * @depends testCollect
+     */
+    public function testCollectRedirectData()
+    {
+        $response = new Ecocode_Profiler_Tests_Dev_Fixtures_ResponseHttp();
+        $response->setRedirect(Mage::getUrl('test'));
+
+        $collector = $this->collector;
+        $collector->collect(
+            $this->request,
+            $response
+        );
+        $parseControllerMethod = new ReflectionMethod($collector, 'collectRedirectData');
+        $parseControllerMethod->setAccessible(true);
+
+        $parseControllerMethod->invoke($collector, $this->request, $response);
+
+        $this->assertEquals(false, $collector->getRedirect());
+
+        $request = new Mage_Core_Controller_Request_Http();
+        $request->setParam('_redirected', true);
+
+        $parseControllerMethod->invoke($collector, $request, $response);
+
+        $redirectData = $collector->getRedirect();
+        //unset system depended variables
+        unset($redirectData['controller']['line']);
+        unset($redirectData['controller']['file']);
+
+        $this->assertEquals(302, $redirectData['status_code']);
     }
 
     public function testCollectParameters()
@@ -121,6 +172,36 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_RequestDataCollectorTest
         $controllerData = $parseControllerMethod->invoke($collector, $controller);
 
         $this->assertEquals('Mage_Core_Controller_Varien_Front', $controllerData['class']);
+    }
+
+
+    public function testParseControllerWithAction()
+    {
+        $collector = new Ecocode_Profiler_Model_Collector_RequestDataCollector();
+
+        $controller = new Mage_Core_Controller_Varien_Front();
+
+        $request  = new Mage_Core_Controller_Request_Http();
+        $response = new Ecocode_Profiler_Tests_Dev_Fixtures_ResponseHttp();
+
+        $request->setActionName('index');
+
+        require 'Mage/Cms/controllers/IndexController.php';
+        $action = new Mage_Cms_IndexController(
+            $request,
+            $response
+        );
+
+        $controller->setData('action', $action);
+
+        $parseControllerMethod = new ReflectionMethod('Ecocode_Profiler_Model_Collector_RequestDataCollector', 'parseController');
+        $parseControllerMethod->setAccessible(true);
+
+
+        $controllerData = $parseControllerMethod->invoke($collector, $controller);
+
+        $this->assertEquals('Mage_Cms_IndexController', $controllerData['class']);
+        $this->assertEquals('indexAction', $controllerData['method']);
     }
 
     public function testDetectStatusCode()

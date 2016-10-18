@@ -148,7 +148,7 @@ class Ecocode_Profiler_Helper_Code
         if (false !== $link = $this->getFileLink($file, $line)) {
             $flags = ENT_QUOTES | ENT_SUBSTITUTE;
 
-            return sprintf('<a href="%s" title="Click to open this file" class="file_link">%s</a>', htmlspecialchars($link, $flags, $this->charset), $text);
+            return sprintf('<a target="profiler_link_target" href="%s" title="Click to open this file" class="file_link">%s</a>', htmlspecialchars($link, $flags, $this->charset), $text);
         }
 
         return $text;

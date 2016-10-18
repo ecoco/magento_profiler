@@ -82,7 +82,6 @@ class Ecocode_Profiler_Block_Collector_Layout_Panel
         }
 
         foreach ($nodeList as $id => &$node) {
-            //$nodeList[$id] = $node;
             if ($node['parent_id'] === false) {
                 $this->resolveChildren($node, $nodeList);
                 $tree[$id] = $node;

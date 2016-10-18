@@ -28,8 +28,9 @@ if (!file_exists($mageCacheFile)) {
 
     file_put_contents($mageCacheFile, $mageCode);
 }
-
-require_once $mageCacheFile;
+//register overwrite
+Ecocode_Profiler_Autoloader::getAutoloader()
+    ->addToClassMap('MageOriginal', $mageCacheFile);
 
 
 class Mage extends MageOriginal

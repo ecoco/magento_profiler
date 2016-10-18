@@ -73,7 +73,9 @@ class Ecocode_Profiler_Helper_Data
             file_put_contents($cacheFile, $code);
         }
 
-        require_once $cacheFile;
+        //register overwrite
+        Ecocode_Profiler_Autoloader::getAutoloader()
+            ->addToClassMap($className, $cacheFile);
     }
 
     /**

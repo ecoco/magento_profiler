@@ -6,3 +6,6 @@ exclude_patterns:
 rules:
     php.psr1:
         enabled: false
+    #no way to get around this with the magento autoloader
+    php.silenced_error:
+        enabled: false

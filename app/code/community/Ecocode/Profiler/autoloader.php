@@ -69,6 +69,14 @@ class Ecocode_Profiler_Autoloader
             $file         = $overwriteDir . $file;
         }
 
+        $this->addToClassMap($className, $file);
+
+
+        return $this;
+    }
+
+    public function addToClassMap($className, $file)
+    {
         $this->classMap[$className] = $file;
 
         return $this;

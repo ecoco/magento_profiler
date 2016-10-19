@@ -60,14 +60,14 @@ composer require --dev monolog/monolog 1.11
 ```
 
 ### Magento Connect
-In progress
+[ecocode Profiler](https://www.magentocommerce.com/magento-connect/ecocode-profiler.html)
 
 
 ### Webserver Config
-It might be necessary to extend your webserver config to handle "dev.php" correctly
+It might be necessary to extend your webserver config to handle "dev.php" correctly. If your experiencing a 404 when you try to access "dev.php"
 
 ### Nginx:
-If you are using nginx and get a `404` for the profiler, try adding the following to your nginx config before the php location definition:
+try adding the following to your nginx config before the php location definition:
 ```
 location /dev.php/ {
     rewrite / /dev.php;
@@ -128,19 +128,28 @@ time to time to verify the result.
   * Display of enabled and disabled modules
 
 ## Security
-It should be safe to add this module to your own vcs by default. The profiler
-is only active when you are visiting your page via "dev.php", which is restricted to 
-localhost by default.
+It is safe to add this module to your own vcs by default. 
+The profiler is only active when you are visiting your page via "dev.php", 
+which is restricted to request from localhost by default.
 
-If you are using a vm you can edit the `dev.php` or set `$_SERVER['ALLOW_PROFILER'] = 1` 
-via your nginx or htaccess
+If you are using a vm you have to allow your host system to access the profiler. 
+This can be done by modify the webserver config or the dev.php itself
+
+Webserver:
+To allow the access to the profiler you have to set "$_SERVER['ALLOW_PROFILER'] = 1"
+
+Nginx:
+```fastcgi_param ALLOW_PROFILER '1';```
+Apache:
+```SetEnv ALLOW_PROFILER "1"```
+
+
 
 ## TODO
-* Session Data
-* Catch url redirects
 * Improve docs
 * "how to extend"
-
+* capture emails
+* performance tab
 
 
 ## Mixed

@@ -6,6 +6,8 @@
 class Ecocode_Profiler_Model_Context
     implements Ecocode_Profiler_Model_ContextInterface
 {
+    protected $id;
+
     protected $parentId = 0;
 
     /** @var string */

@@ -84,7 +84,7 @@ class Ecocode_Profiler_Helper_Data
      * @param string|object $className
      * @return string
      */
-    public function getClassGroup($className)
+    public function resolveClassGroup($className)
     {
         if (is_object($className)) {
             $className = get_class($className);

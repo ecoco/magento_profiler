@@ -68,6 +68,11 @@
                         <class>ecocode_profiler/observer</class>
                         <method>checkRedirect</method>
                     </ecocode_profiler_check_redirect>
+                    <ecocode_profiler_capture_flash_messages>
+                        <type>singleton</type>
+                        <class>ecocode_profiler/observer</class>
+                        <method>captureFlashMessages</method>
+                    </ecocode_profiler_capture_flash_messages>
                 </observers>
             </controller_action_predispatch>
             <controller_front_send_response_before>

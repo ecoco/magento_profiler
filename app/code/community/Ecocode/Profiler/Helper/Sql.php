@@ -9,21 +9,21 @@ class Ecocode_Profiler_Helper_Sql extends Mage_Core_Helper_Abstract
 
     public function replaceQueryParameters($query, array $parameters)
     {
-        $i = 0;
+        $index = 0;
         if (!array_key_exists(0, $parameters) && array_key_exists(1, $parameters)) {
-            $i = 1;
+            $index = 1;
         }
 
         $result = preg_replace_callback(
             '/\?|((?<!:):[a-z0-9_]+)/i',
-            function ($matches) use ($parameters, &$i) {
+            function ($matches) use ($parameters, &$index) {
                 $key = substr($matches[0], 1);
-                if (!array_key_exists($i, $parameters) && (false === $key || !array_key_exists($key, $parameters))) {
+                if (!array_key_exists($index, $parameters) && (false === $key || !array_key_exists($key, $parameters))) {
                     return $matches[0];
                 }
-                $value  = array_key_exists($i, $parameters) ? $parameters[$i] : $parameters[$key];
+                $value  = array_key_exists($index, $parameters) ? $parameters[$index] : $parameters[$key];
                 $result = Mage::getSingleton('core/resource')->getConnection('default_write')->quote($value);
-                $i++;
+                $index++;
                 return $result;
             },
             $query

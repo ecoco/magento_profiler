@@ -57,8 +57,8 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
             $totalTime += $item['time'];
         }
 
-        $traceHashList = array_filter($traceHashList, function ($v) {
-            return $v > 1;
+        $traceHashList = array_filter($traceHashList, function ($count) {
+            return $count > 1;
         });
 
         $stats['loop_load'] = array_sum($traceHashList);
@@ -150,7 +150,7 @@ class Ecocode_Profiler_Model_Collector_ModelDataCollector
     protected function track($action, Varien_Object $object, $time = null)
     {
         $className  = get_class($object);
-        $classGroup = $this->getHelper()->getClassGroup($className);
+        $classGroup = $this->getHelper()->resolveClassGroup($className);
         $trace      = $this->cleanBacktrace($this->getBacktrace(DEBUG_BACKTRACE_IGNORE_ARGS));
 
         $data       = [

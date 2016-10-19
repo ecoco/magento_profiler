@@ -12,6 +12,9 @@ class Ecocode_Profiler_Block_Collector_Base
     /** @var Ecocode_Profiler_Model_Profile */
     protected $profile;
 
+    /** @var Ecocode_Profiler_Helper_Renderer */
+    protected $rendererHelper;
+
     public function setCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collector = $collector;
@@ -23,6 +26,20 @@ class Ecocode_Profiler_Block_Collector_Base
     }
 
     /**
+     * @deprecated
+     *
+     * @param       $bag
+     * @param array $data
+     * @return mixed
+     */
+    public function renderBag($bag, array $data = [])
+    {
+        return $this->getRendererHelper()
+            ->renderBag($bag, $data);
+    }
+
+    /**
+     * @codeCoverageIgnore
      * @return Ecocode_Profiler_Model_Profile
      */
     public function getProfile()
@@ -33,13 +50,17 @@ class Ecocode_Profiler_Block_Collector_Base
         return $this->profile;
     }
 
-    public function renderBag($bag, array $data = [])
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Helper_Renderer
+     */
+    public function getRendererHelper()
     {
-        /** @var Ecocode_Profiler_Block_Bag $bagBlock */
-        $bagBlock =  $this->getLayout()->createBlock('ecocode_profiler/bag');
-        $data['bag'] = $bag;
-        $bagBlock->setData($data);
+        if ($this->rendererHelper === null) {
+            $this->rendererHelper = Mage::helper('ecocode_profiler/renderer');
+        }
 
-        return $bagBlock->toHtml();
+        return $this->rendererHelper;
     }
+
 }

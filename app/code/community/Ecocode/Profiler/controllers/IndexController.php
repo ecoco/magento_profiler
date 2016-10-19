@@ -8,9 +8,6 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $this->renderLayout();
     }
 
-    /**
-     *
-     */
     public function toolbarAction()
     {
         $token    = $this->getRequest()->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
@@ -25,6 +22,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
     public function searchAction()
     {
+        /** @var Mage_Core_Controller_Request_Http$request */
         $request  = $this->getRequest();
 
         $ip     = preg_replace('/[^:\d\.]/', '', $request->getParam('ip'));
@@ -35,14 +33,15 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $limit  = $request->getParam('limit');
         $token  = $request->getParam('_token');
 
-        if (null !== $session = Mage::getSingleton('core/session')) {
-            $session->setData('_profiler_search_ip', $ip);
-            $session->setData('_profiler_search_method', $method);
-            $session->setData('_profiler_search_url', $url);
-            $session->setData('_profiler_search_start', $start);
-            $session->setData('_profiler_search_end', $end);
-            $session->setData('_profiler_search_limit', $limit);
-            $session->setData('_profiler_search_token', $token);
+        if ($session = Mage::getSingleton('ecocode_profiler/session')) {
+            /** @var Ecocode_Profiler_Model_Session $session */
+            $session->setData('search_ip', $ip);
+            $session->setData('search_method', $method);
+            $session->setData('search_url', $url);
+            $session->setData('search_start', $start);
+            $session->setData('search_end', $end);
+            $session->setData('search_limit', $limit);
+            $session->setData('search_token', $token);
         }
 
         if (!empty($token)) {
@@ -63,6 +62,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
 
     public function searchResultsAction()
     {
+        /** @var Mage_Core_Controller_Request_Http$request */
         $request  = $this->getRequest();
         $profiler = $this->getProfiler();
 
@@ -148,6 +148,9 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         return $this->renderLayout();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function phpinfoAction()
     {
         phpinfo();

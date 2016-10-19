@@ -49,6 +49,12 @@ class Ecocode_Profiler_Model_Profiler
         return $this->enabled;
     }
 
+    public function getDataCollector($name)
+    {
+        $collectors = $this->getDataCollectors();
+
+        return isset($collectors[$name]) ? $collectors[$name] : false;
+    }
 
     public function getDataCollectors()
     {

@@ -5,11 +5,11 @@
 $codeHelper = Mage::helper('ecocode_profiler/code');
 
 
-$trace = $this->getTrace();
+$trace = $this->getStack();
 ?>
 <?php if ($trace): ?>
     <?php if ($this->shouldWarp()): ?>
-        <div id="stack-<?php echo $this->getTraceId() ?>" class="hidden">
+        <div id="stack-<?php echo $this->getStackId() ?>" class="hidden">
         <strong class="font-normal text-small">Trace:</strong>
     <?php endif ?>
         <ul class="sf-call-stack ">

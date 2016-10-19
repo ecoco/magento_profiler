@@ -1,0 +1,23 @@
+<?php
+/** @var Ecocode_Profiler_Block_Renderer_Table $this */
+
+/** @var Ecocode_Profiler_Helper_ValueExporter $valueExport */
+$valueExport = $this->helper('ecocode_profiler/valueExporter');
+$labels      = $this->getLabels();
+?>
+<table class="<?php echo $this->getClass() ?>">
+    <thead>
+    <tr>
+        <th scope="col" class="key"><?php echo isset($labels[0]) ? $labels[0] : 'Key' ?></th>
+        <th scope="col" class="key"><?php echo isset($labels[1]) ? $labels[1] : 'Value' ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->getItems() as $key => $value): ?>
+        <tr>
+            <th scope="row"><?php echo $key ?></th>
+            <td><?php echo $valueExport->exportValue($value) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

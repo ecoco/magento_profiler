@@ -14,7 +14,7 @@ class Ecocode_Profiler_Block_Renderer_CallStack
         parent::_construct();
     }
 
-    public function getTraceId()
+    public function getStackId()
     {
         $id = $this->getData('id');
         if (!$id) {
@@ -24,9 +24,9 @@ class Ecocode_Profiler_Block_Renderer_CallStack
         return $id;
     }
 
-    public function getTrace()
+    public function getStack()
     {
-        $trace = $this->getData('trace');
+        $trace = $this->getData('stack');
         if (!$trace) {
             return [];
         }

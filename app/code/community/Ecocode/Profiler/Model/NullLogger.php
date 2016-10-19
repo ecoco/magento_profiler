@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class Ecocode_Profiler_Model_NullLogger
+ *
+ * @SuppressWarnings("unused")
+ */
 class Ecocode_Profiler_Model_NullLogger
     implements Ecocode_Profiler_Model_LoggerInterface
 {

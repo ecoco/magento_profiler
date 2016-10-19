@@ -6,7 +6,11 @@ $prefix = $this->getData('prefix');
 $context = $this->getData('context');
 
 /** @var Ecocode_Profiler_Helper_ValueExporter $exporter */
-$exporter = Mage::helper('ecocode_profiler/valueExporter')
+$exporter = Mage::helper('ecocode_profiler/valueExporter');
+
+$codeHelper = Mage::helper('ecocode_profiler/code');
+
+$data = $context->getData();
 ?>
 
 <div class="context font-normal text-small">
@@ -17,6 +21,7 @@ $exporter = Mage::helper('ecocode_profiler/valueExporter')
            data-toggle-alt-content="Hide metadata">View metadata</a>
         <div id="context-<?php echo $prefix . $context->getId() ?>" class="hidden text-small">
             <table>
+
                 <?php foreach($context->getData() as $key => $value):?>
                     <tr>
                         <th class="key"><?php echo $key?></th>

@@ -46,25 +46,25 @@ class Ecocode_Profiler_Helper_ValueExporter
 
             $indent = str_repeat('  ', $depth);
 
-            $a = [];
-            foreach ($value as $k => $v) {
-                if (is_array($v)) {
+            $all = [];
+            foreach ($value as $key => $val) {
+                if (is_array($val)) {
                     $deep = true;
                 }
-                $a[] = sprintf('%s => %s', $k, $this->exportValue($v, $depth + 1, $deep));
+                $all[] = sprintf('%s => %s', $key, $this->exportValue($val, $depth + 1, $deep));
             }
 
             if ($deep) {
-                return sprintf("[\n%s%s\n%s]", $indent, implode(sprintf(", \n%s", $indent), $a), str_repeat('  ', $depth - 1));
+                return sprintf("[\n%s%s\n%s]", $indent, implode(sprintf(", \n%s", $indent), $all), str_repeat('  ', $depth - 1));
             }
 
-            $s = sprintf('[%s]', implode(', ', $a));
+            $str = sprintf('[%s]', implode(', ', $all));
 
-            if (80 > strlen($s)) {
-                return $s;
+            if (80 > strlen($str)) {
+                return $str;
             }
 
-            return sprintf("[\n%s%s\n]", $indent, implode(sprintf(",\n%s", $indent), $a));
+            return sprintf("[\n%s%s\n]", $indent, implode(sprintf(",\n%s", $indent), $all));
         }
 
         if (is_resource($value)) {

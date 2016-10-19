@@ -116,6 +116,15 @@ class Ecocode_Profiler_Model_Observer
         }
     }
 
+    public function captureFlashMessages()
+    {
+        $collector = $this->getProfiler()->getDataCollector('request');
+        /** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
+        if($collector) {
+            $collector->captureFlashMessages();
+        }
+    }
+
 
     /**
      * @codeCoverageIgnore

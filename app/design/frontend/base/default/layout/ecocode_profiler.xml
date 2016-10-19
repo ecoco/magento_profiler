@@ -33,7 +33,7 @@
     <profiler_index_toolbar>
         <block type="ecocode_profiler/toolbar" name="root" output="toHtml" template="ecocode_profiler/toolbar.phtml">
             <block name="profiler.mysql.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/toolbar.phtml"/>
-            <block name="profiler.request.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/toolbar.phtml"/>
+            <block name="profiler.request.toolbar" type="ecocode_profiler/collector_request_toolbar" template="ecocode_profiler/collector/request/toolbar.phtml"/>
             <block name="profiler.time.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/time/toolbar.phtml"/>
             <block name="profiler.translation.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/translation/toolbar.phtml"/>
             <block name="profiler.ajax.toolbar" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/ajax/toolbar.phtml"/>

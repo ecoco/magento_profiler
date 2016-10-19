@@ -12,7 +12,7 @@ class Ecocode_Profiler_Tests_Dev_Helper_DataTest
 
         $this->assertEquals(
             $classGroup,
-            $helper->getClassGroup($class)
+            $helper->resolveClassGroup($class)
         );
     }
 
@@ -25,7 +25,7 @@ class Ecocode_Profiler_Tests_Dev_Helper_DataTest
 
         $this->assertEquals(
             'unknown',
-            $helper->getClassGroup($class)
+            $helper->resolveClassGroup($class)
         );
     }
 

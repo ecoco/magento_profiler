@@ -5,12 +5,12 @@
  *
  * @method getBag
  */
-class Ecocode_Profiler_Block_Bag
- extends Mage_Core_Block_Template
+class Ecocode_Profiler_Block_Renderer_Bag
+ extends Ecocode_Profiler_Block_Renderer_AbstractRenderer
 {
     public function _construct()
     {
-        $this->setTemplate('ecocode_profiler/bag.phtml');
+        $this->setTemplate('ecocode_profiler/renderer/bag.phtml');
         parent::_construct();
     }
 

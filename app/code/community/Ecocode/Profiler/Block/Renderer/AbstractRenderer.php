@@ -11,10 +11,17 @@ class Ecocode_Profiler_Block_Renderer_AbstractRenderer
 {
     protected $_templateFileCache = [];
 
+    /**
+     * @param array $data
+     * @return string
+     */
     public function render(array $data = [])
     {
         $this->setData($data);
-        return $this->toHtml();
+        $html = $this->toHtml();
+
+        $this->unsetData();
+        return $html;
     }
 
     public function getTemplateFile()

@@ -16,7 +16,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
     </thead>
     <tbody>
     <?php foreach ($this->getData('queries') as $index => $queryData): ?>
-        <tr data-type="<?php echo $queryData['type']?>" data-connection="<?php echo $queryData['connection'] ?>">
+        <tr data-type="<?php echo $queryData['type'] ?>" data-connection="<?php echo $queryData['connection'] ?>">
             <td class="nowrap"><?php echo $index + 1 ?> </td>
             <td class="nowrap"><?php echo $queryData['connection'] ?> </td>
             <td class="nowrap"><?php echo sprintf('%0.2f', $queryData['time'] * 1000) ?> ms</td>
@@ -28,7 +28,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
 
                 </div>
                 <div>
-                    <?php echo $contextHelper->render($prefix, $queryData['context']); ?>
+                    <?php echo $contextHelper->render($prefix . '-' . $index, $queryData['context']); ?>
                 </div>
 
                 <div class="text-small font-normal">

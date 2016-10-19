@@ -1,12 +1,13 @@
 <?php
-/** @var Ecocode_Profiler_Block_Bag $this */
+/** @var Ecocode_Profiler_Block_Renderer_Bag $this */
 
 /** @var Ecocode_Profiler_Helper_ValueExporter $valueExport */
 $valueExport = $this->helper('ecocode_profiler/valueExporter');
 
+$bag = $this->getBag();
 ?>
 
-<table class="<?php echo $this->getData('class')?>">
+<table class="<?php echo $this->getData('class') ?>">
     <thead>
     <?php $labels = $this->getLabels(); ?>
     <tr>
@@ -17,17 +18,17 @@ $valueExport = $this->helper('ecocode_profiler/valueExporter');
     <tbody>
     <?php if ($bag = $this->getBag()): ?>
 
-        <?php foreach($bag->keys() as $key): ?>
+        <?php foreach ($bag->keys() as $key): ?>
             <tr>
                 <th><?php echo $key ?></th>
                 <td><?php echo $valueExport->exportValue($bag->get($key)) ?></td>
             </tr>
 
-        <?php endforeach;?>
+        <?php endforeach; ?>
     <?php else: ?>
         <tr>
             <td colspan="2">(no data)</td>
         </tr>
-    <?php endif;?>
+    <?php endif; ?>
     </tbody>
 </table>

@@ -11,6 +11,7 @@ class Mage_Core_Model_Store extends
     /**
      * Remove script file name from url in case when server rewrites are enabled
      *
+     * @SuppressWarnings("superglobals")
      * @param   string $url
      * @return  string
      */

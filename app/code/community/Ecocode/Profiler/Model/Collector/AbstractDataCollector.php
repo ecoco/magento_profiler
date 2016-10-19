@@ -80,6 +80,7 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
         if ($this->helper === null) {
             $this->helper = Mage::helper('ecocode_profiler');
         }
+
         return $this->helper;
     }
 

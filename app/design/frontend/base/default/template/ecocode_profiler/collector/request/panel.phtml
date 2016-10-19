@@ -3,6 +3,9 @@
 
 /** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
 $collector = $this->getCollector();
+
+/** @var Ecocode_Profiler_Helper_Renderer $renderHelper */
+$renderHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
 
 
@@ -18,7 +21,7 @@ $collector = $this->getCollector();
                     <p>No GET parameters</p>
                 </div>
             <?php else: ?>
-                <?php echo $this->renderBag($collector->getRequestQuery()) ?>
+                <?php echo $renderHelper->renderBag($collector->getRequestQuery()) ?>
             <?php endif ?>
 
             <h3>POST Parameters</h3>
@@ -28,7 +31,7 @@ $collector = $this->getCollector();
                     <p>No POST parameters</p>
                 </div>
             <?php else: ?>
-                <?php echo $this->renderBag($collector->getRequestRequest()) ?>
+                <?php echo $renderHelper->renderBag($collector->getRequestRequest()) ?>
             <?php endif ?>
 
             <h3>Request Attributes</h3>
@@ -38,7 +41,7 @@ $collector = $this->getCollector();
                     <p>No attributes</p>
                 </div>
             <?php else: ?>
-                <?php echo $this->renderBag($collector->getRequestAttributes()) ?>
+                <?php echo $renderHelper->renderBag($collector->getRequestAttributes()) ?>
             <?php endif ?>
 
             <h3>Cookies</h3>
@@ -48,11 +51,11 @@ $collector = $this->getCollector();
                     <p>No cookies</p>
                 </div>
             <?php else: ?>
-                <?php echo $this->renderBag($collector->getRequestCookies()) ?>
+                <?php echo $renderHelper->renderBag($collector->getRequestCookies()) ?>
             <?php endif ?>
 
             <h3>Request Headers</h3>
-            <?php echo $this->renderBag($collector->getRequestHeaders()) ?>
+            <?php echo $renderHelper->renderBag($collector->getRequestHeaders()) ?>
 
             <h3>Request Content</h3>
 
@@ -71,7 +74,7 @@ $collector = $this->getCollector();
             <?php endif ?>
 
             <h3>Server Parameters</h3>
-            <?php echo $this->renderBag($collector->getRequestServer()) ?>
+            <?php echo $renderHelper->renderBag($collector->getRequestServer()) ?>
         </div>
     </div>
 
@@ -81,83 +84,121 @@ $collector = $this->getCollector();
         <div class="tab-content">
             <h3>Response Headers</h3>
 
-            <?php echo $this->renderBag($collector->getResponseHeaders()) ?>
+            <?php echo $renderHelper->renderBag($collector->getResponseHeaders()) ?>
         </div>
     </div>
 
-    <!--<div class="tab {{ collector.sessionmetadata is empty ? 'disabled' }}">
+    <?php $sessionMetadata = $collector->getSessionMetadata() ?>
+    <?php $sessionAttributes = $collector->getSessionAttributes() ?>
+
+    <div class="tab <?php echo !($sessionMetadata && $sessionAttributes) ? '' : 'disabled' ?>">
         <h3 class="tab-title">Session</h3>
 
         <div class="tab-content">
             <h3>Session Metadata</h3>
 
-            {% if collector.sessionmetadata is empty %}
-            <div class="empty">
-                <p>No session metadata</p>
-            </div>
-            {% else %}
-            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.sessionmetadata }, with_context = false) }}
-            {% endif %}
+            <?php if (empty($sessionMetadata)): ?>
+                <div class="empty">
+                    <p>No session metadata</p>
+                </div>
+            <?php else: ?>
+                <?php echo $renderHelper->renderTable($sessionMetadata); ?>
+            <?php endif ?>
 
-            <h3>Session Attributes</h3>
+            <h3>Sessions</h3>
 
-            {% if collector.sessionattributes is empty %}
-            <div class="empty">
-                <p>No session attributes</p>
-            </div>
-            {% else %}
-            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.sessionattributes, labels: ['Attribute', 'Value'] }, with_context = false) }}
-            {% endif %}
+            <?php if (empty($sessionAttributes)): ?>
+                <div class="empty">
+                    <p>No session attributes</p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($sessionAttributes['namespace'] as $namespace => $data): ?>
+                    <h4><?php echo uc_words($namespace) ?></h4>
+                    <?php echo $renderHelper->renderTable($data); ?>
+                <?php endforeach; ?>
+
+
+                <?php foreach ($sessionAttributes['store'] as $namespace => $data): ?>
+                    <h4><?php echo uc_words($namespace) ?></h4>
+                    <?php echo $renderHelper->renderTable($data); ?>
+                <?php endforeach; ?>
+
+                <?php foreach ($sessionAttributes['global'] as $namespace => $data): ?>
+                    <h4><?php echo uc_words($namespace) ?></h4>
+                    <?php echo $renderHelper->renderTable($data); ?>
+                <?php endforeach; ?>
+            <?php endif ?>
+
         </div>
     </div>
 
-    <div class="tab {{ collector.flashes is empty ? 'disabled' }}">
-        <h3 class="tab-title">Flashes</h3>
+    <div class="tab <?php echo $collector->getMessages() ? '' : 'disabled' ?>">
+        <h3 class="tab-title">Messages <span class="badge"><?php echo count($collector->getMessages()) ?></span></h3>
 
         <div class="tab-content">
-            <h3>Flashes</h3>
+            <h3>Messages</h3>
 
-            {% if collector.flashes is empty %}
-            <div class="empty">
-                <p>No flash messages were created.</p>
+            <?php if (empty($collector->getMessages())): ?>
+                <div class="empty">
+                    <p>No messages were created.</p>
+                </div>
+            <?php else: ?>
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">Session</th>
+                        <th scope="col">Namespace</th>
+                        <th scope="col">Type</th>
+                        <th class="nowrap">Message</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($collector->getMessages() as $message): ?>
+                        <tr>
+                            <td class="nowrap" scope="row"><?php echo $message['class_group'] ?></td>
+                            <td class="nowrap"><?php echo $message['namespace'] ?></td>
+                            <td class="nowrap"><?php echo $message['type'] ?></td>
+                            <td><?php echo $message['text'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            <?php endif; ?>
+        </div>
+    </div>
+    <!--
+        {% if profile.parent %}
+        <div class="tab">
+            <h3 class="tab-title">Parent Request</h3>
+
+            <div class="tab-content">
+                <h3>
+                    <a href="{{ path('_profiler', { token: profile.parent.token }) }}">Return to parent request</a>
+                    <small>(token = {{ profile.parent.token }})</small>
+                </h3>
+
+                {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: profile.parent.getcollector('request').requestattributes }, with_context = false) }}
             </div>
-            {% else %}
-            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.flashes }, with_context = false) }}
-            {% endif %}
         </div>
-    </div>
+        {% endif %}
 
-    {% if profile.parent %}
-    <div class="tab">
-        <h3 class="tab-title">Parent Request</h3>
+        {% if profile.children|length %}
+        <div class="tab">
+            <h3 class="tab-title">Sub Requests <span class="badge">{{ profile.children|length }}</span></h3>
 
-        <div class="tab-content">
-            <h3>
-                <a href="{{ path('_profiler', { token: profile.parent.token }) }}">Return to parent request</a>
-                <small>(token = {{ profile.parent.token }})</small>
-            </h3>
+            <div class="tab-content">
+                {% for child in profile.children %}
+                <h3>
+                    <a href="{{ path('_profiler', { token: child.token }) }}">
+                        {{- child.getcollector('request').requestattributes.get('_controller') -}}
+                    </a>
+                    <small>(token = {{ child.token }})</small>
+                </h3>
 
-            {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: profile.parent.getcollector('request').requestattributes }, with_context = false) }}
+                {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: child.getcollector('request').requestattributes }, with_context = false) }}
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    {% endif %}
-
-    {% if profile.children|length %}
-    <div class="tab">
-        <h3 class="tab-title">Sub Requests <span class="badge">{{ profile.children|length }}</span></h3>
-
-        <div class="tab-content">
-            {% for child in profile.children %}
-            <h3>
-                <a href="{{ path('_profiler', { token: child.token }) }}">
-                    {{- child.getcollector('request').requestattributes.get('_controller') -}}
-                </a>
-                <small>(token = {{ child.token }})</small>
-            </h3>
-
-            {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: child.getcollector('request').requestattributes }, with_context = false) }}
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}-->
+        {% endif %}-->
 </div>

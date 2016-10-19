@@ -69,7 +69,7 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         $layout       = $this->getLayout();
         $outputBlocks = [];
 
-        foreach ($outputProperties->getValue($layout) as $name => $data) {
+        foreach (array_keys($outputProperties->getValue($layout)) as $name) {
             $block          = $layout->getBlock($name);
             $outputBlocks[] = $block->getData('profiler_id');
         }
@@ -121,7 +121,7 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
     protected function collectTimingData()
     {
         $totalTime = 0;
-        foreach ($this->renderLog as $id => &$data) {
+        foreach ($this->renderLog as &$data) {
             $renderTimeExcl = $data['render_time_incl'];
             foreach ($data['children'] as $childId) {
                 $child = $this->renderLog[$childId];

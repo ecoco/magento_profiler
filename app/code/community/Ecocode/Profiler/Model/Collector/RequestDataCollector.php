@@ -6,6 +6,8 @@
 class Ecocode_Profiler_Model_Collector_RequestDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {
+    protected $messages = [];
+
     public static $statusTexts = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -81,23 +83,6 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         $requestHeaders    = $this->collectRequestHeaders($request);
         $requestContent    = $request->getRawBody();
 
-        $sessionMetadata   = [];
-        $sessionAttributes = [];
-        //@TODO get all magento session singletons to split them by namespace
-        $flashes = [];
-
-        /*
-        $session           = null
-        if (false && $request->hasSession()) {
-                    $session = $request->getSession();
-                    if ($session->isStarted()) {
-                        $sessionMetadata['Created']   = date(DATE_RFC822, $session->getMetadataBag()->getCreated());
-                        $sessionMetadata['Last used'] = date(DATE_RFC822, $session->getMetadataBag()->getLastUsed());
-                        $sessionMetadata['Lifetime']  = $session->getMetadataBag()->getLifetime();
-                        $sessionAttributes            = $session->all();
-                        $flashes                      = $session->getFlashBag()->peekAll();
-                    }
-                }*/
 
         $statusCode = $this->detectStatusCode($response);
         $statusText = isset(self::$statusTexts[$statusCode]) ? self::$statusTexts[$statusCode] : '';
@@ -117,9 +102,9 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
             'request_cookies'    => $request->getCookie(),
             'request_attributes' => $requestAttributes,
             'response_headers'   => $responseHeaders,
-            'session_metadata'   => $sessionMetadata,
-            'session_attributes' => $sessionAttributes,
-            'flashes'            => $flashes,
+            'session_metadata'   => [],
+            'session_data'       => [],
+            'messages'           => [],
             'path_info'          => $request->getPathInfo(),
             'controller'         => 'n/a',
             //'locale'             => $request->getLocale(),
@@ -133,6 +118,8 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         }
 
         $this->collectRedirectData($request, $response);
+        $this->collectSessionData();
+        $this->collectFlashMessages();
     }
 
     protected function collectRedirectData(
@@ -158,6 +145,111 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
                 ]);
             }
         }
+    }
+
+    protected function collectSessionData()
+    {
+        $namespaceData  = [];
+        $storeData      = [];
+        $rawSessionData = $this->getRawSession();
+
+        $defaultSessionData = [
+            '_session_validator_data' => false,
+            'session_hosts'           => false
+        ];
+
+
+        foreach ($rawSessionData as $key => $data) {
+            if (isset($data['messages'])) {
+                //dont save messages here
+                unset($data['messages']);
+            }
+
+            if (isset($data['_session_validator_data'])) {
+                unset($rawSessionData[$key]);
+                //magento session model
+                $filtered = array_diff_key($data, $defaultSessionData);
+
+                if (count($filtered) === 0) {
+                    continue;
+                }
+
+                if (strpos($key, 'store_') === 0) {
+                    $storeCode                 = str_replace('store_', '', $key);
+                    $storeData[$storeCode] = $data;
+                } else {
+                    $namespaceData[$key] = $data;
+                }
+
+
+            }
+
+        }
+        //add the missing data to a global namespace
+        $this->data['session_data'] = [
+            'namespace' => $namespaceData,
+            'store'     => $storeData,
+            'global'    => $rawSessionData,
+        ];
+    }
+
+    /**
+     * @return Mage_Core_Model_Message_Collection
+     */
+    protected function getSessionList()
+    {
+        $rawSessionData = $this->getRawSession();
+        $sessionList    = [];
+        foreach (Mage::getAllRegistryEntries() as $session) {
+            if ($session instanceof Mage_Core_Model_Session_Abstract) {
+                $namespace               = array_search($session->getData(), $rawSessionData);
+                $sessionList[$namespace] = $session;
+            }
+        }
+
+        return $sessionList;
+    }
+
+    protected function collectFlashMessages()
+    {
+        $messages    = [];
+        $sessionList = $this->getSessionList();
+        $helper      = $this->getHelper();
+
+        foreach ($this->messages as $message) {
+            $namespace = $message['namespace'];
+
+            $session                = $sessionList[$namespace];
+            $message['class_group'] = $helper->resolveClassGroup($session);
+
+            $messages[] = $message;
+        }
+
+        $this->data['messages'] = $messages;
+    }
+
+    public function captureFlashMessages()
+    {
+        $messages = [];
+        foreach ($this->getRawSession() as $namespace => $data) {
+            if (!isset($data['messages'])) {
+                continue;
+            }
+
+            if ($data['messages']->count()) {
+                foreach ($data['messages']->getItems() as $message) {
+                    /** @var Mage_Core_Model_Message_Abstract $message */
+
+                    $messages[] = [
+                        'namespace' => $namespace,
+                        'type'      => $message->getType(),
+                        'text'      => $message->getText(),
+                    ];
+                }
+            }
+        }
+
+        $this->messages = $messages;
     }
 
     protected function hideAuthData()
@@ -227,12 +319,12 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
 
     public function getSessionAttributes()
     {
-        return $this->data['session_attributes'];
+        return $this->data['session_data'];
     }
 
-    public function getFlashes()
+    public function getMessages()
     {
-        return $this->data['flashes'];
+        return $this->data['messages'];
     }
 
     public function getContent()
@@ -355,6 +447,15 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
         return $this->getData('redirect', false);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @SuppressWarnings("superglobals")
+     * @return array
+     */
+    protected function getRawSession()
+    {
+        return isset($_SESSION) ? $_SESSION : [];
+    }
 
     /**
      * {@inheritdoc}

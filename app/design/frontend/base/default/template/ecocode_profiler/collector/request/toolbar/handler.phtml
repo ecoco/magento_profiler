@@ -1,0 +1,32 @@
+<?php
+/** @var Ecocode_Profiler_Block_Renderer_Request_ToolbarHandler $this */
+
+/** @var Ecocode_Profiler_Helper_Code $codeHelper */
+$codeHelper = Mage::helper('ecocode_profiler/code');
+
+$controller = $this->getController();
+?>
+
+<?php if (isset($controller['class'])): ?>
+    <?php if ($this->getMethod()): ?>
+        <span class="sf-toolbar-status sf-toolbar-redirection-method"><?php echo $this->getMethod() ?></span>
+    <?php endif; ?>
+    <?php $link = $codeHelper->getFileLink($controller['file'], $controller['line']); ?>
+    <?php if ($link): ?>
+        <a target="profiler_link_target" href="<?php echo $link ?>" title="<?php echo $controller['file'] ?>">
+    <?php endif; ?>
+
+    <?php if ($this->getRoute()): ?>
+        @<?php echo $this->getRoute(); ?>
+    <?php else: ?>
+        <?php echo strip_tags($codeHelper->abbrClass($controller['class'])); ?>
+        <?php echo $controller['method'] ? '::' . $controller['method'] : ''; ?>
+    <?php endif; ?>
+
+    <?php if ($link): ?>
+        </a>
+    <?php endif; ?>
+
+<?php else: ?>
+    <span><?php echo $this->getRoute() ? $this->getRoute() : $controller?></span>
+<?php endif; ?>

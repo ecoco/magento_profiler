@@ -8,16 +8,29 @@ class Ecocode_Profiler_Helper_Renderer
 {
     protected $renderer = [];
 
-    public function renderCallStack($id, $trace, $wrap = true)
+    public function renderBag($bag, array $data = [])
+    {
+        $data['bag'] = $bag;
+
+        return $this->getInstance('bag')
+            ->render($data);
+    }
+
+    public function renderTable($data, $labels = null)
+    {
+        return $this->getInstance('table')
+            ->render(['items' => $data, 'labels' => $labels]);
+    }
+
+    public function renderCallStack($id, $stack, $wrap = true)
     {
         return $this->getInstance('callStack')
-            ->setData(['id' => $id, 'trace' => $trace, 'wrap' => $wrap])
-            ->toHtml();
+            ->render(['id' => $id, 'stack' => $stack, 'wrap' => $wrap]);
     }
 
     /**
      * @param $name
-     * @return Ecocode_Profiler_Block_Renderer_CallStack
+     * @return Ecocode_Profiler_Block_Renderer_RendererInterface
      */
     public function getInstance($name)
     {

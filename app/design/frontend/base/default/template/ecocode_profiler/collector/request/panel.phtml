@@ -123,10 +123,10 @@ $renderHelper = Mage::helper('ecocode_profiler/renderer');
                     <?php echo $renderHelper->renderTable($data); ?>
                 <?php endforeach; ?>
 
-                <?php foreach ($sessionAttributes['global'] as $namespace => $data): ?>
-                    <h4><?php echo uc_words($namespace) ?></h4>
-                    <?php echo $renderHelper->renderTable($data); ?>
-                <?php endforeach; ?>
+                <?php if ($sessionAttributes['global']): ?>
+                    <h4>Global Data</h4>
+                    <?php echo $renderHelper->renderTable($sessionAttributes['global']); ?>
+                <?php endif ?>
             <?php endif ?>
 
         </div>

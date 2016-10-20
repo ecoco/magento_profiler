@@ -13,11 +13,18 @@ $labels      = $this->getLabels();
     </tr>
     </thead>
     <tbody>
+    <?php if (is_string($this->getItems())): ?>
+        <tr>
+            <th scope="row">&nbsp;</th>
+            <td><?php echo $valueExport->exportValue($this->getItems()) ?></td>
+        </tr>
+    <?php else: ?>
     <?php foreach ($this->getItems() as $key => $value): ?>
         <tr>
             <th scope="row"><?php echo $key ?></th>
             <td><?php echo $valueExport->exportValue($value) ?></td>
         </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
     </tbody>
 </table>

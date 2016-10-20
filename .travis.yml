@@ -6,6 +6,7 @@ php:
   - 5.5
 
 env:
+  - MAGENTO_VERSION=magento-mirror-1.9.3.0
   - MAGENTO_VERSION=magento-mirror-1.9.2.4
   - MAGENTO_VERSION=magento-mirror-1.8.1.0
   - MAGENTO_VERSION=magento-mirror-1.7.0.2
@@ -13,7 +14,7 @@ env:
 matrix:
   include:
     - php: 7.0
-      env: MAGENTO_VERSION=magento-mirror-1.9.2.4 NO_DEPS=1
+      env: MAGENTO_VERSION=magento-mirror-1.9.3.0 NO_DEPS=1
 
 services:
   - mysql

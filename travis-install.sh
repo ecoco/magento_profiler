@@ -8,7 +8,7 @@ mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS ma
 cd $TRAVIS_BUILD_DIR/build
 
 #1.9.3.0 is currently not in the default version of n98 so add it manually
-cat <<EOF > ~/.n98-magerun.yaml2
+cat <<EOF > ~/.n98-magerun.yaml
 commands:
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:

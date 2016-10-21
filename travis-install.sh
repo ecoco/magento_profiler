@@ -54,7 +54,7 @@ then
     #make php7 possible
     composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7
 
-    if [ $MAGENTO_VERSION == "MAGENTO_VERSION=magento-mirror-1.9.3.0" ]
+    if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]
     then
         composer require inchoo/php7 2.0.0
     else

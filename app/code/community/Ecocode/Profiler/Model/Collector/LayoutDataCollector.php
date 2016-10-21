@@ -124,6 +124,10 @@ class Ecocode_Profiler_Model_Collector_LayoutDataCollector
         foreach ($this->renderLog as &$data) {
             $renderTimeExcl = $data['render_time_incl'];
             foreach ($data['children'] as $childId) {
+                if (!isset($this->renderLog[$childId])) {
+                    //if the block was unset continue
+                    continue;
+                }
                 $child = $this->renderLog[$childId];
                 $renderTimeExcl -= $child['render_time_incl'];
             }

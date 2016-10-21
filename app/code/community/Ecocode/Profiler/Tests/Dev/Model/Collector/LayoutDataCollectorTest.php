@@ -6,12 +6,9 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
     public function testBeforeToHtmlNoParent()
     {
         $start     = microtime(true);
-        $observer  = new Varien_Event_Observer();
-        $event     = new Varien_Event();
         $testBlock = new Mage_Core_Block_Template();
 
-        $observer->setData('event', $event);
-        $event->setData('block', $testBlock);
+        $observer = $this->getObserver(['block' => $testBlock]);
 
         $collector = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
 
@@ -36,21 +33,18 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
 
     public function testBeforeToHtmlWithParent()
     {
-        $observer    = new Varien_Event_Observer();
-        $event       = new Varien_Event();
         $childBlock  = new Mage_Core_Block_Template();
         $parentBlock = new Mage_Core_Block_Template();
 
         $parentBlock->setChild('test-child', $childBlock);
 
-        $observer->setData('event', $event);
-        $event->setData('block', $parentBlock);
+        $observer = $this->getObserver(['block' => $parentBlock]);
 
         $collector = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
 
         $collector->beforeToHtml($observer);
 
-        $event->setData('block', $childBlock);
+        $observer->getEvent()->setData('block', $childBlock);
         $collector->beforeToHtml($observer);
 
         $parentId = $parentBlock->getData('profiler_id');
@@ -250,6 +244,70 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_LayoutDataCollectorTest
 
         $this->assertCount(1, $collector->getRenderLog());
     }
+
+    public function testCollectTimingData()
+    {
+        $collector         = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
+        $renderLogProperty = new ReflectionProperty($collector, 'renderLog');
+        $renderLogProperty->setAccessible(true);
+
+        $log = [
+            'block-1' => [
+                'id'               => 'block-1',
+                'render_time_incl' => 30,
+                'children'         => ['block-2', 'block-3']
+            ],
+            'block-2' => [
+                'id'               => 'block-2',
+                'render_time_incl' => 15,
+                'children'         => []
+            ],
+            'block-3' => [
+                'id'               => 'block-3',
+                'render_time_incl' => 5,
+                'children'         => []
+            ]
+        ];
+        $renderLogProperty->setValue($collector, $log);
+
+        $collectTimingDataMethod = $this->getProtectedMethod($collector, 'collectTimingData');
+
+        $totalTime = $collectTimingDataMethod->invoke($collector);
+        $this->assertEquals(30, $totalTime);
+        $log = $renderLogProperty->getValue($collector);
+        $this->assertEquals(10, $log['block-1']['render_time']);
+    }
+
+    public function testCollectTimingDataWithClearedLog()
+    {
+        $collector         = new Ecocode_Profiler_Model_Collector_LayoutDataCollector();
+        $renderLogProperty = new ReflectionProperty($collector, 'renderLog');
+        $renderLogProperty->setAccessible(true);
+
+        $log = [
+            '1' => [
+                'id'               => '1',
+                'render_time_incl' => 30,
+                'children'         => ['2', '3']
+            ],
+            '3' => [
+                'id'               => '3',
+                'render_time_incl' => 5,
+                'children'         => []
+            ]
+        ];
+
+        $renderLogProperty->setValue($collector, $log);
+
+        $collectTimingDataMethod = $this->getProtectedMethod($collector, 'collectTimingData');
+
+        $totalTime = $collectTimingDataMethod->invoke($collector);
+        $this->assertEquals(30, $totalTime);
+
+        $log = $renderLogProperty->getValue($collector);
+        $this->assertEquals(25, $log[1]['render_time']);
+    }
+
 
     /**
      * @return Ecocode_Profiler_Model_Collector_LayoutDataCollector

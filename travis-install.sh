@@ -34,6 +34,20 @@ else
     composer install
 fi
 
+#1.9.3.0 is currently not in the default version of n98 so add it manually
+cat <<EOF > ~/.n98-magerun.yaml2
+commands:
+  N98\Magento\Command\Installer\InstallCommand:
+    magento-packages:
+      - name: magento-mirror-1.9.3.0
+        version: 1.9.3.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.0.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.9.1.0
+EOF
+
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
     #make php7 possible

@@ -20,7 +20,7 @@ modman link $TRAVIS_BUILD_DIR
 
 
 
-if [ $NO_DEPS ];
+if [ $NO_DEPS ]
 then
     #only install test dependencies
     composer require phpunit/phpunit
@@ -34,6 +34,16 @@ else
     composer install
 fi
 
-#make php7 possible
-composer config -g repositories.firegento composer https://packages.firegento.com
-composer require inchoo/php7
+if [ $TRAVIS_PHP_VERSION == "7.0" ]
+then
+    #make php7 possible
+    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7
+
+    if [ $MAGENTO_VERSION == "MAGENTO_VERSION=magento-mirror-1.9.3.0" ]
+    then
+        composer require inchoo/php7 2.0.0
+    else
+        composer require inchoo/php7 1.0.6
+    fi
+fi
+

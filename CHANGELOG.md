@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-next version 
+1.2.1
 -----
 * fix for #1 Not working in secure environnement with magento 1.9.2 (https://)
 * fix for #6 Undefined index error in layout data collector 

@@ -236,7 +236,7 @@ class Ecocode_Profiler_Model_Collector_RequestDataCollector
                 continue;
             }
 
-            if ($data['messages']->count()) {
+            if ($data['messages'] instanceof Mage_Core_Model_Message_Collection && $data['messages']->count()) {
                 foreach ($data['messages']->getItems() as $message) {
                     /** @var Mage_Core_Model_Message_Abstract $message */
 

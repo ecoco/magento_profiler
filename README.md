@@ -53,9 +53,9 @@ the dependencies. This is currently only possible via composer as we do need the
 
 To install the dependencies run the following from your magento root dir or a parent directory:
 ```
-composer require --dev symfony/debug 3.1
+composer require --dev symfony/debug 3.0
 composer require --dev symfony/yaml 3.1
-composer require --dev jdorn/sql-formatter 1.2
+composer require --dev jdorn/sql-formatter ~1.2
 composer require --dev monolog/monolog 1.11
 ```
 

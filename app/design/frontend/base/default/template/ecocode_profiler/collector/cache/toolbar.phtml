@@ -19,7 +19,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
         </div>
     </a>
     <div class="sf-toolbar-info">
-        <div class="sf-toolbar-info-group" style="float: left;">
+        <div class="sf-toolbar-info-group">
             <?php foreach ($cacheList as $cache): ?>
                 <?php $currentStatus = $cacheTypes[$cache['id']]->getData('status'); ?>
                 <div class="sf-toolbar-info-piece">
@@ -43,7 +43,14 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
                            class="ajax-action">Enable</a>
                     <?php endif; ?>
                 </div>
+
             <?php endforeach; ?>
+        </div>
+        <div class="sf-toolbar-info-group" >
+            <div class="sf-toolbar-info-piece" style="text-align: right; display: block;">
+                <a data-url="<?php echo Mage::getUrl('_profiler/cache/clearAll') ?>"
+                   class="btn btn-sm ajax-action">Clear All</a>
+            </div>
         </div>
         <div class="sf-toolbar-info-group" >
             <div class="sf-toolbar-info-piece">
@@ -56,7 +63,5 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
                 <span><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
             </div>
         </div>
-
     </div>
-
 </div>

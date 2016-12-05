@@ -62,8 +62,8 @@ class Ecocode_Profiler_Block_Renderer_Settings_Field
         if (isset($data['data'])) {
             $dataAttributeKeys = array_keys($data['data']);
             //prepend with 'data-'
-            $dataAttributeKeys = array_map(function ($k) {
-                return 'data-' . $k;
+            $dataAttributeKeys = array_map(function ($key) {
+                return 'data-' . $key;
             }, $dataAttributeKeys);
 
             $dataAttributes = array_combine($dataAttributeKeys, $data['data']);

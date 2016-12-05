@@ -17,5 +17,6 @@
     </filter>
     <php>
         <ini name="memory_limit" value="2047M"/>
+        <env name="environment" value="prod"/>
     </php>
 </phpunit>

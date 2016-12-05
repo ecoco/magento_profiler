@@ -15,12 +15,12 @@ class Ecocode_Profiler_Model_Config
 
             $value = $this->getConfig();
             while ($keyParts) {
-                $_key = array_shift($keyParts);
-                if (!isset($value[$_key])) {
+                $part = array_shift($keyParts);
+                if (!isset($value[$part])) {
                     $value = $default;
                     break;
                 }
-                $value = $value[$_key];
+                $value = $value[$part];
             }
 
             return $this->cache[$key] = $value;

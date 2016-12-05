@@ -1,0 +1,152 @@
+<?php
+/** @var Ecocode_Profiler_Block_Profiler_Settings $this */
+
+/** @var Ecocode_Profiler_Model_Profiler $profiler */
+$profiler = Mage::getSingleton('ecocode_profiler/profiler');
+
+/** @var Ecocode_Profiler_Model_Config $config */
+$config = Mage::getSingleton('ecocode_profiler/config');
+
+$collectors = $profiler->getDataCollectors();
+
+/** @var Ecocode_Profiler_Block_Renderer_Settings_Row $rowRenderer */
+$rowRenderer = Mage::helper('ecocode_profiler/renderer')->getInstance('settings_row');
+
+$settings = [
+    'stacktrace_length' => [
+        'label'             => 'Stacktrace Length',
+        'label_description' => 'This setting will significantly influence the size of the saved profile',
+        'type'              => 'number',
+        'min'               => 0
+    ],
+    'host_magento_root' => [
+        'label'             => 'Host Magento Root Path',
+        'label_description' => 'Used to map paths if your running a virtual machine',
+        'type'              => 'text',
+        'value_description' => 'Mage root directory on host'
+    ],
+    'file_link_format' => [
+        'label'             => 'File Link Format',
+        'label_description' => 'This allows IDEs to set up a link-protocol that makes it possible to go directly to a line and file by clicking on the filenames. If not we try to use "xdebug.file_link_format" from the ini setting',
+        'type'              => 'text',
+        'value_description' => 'following <a href="https://xdebug.org/docs/all_settings#file_link_format" target="_blank">xdebug.file_link_format</a>. If using a web protocol, omit the protocol to avoid ssl issues'
+    ]
+]
+?>
+
+<h2>Profiler Settings</h2>
+
+<div class="sf-tabs profiler-settings">
+    <div class="tab">
+        <h3 class="tab-title">Base Settings</h3>
+        <div class="tab-content">
+            <table>
+                <tbody>
+                <?php
+                foreach ($settings as $key => $data) {
+                    $data['key'] = $key;
+                    echo $rowRenderer->render($data);
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab">
+        <h3 class="tab-title">Collector Settings</h3>
+        <div class="tab-content">
+            <?php foreach ($this->getCollectorSettingBlocks() as $block): ?>
+                <h4><?php echo uc_words($block->getCollector()->getName()) ?> </h4>
+                <?php echo $block->toHtml(); ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(function ($) {
+        var inputFields = $('.profiler-settings').find('select, input');
+
+        inputFields.each(function () {
+            var $this = $(this),
+                saveButton;
+
+            $this.on('change', function () {
+                if (!saveButton) {
+                    $this.closest('tr').find('button.btn-save').attr('disabled', false);
+                }
+            });
+        });
+
+        $(document).on('click.setting.save', 'a.btn-save', function () {
+            var id        = $(this).data('id'),
+                input     = $(id),
+                collector = input.data('collector'),
+                data      = {
+                    'key':   input.attr('name'),
+                    'value': input.val()
+                };
+
+            if (collector) {
+                data.collector = collector;
+            }
+
+            $.post('<?php echo Mage::getUrl('_profiler/settings/save'); ?>', data)
+                .fail(function () {
+                    alert("save failed");
+                });
+        });
+
+        $(document).on('click.setting.remove', 'a.btn-delete', function () {
+            var id        = $(this).data('id'),
+                input     = $(id),
+                collector = input.data('collector'),
+                data      = {
+                    'key': input.attr('name')
+                };
+
+            if (collector) {
+                data.collector = collector;
+            }
+
+            $.post('<?php echo Mage::getUrl('_profiler/settings/reset'); ?>', data)
+                .done(function (data) {
+                    input.val(data.value);
+                })
+                .fail(function () {
+                    alert("remove failed");
+                });
+        });
+
+    });
+</script>
+<style>
+    .profiler-settings select,
+    .profiler-settings input {
+        width: 100%;
+        height: 22px;
+        border: 1px solid #999;
+        padding: 1px 5px;
+    }
+
+    .profiler-settings table {
+        table-layout: fixed
+    }
+
+    .profiler-settings table td:last-child {
+        text-align: right;
+        width: 75px;
+        white-space: nowrap;
+    }
+
+    .profiler-settings a.btn-sm {
+        height: 26px;
+        padding: 3px 0.75em;
+        box-sizing: border-box;
+    }
+
+    button[disabled], html input[disabled] {
+        cursor: default !important;
+        opacity: 0.5;
+    }
+</style>

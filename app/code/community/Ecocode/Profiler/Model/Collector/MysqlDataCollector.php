@@ -6,8 +6,6 @@
 class Ecocode_Profiler_Model_Collector_MysqlDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
 {
-    const BACKTRACE_LIMIT = 10;
-
     protected $ignoredFunctionCalls = [
         'Mage_Core_Model_Resource_Db_Abstract::load',
         'Mage_Eav_Model_Entity_Abstract::load',
@@ -109,7 +107,7 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
 
         $backtrace = $this->cleanBacktrace($backtrace);
 
-        $backtrace = array_slice($backtrace, 0, self::BACKTRACE_LIMIT);
+        $backtrace = array_slice($backtrace, 0, $this->getConfigValue('stacktrace_length', 10));
         $backtrace = array_map(function ($item) {
             unset($item['object'], $item['args'], $item['type']);
             return $item;
@@ -117,6 +115,7 @@ class Ecocode_Profiler_Model_Collector_MysqlDataCollector
 
         return $backtrace;
     }
+
 
     public function cleanBacktrace(array $backtrace)
     {

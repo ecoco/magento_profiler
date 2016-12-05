@@ -12,6 +12,12 @@ if (@class_exists('\Symfony\Component\Debug\Debug')) {
                 ob_end_clean();
             }
             parent::handleException($exception, $error);
+            try {
+                echo '<script src="' . Mage::getBaseUrl('js') . 'ecocode_profiler/vendor/jquery.min.js' . '"></script>
+                    <script src="' . Mage::getBaseUrl('js') . 'ecocode_profiler/profiler.js' . '"></script>';
+            } catch (Exception $e) {
+                //if this fails we dont care
+            }
         }
     }
 

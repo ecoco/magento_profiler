@@ -7,29 +7,25 @@ $context = $this->getData('context');
 
 /** @var Ecocode_Profiler_Helper_ValueExporter $exporter */
 $exporter = Mage::helper('ecocode_profiler/valueExporter');
-
-$codeHelper = Mage::helper('ecocode_profiler/code');
-
-$data = $context->getData();
 ?>
 
 <div class="context font-normal text-small">
-    <strong>Context: </strong><?php echo $context->getKey()?>
-    <?php if($context->getData()):?>
+    <strong>Context: </strong><?php echo $context->getKey() ?>
+    <?php if ($context->getData()): ?>
         <a href="#" class="sf-toggle link-inverse text-small"
            data-toggle-selector="#context-<?php echo $prefix . $context->getId() ?>"
            data-toggle-alt-content="Hide metadata">View metadata</a>
         <div id="context-<?php echo $prefix . $context->getId() ?>" class="hidden text-small">
             <table>
 
-                <?php foreach($context->getData() as $key => $value):?>
+                <?php foreach ($this->getContextData() as $key => $value): ?>
                     <tr>
-                        <th class="key"><?php echo $key?></th>
-                        <td><?php echo $exporter->exportValue($value, true)?></td>
+                        <th class="key"><?php echo $key ?></th>
+                        <td><?php echo $exporter->exportValue($value, true) ?></td>
                     </tr>
-                <?php endforeach;?>
+                <?php endforeach; ?>
             </table>
         </div>
 
-    <?php endif?>
+    <?php endif ?>
 </div>

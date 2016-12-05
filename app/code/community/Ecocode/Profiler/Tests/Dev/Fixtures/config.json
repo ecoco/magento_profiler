@@ -1,0 +1,23 @@
+{
+  "key-1": "value-1",
+  "nested": {
+    "key-2": "value-2",
+    "nested-2": {
+      "key-3": "value-3"
+    }
+  },
+  "overwrite-1": "1",
+  "overwrite": {
+    "overwrite-1": "1",
+    "overwrite-2": "2",
+    "nested": {
+      "overwrite-2": "2",
+      "overwrite-3": "3"
+    }
+  },
+  "collector": {
+    "mysql": {
+      "stacktrace_length": 10
+    }
+  }
+}

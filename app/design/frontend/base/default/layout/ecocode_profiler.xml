@@ -3,7 +3,6 @@
     <profiler_default>
         <block type="page/html" name="root" output="toHtml" template="ecocode_profiler/layout.phtml">
             <block type="core/template" name="profiler_js" template="ecocode_profiler/profiler/base.js.phtml"/>
-            <block type="core/template" name="profiler_css" template="ecocode_profiler/profiler/base.css.phtml"/>
             <block type="core/template" name="summery" template="ecocode_profiler/profiler/summery.phtml"/>
             <block type="core/text_list" name="left" as="left" translate="label">
                 <label>Left Column</label>
@@ -19,6 +18,8 @@
                         <block name="log" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/log/menu.phtml"/>
                         <block name="cache" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/cache/menu.phtml"/>
                         <block name="config" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/config/menu.phtml"/>
+
+                        <block name="settings" type="core/template" template="ecocode_profiler/settings/menu.phtml"/>
                     </block>
                 </block>
             </block>
@@ -26,8 +27,6 @@
                 <label>Main Content Area</label>
             </block>
         </block>
-
-
     </profiler_default>
 
     <profiler_index_toolbar>
@@ -56,6 +55,15 @@
             <block type="core/template" name="profiler.search.results" template="ecocode_profiler/profiler/search/results.phtml"/>
         </reference>
     </profiler_index_searchresults>
+
+
+    <profiler_settings_index>
+        <reference name="content">
+            <block type="ecocode_profiler/profiler_settings" name="profiler.settings" template="ecocode_profiler/settings/panel.phtml">
+                <block name="profiler.mysql.settings" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/settings.phtml"/>
+            </block>
+        </reference>
+    </profiler_settings_index>
 
 
     <collector_mysql>

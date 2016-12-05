@@ -58,7 +58,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Observer_ContextTest
 
         /** @var Ecocode_Profiler_Model_ContextInterface $context */
         $contextData = $block->getData('__context')->getData();
-        $this->assertEquals('test.phtml', $contextData['template']);
+        $this->assertEquals('frontend/base/default/template/test.phtml', $contextData['template']);
 
 
         return $block;

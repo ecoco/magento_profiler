@@ -1,0 +1,8 @@
+{
+  "stacktrace_length": 15,
+  "collector": {
+    "mysql": {
+      "stacktrace_length": 10
+    }
+  }
+}

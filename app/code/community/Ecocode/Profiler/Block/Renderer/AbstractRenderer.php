@@ -18,7 +18,7 @@ class Ecocode_Profiler_Block_Renderer_AbstractRenderer
     public function render(array $data = [])
     {
         $this->setData($data);
-        $html = $this->toHtml();
+        $html = $this->renderView();
 
         $this->unsetData();
         return $html;

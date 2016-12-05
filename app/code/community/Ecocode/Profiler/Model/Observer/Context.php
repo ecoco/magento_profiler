@@ -38,7 +38,7 @@ class Ecocode_Profiler_Model_Observer_Context
         /** @var Ecocode_Profiler_Model_Context $context */
         if ($context = $block->getData('__context')) {
             if ($block instanceof Mage_Core_Block_Template) {
-                $context->addData('template', $block->getTemplate());
+                $context->addData('template', $block->getTemplateFile());
             }
 
             $this->getHelper()

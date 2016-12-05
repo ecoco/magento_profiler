@@ -10,6 +10,9 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
     protected $data = [];
 
     protected $helper;
+
+    protected $config;
+
     protected $contextHelper;
 
     public function init()
@@ -50,6 +53,7 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
     {
         return isset($this->data[$key]) ? $this->data[$key] : $default;
     }
+
     /**
      * @return integer
      */
@@ -96,5 +100,29 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
         }
 
         return debug_backtrace($options);
+    }
+
+    /**
+     * @param      $key
+     * @param null $default
+     * @return mixed
+     */
+    protected function getConfigValue($key, $default = null)
+    {
+        return $this->getConfig()->getCollectorValue($this, $key, $default);
+    }
+
+    /**
+     * @return Ecocode_Profiler_Model_Config
+     *
+     * @codeCoverageIgnore
+     */
+    protected function getConfig()
+    {
+        if ($this->config === null) {
+            $this->config = Mage::getSingleton('ecocode_profiler/config');
+        }
+
+        return $this->config;
     }
 }

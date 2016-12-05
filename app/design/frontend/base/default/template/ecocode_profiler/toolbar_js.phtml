@@ -1,5 +1,8 @@
 <!-- START of ecocode Web Debug Toolbar -->
-<?php $token = $this->getToken(); ?>
+<?php
+$token = $this->getToken();
+$secure = Mage::app()->getRequest()->isSecure();
+?>
 
 <div id="sfwdt<?php echo $token?>" class="sf-toolbar" style="display: none"></div>
 <iframe name="profiler_link_target" class="hidden"></iframe>
@@ -8,7 +11,7 @@
     (function () {
         Sfjs.load(
             'sfwdt<?php echo $token?>',
-            '<?php echo Mage::getUrl('_profiler/index/toolbar', [Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER => $token])?>',
+            '<?php echo Mage::getUrl('_profiler/index/toolbar', ['_secure' => $secure, Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER => $token])?>',
             function(xhr, el) {
                 el.style.display = -1 !== xhr.responseText.indexOf('sf-toolbarreset') ? 'block' : 'none';
 

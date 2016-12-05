@@ -1,9 +1,13 @@
 CHANGELOG
 =========
+* introduced a settings section which will allow adjust some settings to your needs
+* improved ssl handeling
+* improved handling of "xdebug.file_link_format"
+* improved context display to make use of "file_link_format"
 
 1.2.1
 -----
-* fix for #1 Not working in secure environnement with magento 1.9.2 (https://)
+* fix for #1 Not working in secure environment with magento 1.9.2 (https://)
 * fix for #6 Undefined index error in layout data collector 
 * added magento 1.9.3 to test stack
 

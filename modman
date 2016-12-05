@@ -4,3 +4,5 @@ app/etc/modules/*                              app/etc/modules/
 app/code/community/Ecocode/Profiler/*          app/code/community/Ecocode/Profiler/
 app/design/frontend/base/default/layout/*      app/design/frontend/base/default/layout/
 app/design/frontend/base/default/template/*    app/design/frontend/base/default/template/
+app/design/frontend/base/default/layout/*      app/design/adminhtml/base/default/layout/
+app/design/frontend/base/default/template/*    app/design/adminhtml/base/default/template/

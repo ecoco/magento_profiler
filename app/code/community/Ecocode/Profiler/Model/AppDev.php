@@ -68,12 +68,6 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         if (substr($path, 0, 10) === '/_profiler') {
             return $this;
         }
-        //this wont work if you use a custom url and we cant tell by now
-        //which one is configured. even if we read the local.xml manually
-        // it can still be set in the database, so for now 80/20 solution :)
-        if (substr($path, 0, 6) === '/admin') {
-            return $this;
-        }
 
         Mage::getSingleton('ecocode_profiler/profiler')->init();
 

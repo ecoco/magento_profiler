@@ -1,7 +1,7 @@
 <!-- START of ecocode Web Debug Toolbar -->
 <?php
 $token = $this->getToken();
-$secure = Mage::app()->getStore()->isCurrentlySecure();
+$secure = Mage::app()->getRequest()->isSecure();
 ?>
 
 <div id="sfwdt<?php echo $token?>" class="sf-toolbar" style="display: none"></div>

@@ -230,7 +230,7 @@ class Ecocode_Profiler_Model_Config
     protected function getBaseConfigFile()
     {
         //we cant use getModuleConfig as not yet initialized
-        return $baseConfigFile = __DIR__ . DS . '..' . DS . 'etc' . DS . 'config.json';
+        return __DIR__ . DS . '..' . DS . 'etc' . DS . 'config.json';
     }
 
     /**

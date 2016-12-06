@@ -1,0 +1,33 @@
+<?php
+/** @var Ecocode_Profiler_Model_Config $config */
+$config = Mage::getSingleton('ecocode_profiler/config');
+
+/** @var Ecocode_Profiler_Model_Collector_MysqlDataCollector $collector */
+$collector = $this->getCollector();
+
+/** @var Ecocode_Profiler_Block_Renderer_Settings_Row $rowRenderer */
+$rowRenderer = Mage::helper('ecocode_profiler/renderer')->getInstance('settings_row');
+
+$settings = [
+    'stacktrace_length' => [
+        'label'             => 'Stacktrace Length',
+        'label_description' => 'This setting will significantly influence the size of the saved profile',
+        'type'              => 'number',
+        'min'               => 0
+    ],
+]
+?>
+
+<div>
+    <table>
+        <tbody>
+        <?php
+        foreach ($settings as $key => $data) {
+            $data['key']       = $key;
+            $data['collector'] = $collector;
+            echo $rowRenderer->render($data);
+        }
+        ?>
+        </tbody>
+    </table>
+</div>

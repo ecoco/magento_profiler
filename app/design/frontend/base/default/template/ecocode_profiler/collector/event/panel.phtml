@@ -5,6 +5,10 @@
 /** @var Ecocode_Profiler_Model_Collector_EventDataCollector $collector */
 $collector = $this->getCollector();
 
+/** @var Ecocode_Profiler_Helper_Code $codeHelper */
+$codeHelper = Mage::helper('ecocode_profiler/code');
+
+
 $eventsFired = $collector->getFiredEvents();
 ?>
 <h2>Events</h2>
@@ -41,30 +45,37 @@ $eventsFired = $collector->getFiredEvents();
                                        data-toggle-alt-content="Hide observer">Show observer</a>
                                     <div id="event-observer-<?php echo $index ?>" class="hidden">
                                         <ul>
-                                            <?php foreach ($event['observer'] as $area => $observers):?>
+                                            <?php foreach ($event['observer'] as $area => $observers): ?>
                                                 <li>
                                                     <?php echo $area ?>
-                                                <table>
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Type</th>
-                                                        <th>Model</th>
-                                                        <th>Method</th>
-                                                    </tr>
-                                                    </thead>
-                                                        <?php foreach ($observers as $name => $observer):?>
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Type</th>
+                                                            <th>Model</th>
+                                                            <th>Method</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <?php foreach ($observers as $name => $observer): ?>
+                                                            <?php
+                                                            $className = $observer['model'];
+                                                            if (strpos($className, '/')) {
+                                                                $className = Mage::getConfig()->getModelClassName($className);
+                                                            }
+                                                            ?>
+
                                                             <tr>
                                                                 <td><?php echo $name ?></td>
                                                                 <td><?php echo $observer['type'] ? $observer['type'] : 'singleton' ?></td>
-                                                                <td><?php echo $observer['model'] ?></td>
-                                                                <td><?php echo $observer['method'] ?></td>
+                                                                <td><?php echo $codeHelper->formatClass($className); ?></td>
+                                                                <td><?php echo $codeHelper->formatClassMethod($className, $observer['method'], $observer['method']); ?></td>
                                                             </tr>
-                                                        <?php endforeach;?>
-                                                </table>
+                                                        <?php endforeach; ?>
+                                                    </table>
 
                                                 </li>
-                                            <?php endforeach;?>
+                                            <?php endforeach; ?>
                                         </ul>
                                     </div>
                                 <?php endif; ?>
@@ -103,7 +114,7 @@ $eventsFired = $collector->getFiredEvents();
                     <?php foreach ($calledListeners as $listener): ?>
                         <tr>
                             <td><?php echo $listener['event_name'] ?></td>
-                            <td><?php echo $listener['class'] ?>:<?php echo $listener['method'] ?></td>
+                            <td><?php echo $codeHelper->formatClassMethod($listener['class'], $listener['method']); ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

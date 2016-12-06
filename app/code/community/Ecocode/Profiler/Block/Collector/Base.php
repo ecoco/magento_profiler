@@ -15,27 +15,22 @@ class Ecocode_Profiler_Block_Collector_Base
     /** @var Ecocode_Profiler_Helper_Renderer */
     protected $rendererHelper;
 
+    /**
+     * @codeCoverageIgnore
+     * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector
+     */
     public function setCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collector = $collector;
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Model_Collector_DataCollectorInterface
+     */
     public function getCollector()
     {
         return $this->collector;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param       $bag
-     * @param array $data
-     * @return mixed
-     */
-    public function renderBag($bag, array $data = [])
-    {
-        return $this->getRendererHelper()
-            ->renderBag($bag, $data);
     }
 
     /**

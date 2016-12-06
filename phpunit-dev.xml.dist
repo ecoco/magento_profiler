@@ -25,5 +25,6 @@
     </logging>-->
     <php>
         <ini name="memory_limit" value="2047M"/>
+        <env name="environment" value="dev"/>
     </php>
 </phpunit>

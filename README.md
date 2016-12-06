@@ -154,7 +154,8 @@ Apache:
    ```xdebug.file_link_format = "//localhost:63342/api/file/%f:%l"```   
    <sub>Note: ommit the "protocol" in the link to make sure it will work on http and https without the need open a new tap</sub>
 
-   If you are using a virtual machine dont forget to also set "Host Magento Root Path" in the settings section.
+   If you are using a virtual machine dont forget to also set "Host Magento Root Path" in the settings section. 
+   You can also set the "file_link_format" in the settings section directly.
 
 
 

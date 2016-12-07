@@ -5,7 +5,7 @@ $secure = Mage::app()->getRequest()->isSecure();
 ?>
 
 <div id="sfwdt<?php echo $token?>" class="sf-toolbar" style="display: none"></div>
-<iframe name="profiler_link_target" class="hidden"></iframe>
+<iframe name="profiler_link_target" style="display: none;"></iframe>
 <script>
     <?php echo $this->getChildHtml('base_js');?>
     (function () {

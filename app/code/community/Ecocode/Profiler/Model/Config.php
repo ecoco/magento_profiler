@@ -207,7 +207,10 @@ class Ecocode_Profiler_Model_Config
         if (!$this->userConfig || $asArray) {
             $userConfigFile = $this->getUserConfigFile();
 
-            $userConfig = [];
+            $userConfig = new stdClass();
+            if ($asArray) {
+                $userConfig = [];
+            }
 
             if (file_exists($userConfigFile)) {
                 $userConfig = json_decode(file_get_contents($userConfigFile), $asArray);

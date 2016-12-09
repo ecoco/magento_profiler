@@ -14,7 +14,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
             new Mage_Core_Controller_Response_Http()
         );
 
-        $this->assertEquals(0, $collector->getTotalTime());
+        $this->assertEquals(0, $collector->getDuration());
         return $collector;
     }
 
@@ -24,7 +24,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
     public function testLateCollect(Ecocode_Profiler_Model_Collector_TimeDataCollector $collector)
     {
         $collector->lateCollect();
-        $this->assertGreaterThan(0, $collector->getTotalTime());
+        $this->assertGreaterThan(0, $collector->getStartTime());
     }
 
 }

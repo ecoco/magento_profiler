@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <layout>
+    <default>
+        <remove name="profiler" />
+    </default>
     <profiler_default>
         <block type="page/html" name="root" output="toHtml" template="ecocode_profiler/layout.phtml">
             <block type="core/template" name="profiler_js" template="ecocode_profiler/profiler/base.js.phtml"/>
@@ -9,6 +12,7 @@
                 <block type="ecocode_profiler/profiler_sidebar" name="sidebar" template="ecocode_profiler/layout/sidebar.phtml">
                     <block type="ecocode_profiler/profiler_sidebar_menu" name="menu" template="ecocode_profiler/layout/sidebar/menu.phtml">
                         <block name="request" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/menu.phtml"/>
+                        <block name="time" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/time/menu.phtml"/>
                         <block name="mysql" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/menu.phtml"/>
                         <block name="event" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/event/menu.phtml"/>
                         <block name="layout" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/layout/menu.phtml"/>
@@ -77,6 +81,12 @@
             <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/panel.phtml"/>
         </reference>
     </collector_request>
+
+    <collector_time>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_time_panel" template="ecocode_profiler/collector/time/panel.phtml"/>
+        </reference>
+    </collector_time>
 
     <collector_translation>
         <reference name="content">

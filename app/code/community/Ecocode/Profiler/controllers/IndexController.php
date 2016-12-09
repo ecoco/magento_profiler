@@ -64,7 +64,12 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
     {
         /** @var Mage_Core_Controller_Request_Http$request */
         $request  = $this->getRequest();
+        /** @var Ecocode_Profiler_Model_Profiler $profiler */
         $profiler = $this->getProfiler();
+
+        if ($request->getParam('purge')) {
+            $profiler->purgeAll();
+        }
 
         $ip         = $request->getParam('ip');
         $method     = $request->getParam('method');

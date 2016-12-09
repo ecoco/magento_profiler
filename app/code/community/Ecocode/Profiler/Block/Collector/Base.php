@@ -58,4 +58,9 @@ class Ecocode_Profiler_Block_Collector_Base
         return $this->rendererHelper;
     }
 
+    public function getToken()
+    {
+        return $this->getProfile()->getToken();
+    }
+
 }

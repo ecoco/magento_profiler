@@ -66,6 +66,8 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //to early to detect if this is the admin store
         $path = $this->getRequest()->getPathInfo();
         if (substr($path, 0, 10) === '/_profiler') {
+            //if we dont start the profiler make sure we disable the "Varien_Profiler" again
+            Varien_Profiler::disable();
             return $this;
         }
 

@@ -121,9 +121,8 @@ class Ecocode_Profiler_Tests_Dev_Helper_ContextTest
      */
     public function testRender(Ecocode_Profiler_Helper_Context $contextHelper)
     {
-        if (version_compare(\PHPUnit_Runner_Version::id(), 5, '<=')) {
-            return $this->markTestSkipped('@depends seems to be broken in 4.x');
-        }
+        $this->checkCanUseDepends();
+
         
         /** @var Ecocode_Profiler_Model_Context $context */
         $context = $contextHelper->getCurrent();

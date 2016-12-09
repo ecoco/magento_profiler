@@ -1,13 +1,29 @@
 <?php
 
+use Symfony\Component\Stopwatch\Stopwatch;
+
 class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
     extends TestHelper
 {
 
     public function testCollect()
     {
+
+        $collector = $this->getMockBuilder('Ecocode_Profiler_Model_Collector_TimeDataCollector')
+            ->setMethods(['getEventsFromProfiler'])
+            ->getMock();
+
+        $stopWatch = new Stopwatch();
+        $stopWatch->openSection();
+        $stopWatch->start('test-event');
+        usleep(1000);
+        $stopWatch->stop('test-event');
+        $stopWatch->stopSection('test');
+
+        $collector->method('getEventsFromProfiler')
+            ->willReturn($stopWatch->getSectionEvents('test'));
+
         /** @var Ecocode_Profiler_Model_Collector_TimeDataCollector $collector */
-        $collector = new Ecocode_Profiler_Model_Collector_TimeDataCollector();
 
         $collector->collect(
             new Mage_Core_Controller_Request_Http(),
@@ -25,6 +41,8 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
     {
         $collector->lateCollect();
         $this->assertGreaterThan(0, $collector->getStartTime());
+        $this->assertGreaterThan(0, $collector->getDuration());
+        $this->assertCount(2, $collector->getEvents());
     }
 
 }

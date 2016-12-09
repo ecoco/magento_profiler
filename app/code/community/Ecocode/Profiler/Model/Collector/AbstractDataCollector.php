@@ -38,7 +38,10 @@ abstract class Ecocode_Profiler_Model_Collector_AbstractDataCollector
         $this->data = unserialize($data);
     }
 
-
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public function getBlockToolbarName()
     {
         return 'profiler.' . $this->getName() . '.toolbar';

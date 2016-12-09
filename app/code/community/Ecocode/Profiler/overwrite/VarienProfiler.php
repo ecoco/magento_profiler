@@ -95,18 +95,6 @@ class Varien_Profiler
         self::$stopWatch->start($timerName, $category);
     }
 
-    protected static function isSection($timerName)
-    {
-        if (isset(self::$sectionMap[$timerName])) {
-            return self::$sectionMap[$timerName];
-        }
-        if (substr($timerName, -15) === '::layout_render') {
-            return 'layout_render';
-        }
-
-        return false;
-    }
-
     public static function start($timerName)
     {
         self::resume($timerName);

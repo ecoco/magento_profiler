@@ -21,9 +21,10 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
         ];
     }
 
+
     public function lateCollect()
     {
-        $this->setEvents(Varien_Profiler::getTimers());
+        $this->setEvents($this->getEventsFromProfiler());
 
         return $this;
     }
@@ -66,12 +67,12 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
      */
     public function getStartTime()
     {
-        return $this->data['start_time'];
+        return $this->getData('start_time', 0);
     }
 
     public function getEvents()
     {
-        return $this->data['events'];
+        return $this->getData('events', []);
     }
 
 
@@ -82,5 +83,14 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
     public function getName()
     {
         return 'time';
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return []
+     */
+    protected function getEventsFromProfiler()
+    {
+        return Varien_Profiler::getTimers();
     }
 }

@@ -65,6 +65,9 @@ class Ecocode_Profiler_Model_Profiler_FileStorage
         while (count($result) < $limit && $line = $this->readLineFromFile($file)) {
             $values = str_getcsv($line);
             list($csvToken, $csvIp, $csvMethod, $csvUrl, $csvTime, $csvParent, $csvStatusCode) = $values;
+            //new feature to maintain backward compatibility
+            $fileSize = isset($values[7]) ? $values[7] : 0;
+
             $csvTime = (int)$csvTime;
 
             if ($ip && false === strpos($csvIp, $ip) || $url && false === strpos($csvUrl, $url) || $method && false === strpos($csvMethod, $method) || $statusCode && false === strpos($csvStatusCode, $statusCode)) {
@@ -87,6 +90,7 @@ class Ecocode_Profiler_Model_Profiler_FileStorage
                 'time'        => $csvTime,
                 'parent'      => $csvParent,
                 'status_code' => $csvStatusCode,
+                'size'        => $fileSize,
             ];
         }
 
@@ -164,10 +168,12 @@ class Ecocode_Profiler_Model_Profiler_FileStorage
         }
 
         if (!$profileIndexed) {
+            $profileSize = filesize($file);
             // Add to index
             if (false === $file = fopen($this->getIndexFilename(), 'a')) {
                 return false;
             }
+
 
             fputcsv($file, [
                 $profile->getToken(),
@@ -177,6 +183,7 @@ class Ecocode_Profiler_Model_Profiler_FileStorage
                 $profile->getTime(),
                 $profile->getParentToken(),
                 $profile->getStatusCode(),
+                $profileSize
             ]);
             fclose($file);
         }

@@ -153,6 +153,10 @@ class Ecocode_Profiler_Model_Profiler
         return true;
     }
 
+    public function purgeAll()
+    {
+        return $this->getStorage()->purge();
+    }
     /**
      * @return Ecocode_Profiler_Model_Profiler_StorageInterface
      */

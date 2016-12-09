@@ -1,5 +1,10 @@
 <div class="status">
     <div class="container">
-        <h2>Profile Search</h2>
+        <h2>
+            Profile Search
+            <a href="<?php echo Mage::getUrl('*/*/*', ['_current' => true, 'purge' => 1])?>" style="float: right">
+                <button class="btn btn-sm" >Purge All</button>
+            </a>
+        </h2>
     </div>
 </div>

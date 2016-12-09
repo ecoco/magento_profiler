@@ -6,6 +6,10 @@ CHANGELOG
 * improved context display to make use of "file_link_format"
 * added timings to event collector
 * made tables sortable
+* added profile size in MB to search results
+* added purge profile button to search result page
+* introduced a replacement for the Varien_Profiler
+* introduced new "Performance" Tab
 
 1.2.1
 -----

@@ -39,6 +39,8 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
      */
     public function testLateCollect(Ecocode_Profiler_Model_Collector_TimeDataCollector $collector)
     {
+        $this->checkCanUseDepends();
+        
         $collector->lateCollect();
         $this->assertGreaterThan(0, $collector->getStartTime());
         $this->assertGreaterThan(0, $collector->getDuration());

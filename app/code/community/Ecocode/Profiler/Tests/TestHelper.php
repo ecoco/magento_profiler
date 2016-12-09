@@ -116,4 +116,11 @@ class TestHelper extends PHPUnit_Framework_TestCase
 
         return $baseDir . $file;
     }
+
+    public function checkCanUseDepends()
+    {
+        if (version_compare(\PHPUnit_Runner_Version::id(), 5, '<=')) {
+            $this->markTestSkipped('@depends seems to be broken in 4.x');
+        }
+    }
 }

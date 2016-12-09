@@ -13,7 +13,7 @@ class Varien_Profiler
     const CATEGORY_EAV     = 'eav';
     const CATEGORY_SECTION = 'section';
 
-    static $sectionMap = [
+    static private $sectionMap = [
         'mage::app::init::system_config' => 'config'
     ];
     /**

@@ -89,6 +89,16 @@ class TestHelper extends PHPUnit_Framework_TestCase
         return $property->getValue($object);
     }
 
+    public function setProtectedValue($object, $property, $value)
+    {
+        $property = new ReflectionProperty(get_class($object), $property);
+        $property->setAccessible(true);
+
+        $property->setValue($object, $value);
+
+        return $this;
+    }
+
     public function getProtectedMethod($className, $property)
     {
         $method = new ReflectionMethod($className, $property);

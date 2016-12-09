@@ -17,4 +17,6 @@ jQuery(function ($) {
             iframe.attr('src', href);
         }
     });
+
+    $(".sortable-table").stupidtable();
 });

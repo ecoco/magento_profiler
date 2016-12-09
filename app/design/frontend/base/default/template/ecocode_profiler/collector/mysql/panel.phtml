@@ -95,13 +95,13 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
         </h3>
 
         <div class="tab-content">
-            <table>
+            <table class="sortable-table">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Context</th>
-                    <th>Queries</th>
-                    <th>Total Time</th>
+                    <th data-sort="int">Queries</th>
+                    <th data-sort="float">Total Time</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -146,8 +146,8 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
                 <thead>
                 <tr>
                     <th class="nowrap">#</th>
-                    <th class="nowrap">Count</th>
-                    <th class="nowrap">Total time<span></span></th>
+                    <th class="nowrap" data-sort="int">Queries</th>
+                    <th class="nowrap" data-sort="float">Total time<span></span></th>
                     <th style="width: 100%;">Info</th>
                 </tr>
                 </thead>

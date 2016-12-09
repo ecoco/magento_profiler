@@ -42,12 +42,12 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
                     </span>
                 </span>
             <?php endforeach; ?>
-            <table>
+            <table class="sortable-table">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Action</th>
-                    <th>Time</th>
+                    <th data-sort="float">Time</th>
                     <th style="width:100%;">Class</th>
                 </tr>
                 </thead>

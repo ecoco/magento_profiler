@@ -931,3 +931,21 @@ table.logs .sf-call-stack abbr {
         margin-left: 2px;
     }
 }
+
+
+
+
+.sortable-table thead th[data-sort]:after {
+    margin-left: 5px;
+    font-family: FontAwesome;
+    content: "\f0dc";
+    cursor: pointer;
+}
+
+.sortable-table thead th[data-sort].sorting-asc:after {
+    content: "\f0de";
+}
+
+.sortable-table thead th[data-sort].sorting-desc:after {
+    content: "\f0dd";
+}

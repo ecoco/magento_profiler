@@ -4,6 +4,8 @@ CHANGELOG
 * improved ssl handling
 * improved handling of "xdebug.file_link_format"
 * improved context display to make use of "file_link_format"
+* added timings to event collector
+* made tables sortable
 
 1.2.1
 -----

@@ -5,12 +5,12 @@ $contextHelper = Mage::helper('ecocode_profiler/context');
 /** @var Ecocode_Profiler_Helper_Renderer $rendererHelper */
 $rendererHelper = Mage::helper('ecocode_profiler/renderer');
 ?>
-<table class="alt queries-table">
+<table class="alt queries-table sortable-table">
     <thead>
     <tr>
         <th class="nowrap">#</th>
         <th class="nowrap">Connection</th>
-        <th class="nowrap">Time<span></span></th>
+        <th class="nowrap" data-sort="float">Time<span></span></th>
         <th style="width: 100%;">Info</th>
     </tr>
     </thead>
@@ -19,7 +19,10 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
         <tr data-type="<?php echo $queryData['type'] ?>" data-connection="<?php echo $queryData['connection'] ?>">
             <td class="nowrap"><?php echo $index + 1 ?> </td>
             <td class="nowrap"><?php echo $queryData['connection'] ?> </td>
-            <td class="nowrap"><?php echo sprintf('%0.2f', $queryData['time'] * 1000) ?> ms</td>
+            <td class="nowrap"
+                data-sort-value="<?php echo round($queryData['time'] * 1000, 4) ?>">
+                <?php echo sprintf('%0.2f', $queryData['time'] * 1000) ?> ms
+            </td>
             <td>
                 <?php echo $queryData['sql_highlighted']; ?>
                 <div>

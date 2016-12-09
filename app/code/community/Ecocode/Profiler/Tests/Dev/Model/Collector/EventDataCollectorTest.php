@@ -29,21 +29,28 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_EventDataCollectorTest
 
         $preDispatchData = json_decode('{"observers":{"log":{"type":"","model":"log\/visitor","method":"initByRequest","args":[]},"pagecache":{"type":"","model":"pagecache\/observer","method":"processPreDispatch","args":[]}}}', true);
         $events          = ['global' => ['controller_action_predispatch' => $preDispatchData]];
+        $calledListeners = [
+            ['event_name' => 'non-existing'],
+            ['event_name'     => 'controller_action_predispatch',
+             'class'          => 'TEST_CLASS',
+             'method'         => 'xxx',
+             'execution_time' => 10]
+        ];
 
         $app->dispatchEvent('resource_get_tablename', []);
         $app->dispatchEvent('controller_action_predispatch', []);
         $app->dispatchEvent('controller_action_predispatch', []);
 
-        $appEvents = new ReflectionProperty('Ecocode_Profiler_Model_AppDev', '_events');
-        $appEvents->setAccessible(true);
-        $appEvents->setValue($app, $events);
+        $this->setProtectedValue($app, '_events', $events);
+        $this->setProtectedValue($app, 'calledListeners', $calledListeners);
 
 
         $collector->lateCollect();
 
         $firedEvents = $collector->getFiredEvents();
-        $this->assertCount(0, $collector->getCalledListeners());
+        $this->assertCount(2, $collector->getCalledListeners());
         $this->assertCount(2, $collector->getFiredEvents());
+        $this->assertEquals(10, $collector->getTotalTime());
 
         $data = $firedEvents['controller_action_predispatch'];
         $this->assertEquals(2, $data['count']);

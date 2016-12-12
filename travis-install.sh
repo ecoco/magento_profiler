@@ -55,7 +55,7 @@ fi
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
     #make php7 possible
-    echo '{"name": "ecocode/magento_profiler"}' > $TRAVIS_BUILD_DIR/composer.json
+    echo '{"name": "ecocode/magento_profiler"}' > ./composer.json
     composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7
 
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]

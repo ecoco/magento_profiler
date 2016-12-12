@@ -15,27 +15,25 @@ class Ecocode_Profiler_Block_Collector_Base
     /** @var Ecocode_Profiler_Helper_Renderer */
     protected $rendererHelper;
 
+    /**
+     * @codeCoverageIgnore
+     * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector
+     * @return $this
+     */
     public function setCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collector = $collector;
-    }
 
-    public function getCollector()
-    {
-        return $this->collector;
+        return $this;
     }
 
     /**
-     * @deprecated
-     *
-     * @param       $bag
-     * @param array $data
-     * @return mixed
+     * @codeCoverageIgnore
+     * @return Ecocode_Profiler_Model_Collector_DataCollectorInterface
      */
-    public function renderBag($bag, array $data = [])
+    public function getCollector()
     {
-        return $this->getRendererHelper()
-            ->renderBag($bag, $data);
+        return $this->collector;
     }
 
     /**
@@ -61,6 +59,11 @@ class Ecocode_Profiler_Block_Collector_Base
         }
 
         return $this->rendererHelper;
+    }
+
+    public function getToken()
+    {
+        return $this->getProfile()->getToken();
     }
 
 }

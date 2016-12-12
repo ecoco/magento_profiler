@@ -54,6 +54,7 @@ $options = [
     'cache'        => ['id_prefix' => 'dev'],
     'config_model' => 'Ecocode_Profiler_Model_Core_Config'
 ];
+Varien_Profiler::enable();
 Mage::run($mageRunCode, $mageRunType, $options);
 
 Mage::terminate();

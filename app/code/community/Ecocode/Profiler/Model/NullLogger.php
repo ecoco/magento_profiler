@@ -3,6 +3,7 @@
 /**
  * Class Ecocode_Profiler_Model_NullLogger
  *
+ * @codeCoverageIgnore
  * @SuppressWarnings("unused")
  */
 class Ecocode_Profiler_Model_NullLogger

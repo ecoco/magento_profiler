@@ -13,8 +13,9 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
         $this->data = [
-            'called_listeners'  => [],
-            'fired_events'      => []
+            'execution_time_total' => 0,
+            'called_listeners'     => [],
+            'fired_events'         => []
         ];
     }
 
@@ -22,10 +23,9 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
     {
         $app = $this->getApp();
 
-        $this->data = [
-            'called_listeners'  => $this->collectedCalledListeners($app),
-            'fired_events'      => $this->collectEvents($app)
-        ];
+        $this->data = [];
+        $this->collectedCalledListeners($app);
+        $this->collectEvents($app);
     }
 
     protected function collectEvents(Ecocode_Profiler_Model_AppDev $app)
@@ -52,19 +52,43 @@ class Ecocode_Profiler_Model_Collector_EventDataCollector
             }
 
             $events[$eventName] = [
-                'name'           => $eventName,
-                'count'          => $count,
-                'observer'       => $observers,
-                'observer_count' => $observerCount
+                'name'                 => $eventName,
+                'count'                => $count,
+                'observer'             => $observers,
+                'observer_count'       => $observerCount,
+                'execution_time_total' => 0,
+
             ];
         }
 
-        return $events;
+        $executionTimeTotal = 0;
+        foreach ($app->getCalledListeners() as $listener) {
+            $eventName = $listener['event_name'];
+            if (!isset($events[$eventName])) {
+                continue;
+            }
+            $executionTimeTotal += $listener['execution_time'];
+            $events[$eventName]['execution_time_total'] += $listener['execution_time'];
+        }
+
+        $this->data['total_events']         = 0;
+        $this->data['execution_time_total'] = $executionTimeTotal;
+
+        $this->data['fired_events'] = $events;
+
+        return $this;
     }
 
     protected function collectedCalledListeners(Ecocode_Profiler_Model_AppDev $app)
     {
-        return $app->getCalledListeners();
+        $this->data['called_listeners'] = $app->getCalledListeners();
+
+        return $this;
+    }
+
+    public function getTotalTime()
+    {
+        return $this->getData('execution_time_total', 0);
     }
 
     public function getCalledListeners()

@@ -1,0 +1,21 @@
+<?php
+$name  = 'settings';
+$panel = Mage::registry('current_panel');
+/** @var Ecocode_Profiler_Model_Profile $profile */
+$profile = Mage::registry('current_profile');
+if ($profile && $profile->getToken()) {
+    $url = Mage::getUrl('_profiler/settings', [Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER => $profile->getToken()]);
+} else {
+    $url = Mage::getUrl('_profiler/settings');
+}
+?>
+<li class="<?php echo $name ?> <?php echo $name === $panel ? 'selected' : '' ?>">
+    <a href="<?php echo $url ?>">
+        <span class="label">
+            <span class="icon">
+                <i class="fa fa-cogs"></i>
+            </span>
+            <strong>Settings</strong>
+        </span>
+    </a>
+</li>

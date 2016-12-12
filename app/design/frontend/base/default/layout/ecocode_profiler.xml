@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <layout>
+    <default>
+        <remove name="profiler" />
+    </default>
     <profiler_default>
         <block type="page/html" name="root" output="toHtml" template="ecocode_profiler/layout.phtml">
             <block type="core/template" name="profiler_js" template="ecocode_profiler/profiler/base.js.phtml"/>
-            <block type="core/template" name="profiler_css" template="ecocode_profiler/profiler/base.css.phtml"/>
             <block type="core/template" name="summery" template="ecocode_profiler/profiler/summery.phtml"/>
             <block type="core/text_list" name="left" as="left" translate="label">
                 <label>Left Column</label>
                 <block type="ecocode_profiler/profiler_sidebar" name="sidebar" template="ecocode_profiler/layout/sidebar.phtml">
                     <block type="ecocode_profiler/profiler_sidebar_menu" name="menu" template="ecocode_profiler/layout/sidebar/menu.phtml">
                         <block name="request" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/menu.phtml"/>
+                        <block name="time" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/time/menu.phtml"/>
                         <block name="mysql" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/menu.phtml"/>
                         <block name="event" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/event/menu.phtml"/>
                         <block name="layout" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/layout/menu.phtml"/>
@@ -19,6 +22,8 @@
                         <block name="log" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/log/menu.phtml"/>
                         <block name="cache" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/cache/menu.phtml"/>
                         <block name="config" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/config/menu.phtml"/>
+
+                        <block name="settings" type="core/template" template="ecocode_profiler/settings/menu.phtml"/>
                     </block>
                 </block>
             </block>
@@ -26,8 +31,6 @@
                 <label>Main Content Area</label>
             </block>
         </block>
-
-
     </profiler_default>
 
     <profiler_index_toolbar>
@@ -58,6 +61,15 @@
     </profiler_index_searchresults>
 
 
+    <profiler_settings_index>
+        <reference name="content">
+            <block type="ecocode_profiler/profiler_settings" name="profiler.settings" template="ecocode_profiler/settings/panel.phtml">
+                <block name="profiler.mysql.settings" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/mysql/settings.phtml"/>
+            </block>
+        </reference>
+    </profiler_settings_index>
+
+
     <collector_mysql>
         <reference name="content">
             <block name="panel" type="ecocode_profiler/collector_mysql_panel" template="ecocode_profiler/collector/mysql/panel.phtml"/>
@@ -69,6 +81,12 @@
             <block name="panel" type="ecocode_profiler/collector_base" template="ecocode_profiler/collector/request/panel.phtml"/>
         </reference>
     </collector_request>
+
+    <collector_time>
+        <reference name="content">
+            <block name="panel" type="ecocode_profiler/collector_time_panel" template="ecocode_profiler/collector/time/panel.phtml"/>
+        </reference>
+    </collector_time>
 
     <collector_translation>
         <reference name="content">

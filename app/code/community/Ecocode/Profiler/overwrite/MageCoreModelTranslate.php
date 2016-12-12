@@ -13,6 +13,8 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
     const STATE_MISSING    = 'missing';
     const STATE_INVALID    = 'invalid';
 
+    protected $profilerConfig = null;
+
     protected $currentMessage = null;
 
     protected $messages = [];
@@ -129,13 +131,13 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      */
     protected function addTrace()
     {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20);
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
         while (($trace = reset($backtrace)) && (!isset($trace['function']) || $trace['function'] !== '__')) {
             array_shift($backtrace);
         }
 
-        return $this->currentMessage['trace'] = array_slice($backtrace, 0, 10);
+        return $this->currentMessage['trace'] = array_slice($backtrace, 0, $this->getConfigValue('backtrace_limit', 10));
     }
 
     /**
@@ -151,5 +153,29 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
             }
         }
         return false;
+    }
+
+    /**
+     * @param      $key
+     * @param null $default
+     * @return mixed
+     */
+    protected function getConfigValue($key, $default = null)
+    {
+        return $this->getProfilerConfig()->getValue($key, $default);
+    }
+
+    /**
+     * @return Ecocode_Profiler_Model_Config
+     *
+     * @codeCoverageIgnore
+     */
+    protected function getProfilerConfig()
+    {
+        if ($this->profilerConfig === null) {
+            $this->profilerConfig = Mage::getSingleton('ecocode_profiler/config');
+        }
+
+        return $this->profilerConfig;
     }
 }

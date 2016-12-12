@@ -98,12 +98,17 @@ class Ecocode_Profiler_Model_Profiler
 
         $response->setHeader('X-Debug-Token', $profile->getToken());
 
+        $profileKey = 'DEBUG::ecocode_profiler::collect';
+        Varien_Profiler::start($profileKey);
         foreach ($this->getDataCollectors() as $collector) {
+            $profileCollectorKey = $profileKey . '::' . $collector->getName();
             /** @var Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector */
+            Varien_Profiler::start($profileCollectorKey);
             $collector->collect($request, $response);
-
+            Varien_Profiler::stop($profileCollectorKey);
             $profile->addCollector($collector);
         }
+        Varien_Profiler::stop($profileKey);
         $collectTime = microtime(true) - $start;
         $profile->setCollectTime($collectTime);
 
@@ -146,6 +151,11 @@ class Ecocode_Profiler_Model_Profiler
         }
 
         return true;
+    }
+
+    public function purgeAll()
+    {
+        return $this->getStorage()->purge();
     }
 
     /**

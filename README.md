@@ -54,6 +54,7 @@ the dependencies. This is currently only possible via composer as we do need the
 To install the dependencies run the following from your magento root dir or a parent directory:
 ```
 composer require --dev symfony/debug 3.0
+composer require --dev symfony/stopwatch 3.2
 composer require --dev symfony/yaml 3.1
 composer require --dev jdorn/sql-formatter ~1.2
 composer require --dev monolog/monolog 1.11
@@ -90,7 +91,9 @@ time to time to verify the result.
 * Request/Response
   * Display of request/response server parameters
 * Memory
-  * Display of memory usage 
+  * Display of memory usage
+* Time
+  * New visualization of the varien profiler
 * Mysql
   * Display of all queries with syntax highlighting and stack traces to locate the origin
   * Queries by context so you can easily determine the origin block
@@ -142,6 +145,21 @@ Nginx:
 ```fastcgi_param ALLOW_PROFILER '1';```
 Apache:
 ```SetEnv ALLOW_PROFILER "1"```
+
+## Unlock special features
+
+* **Open files in your editor**
+
+   As symfony does, the profiler also widely supports "xdebug.file_link_format". If set up correctly it will allow
+   you to click on most file references in the profiler to directly open it in your editor:
+   
+   Example for PHP Storm   
+   ```xdebug.file_link_format = "//localhost:63342/api/file/%f:%l"```   
+   <sub>Note: ommit the "protocol" in the link to make sure it will work on http and https without the need open a new tap</sub>
+
+   If you are using a virtual machine dont forget to also set "Host Magento Root Path" in the settings section. 
+   You can also set the "file_link_format" in the settings section directly.
+
 
 
 

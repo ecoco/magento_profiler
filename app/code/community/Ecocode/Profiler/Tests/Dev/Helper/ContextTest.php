@@ -86,11 +86,18 @@ class Ecocode_Profiler_Tests_Dev_Helper_ContextTest
 
     public function testGetContextById()
     {
-        $helper = $this->getNewHelper();
+        $helper = $this
+            ->getMockBuilder('Ecocode_Profiler_Helper_Context')
+            ->setMethods(['getCurrentProfile'])
+            ->getMock();
 
         $context          = new Ecocode_Profiler_Model_Context('test-context');
         $profile          = new Ecocode_Profiler_Model_Profile('xxx');
         $contextCollector = new Ecocode_Profiler_Model_Collector_ContextDataCollector();
+
+        $helper->method('getCurrentProfile')
+            ->willReturn($profile);
+        /** @var Ecocode_Profiler_Helper_Context $helper */
 
         $profile->addCollector($contextCollector);
         $helper->open($context);
@@ -99,22 +106,40 @@ class Ecocode_Profiler_Tests_Dev_Helper_ContextTest
         $dataProperty->setAccessible(true);
         $dataProperty->setValue($contextCollector, ['list' => $helper->getList()]);
 
-        $mock = $this
-            ->getMockBuilder('Ecocode_Profiler_Helper_Context')
-            ->setMethods(['getCurrentProfile'])
-            ->getMock();
-
-        $mock->method('getCurrentProfile')
-            ->willReturn($profile);
-
         /** @var Ecocode_Profiler_Helper_Context $loadedContext */
-        $loadedContext = $mock->getContextById($context->getId());
+        $loadedContext = $helper->getContextById($context->getId());
         $this->assertEquals(
             $context,
             $loadedContext
         );
+        return $helper;
     }
 
+    /**
+     * @depends testGetContextById
+     * @param Ecocode_Profiler_Helper_Context $contextHelper
+     */
+    public function testRender(Ecocode_Profiler_Helper_Context $contextHelper)
+    {
+        $this->checkCanUseDepends();
+
+        
+        /** @var Ecocode_Profiler_Model_Context $context */
+        $context = $contextHelper->getCurrent();
+
+        $context->addData('test-key', 'test-value');
+
+        $prefix = 'test-prefix-';
+        $html    = $contextHelper->render($prefix, $context->getId());
+
+        $this->assertContains(
+            sprintf('id="context-%s%s', $prefix, $context->getId()),
+            $html
+        );
+
+        $this->assertContains('>test-key<', $html);
+        $this->assertContains('>test-value<', $html);
+    }
 
     /**
      * @return Ecocode_Profiler_Helper_Context

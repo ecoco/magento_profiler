@@ -87,7 +87,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
     <thead>
     <tr>
         <th>Key</th>
-        <th>Time</th>
+        <th>Value</th>
     </tr>
     </thead>
     <tbody>
@@ -101,14 +101,14 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
 </table>
 
 <h2>Cache Calls</h2>
-<table>
+<table class="sortable-table">
     <thead>
     <tr>
         <th>#</th>
         <th>Action</th>
         <th style="width: 100%;">Id</th>
         <th>Hit</th>
-        <th>Time</th>
+        <th data-sort="float">Time</th>
     </tr>
     </thead>
     <tbody>

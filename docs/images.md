@@ -13,6 +13,9 @@
 ![Profiler](/docs/image/collector/mysql_panel_context.jpg "Mysql Collector")
 ![Profiler](/docs/image/collector/mysql_panel_identical.png "Mysql Collector")
 
+## Performance
+![Profiler](/docs/image/collector/time_panel.jpg "Time Collector")
+
 ## Events
 ![Profiler](/docs/image/collector/event_panel_fired.jpg "Event Collector")
 

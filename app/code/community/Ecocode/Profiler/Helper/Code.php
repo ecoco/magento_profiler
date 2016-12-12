@@ -4,13 +4,16 @@
 /**
  * Twig extension relate to PHP code and used by the profiler and the default exception templates.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @author Original Author Fabien Potencier <fabien@symfony.com>
  */
 class Ecocode_Profiler_Helper_Code
 {
     private $fileLinkFormat;
+    private $hostRootDir;
     private $rootDir;
     private $charset;
+    private $config;
 
     /**
      * Constructor.
@@ -18,8 +21,10 @@ class Ecocode_Profiler_Helper_Code
      * @param null        $rootDir
      * @param null|string $charset
      */
-    public function __construct($format = null, $rootDir = null, $charset = 'UTF-8')
+    public function __construct($format = null, $rootDir = null, $charset = 'UTF-8', Ecocode_Profiler_Model_Config $config = null)
     {
+        $this->config         = $config ? $config : Mage::getSingleton('ecocode_profiler/config');
+        $format               = $format ? $format : $this->config->getValue('file_link_format');
         $this->fileLinkFormat = $format ? $format : ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
         $this->rootDir        = $rootDir ? $rootDir : str_replace('/', DIRECTORY_SEPARATOR, dirname(Mage::getRoot())) . DIRECTORY_SEPARATOR;
         $this->charset        = $charset;
@@ -122,6 +127,48 @@ class Ecocode_Profiler_Helper_Code
     }
 
     /**
+     * @param      $class
+     * @param null $text
+     * @return string
+     */
+    public function formatClass($class, $text = null)
+    {
+        $reflectionClass = new ReflectionClass($class);
+
+        if ($text === null) {
+            $text = $reflectionClass->getName();
+        }
+
+        return $this->formatFile(
+            $reflectionClass->getFileName(),
+            $reflectionClass->getStartLine(),
+            $text
+        );
+    }
+
+    /**
+     * @param      $class
+     * @param      $method
+     * @param null $text
+     * @return string
+     */
+    public function formatClassMethod($class, $method, $text = null)
+    {
+        $reflectionMethod = new ReflectionMethod($class, $method);
+
+        if ($text === null) {
+            $text = $reflectionMethod->getDeclaringClass()->getName() . ':' . $method;
+        }
+
+        return $this->formatFile(
+            $reflectionMethod->getFileName(),
+            $reflectionMethod->getStartLine(),
+            $text
+        );
+    }
+
+
+    /**
      * Formats a file path.
      *
      * @param string $file An absolute file path
@@ -130,25 +177,23 @@ class Ecocode_Profiler_Helper_Code
      *
      * @return string
      */
-    public function formatFile($file, $line, $text = null)
+    public function formatFile($file, $line = 0, $text = null)
     {
-        $file = trim($file);
-
+        $flags = ENT_QUOTES | ENT_SUBSTITUTE;
         if (null === $text) {
+            $file = trim($file);
             $text = str_replace('/', DIRECTORY_SEPARATOR, $file);
             if (0 === strpos($text, $this->rootDir)) {
                 $text = substr($text, strlen($this->rootDir));
                 $text = explode(DIRECTORY_SEPARATOR, $text, 2);
-                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->rootDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR . $text[1] : '');
+                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->rootDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR.$text[1] : '');
             }
+
+            $text = sprintf('%s at line %d', $text, $line);
         }
 
-        $text = "$text at line $line";
-
         if (false !== $link = $this->getFileLink($file, $line)) {
-            $flags = ENT_QUOTES | ENT_SUBSTITUTE;
-
-            return sprintf('<a target="profiler_link_target" href="%s" title="Click to open this file" class="file_link">%s</a>', htmlspecialchars($link, $flags, $this->charset), $text);
+            return sprintf('<a target="_blank" href="%s" title="Click to open this file" class="file_link">%s</a>', htmlspecialchars($link, $flags, $this->charset), $text);
         }
 
         return $text;
@@ -162,13 +207,35 @@ class Ecocode_Profiler_Helper_Code
      *
      * @return string A link of false
      */
-    public function getFileLink($file, $line)
+    public function getFileLink($file, $line = 0)
     {
         if ($this->fileLinkFormat && is_file($file)) {
-            return strtr($this->fileLinkFormat, ['%f' => $file, '%l' => $line]);
+            return strtr($this->fileLinkFormat, ['%f' => $this->getHostFilePath($file), '%l' => (int)$line]);
         }
 
         return false;
+    }
+
+    public function getHostFilePath($file)
+    {
+        if ($hostRoot = $this->getHostRoot()) {
+            $file = str_replace($this->rootDir, $hostRoot, $file);
+        };
+
+        return $file;
+    }
+
+    protected function getHostRoot()
+    {
+        if ($this->hostRootDir === null) {
+            $hostRootDir = $this->config->getValue('host_magento_root', false);
+            if ($hostRootDir) {
+                $hostRootDir = '/' . trim($hostRootDir, '/') . '/';
+            }
+            $this->hostRootDir = $hostRootDir;
+        }
+
+        return $this->hostRootDir;
     }
 
     public function formatFileFromText($text)

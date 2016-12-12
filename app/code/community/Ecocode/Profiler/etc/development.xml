@@ -42,24 +42,6 @@
                 <class>Ecocode_Profiler_Helper</class>
             </ecocode_profiler>
         </helpers>
-    </global>
-    <frontend>
-        <layout>
-            <updates>
-                <ecocode_profiler>
-                    <file>ecocode_profiler.xml</file>
-                </ecocode_profiler>
-            </updates>
-        </layout>
-        <routers>
-            <profiler>
-                <use>standard</use>
-                <args>
-                    <frontName>_profiler</frontName>
-                    <module>Ecocode_Profiler</module>
-                </args>
-            </profiler>
-        </routers>
         <events>
             <controller_action_predispatch>
                 <observers>
@@ -149,5 +131,23 @@
                 </observers>
             </model_resource_db_delete>
         </events>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <ecocode_profiler>
+                    <file>ecocode_profiler.xml</file>
+                </ecocode_profiler>
+            </updates>
+        </layout>
+        <routers>
+            <profiler>
+                <use>standard</use>
+                <args>
+                    <frontName>_profiler</frontName>
+                    <module>Ecocode_Profiler</module>
+                </args>
+            </profiler>
+        </routers>
     </frontend>
 </config>

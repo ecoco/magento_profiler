@@ -48,7 +48,7 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
      * @param array $cacheInitOptions
      * @return Mage_Core_Model_App
      */
-    protected function _initCache(array $cacheInitOptions = array())
+    protected function _initCache(array $cacheInitOptions = [])
     {
         //its to early to make use of normal rewrites as they are not yet loaded
         //so just set it our self
@@ -66,12 +66,8 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
         //to early to detect if this is the admin store
         $path = $this->getRequest()->getPathInfo();
         if (substr($path, 0, 10) === '/_profiler') {
-            return $this;
-        }
-        //this wont work if you use a custom url and we cant tell by now
-        //which one is configured. even if we read the local.xml manually
-        // it can still be set in the database, so for now 80/20 solution :)
-        if (substr($path, 0, 6) === '/admin') {
+            //if we dont start the profiler make sure we disable the "Varien_Profiler" again
+            Varien_Profiler::disable();
             return $this;
         }
 
@@ -107,12 +103,18 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
      */
     protected function _callObserverMethod($object, $method, $observer)
     {
-        $eventName               = $observer->getEvent()->getName();
+        $eventName = $observer->getEvent()->getName();
+
+        $start  = microtime(true);
+        $return = parent::_callObserverMethod($object, $method, $observer);
+        $stop   = microtime(true);
+
         if (!$observer->getEvent()->getData('debug')) {
             $this->calledListeners[] = [
-                'event_name' => $eventName,
-                'class'      => get_class($object),
-                'method'     => $method
+                'event_name'     => $eventName,
+                'class'          => get_class($object),
+                'method'         => $method,
+                'execution_time' => $stop - $start
             ];
 
             if (!method_exists($object, $method)) {
@@ -127,7 +129,7 @@ class Ecocode_Profiler_Model_AppDev extends Mage_Core_Model_App
             }
         }
 
-        return parent::_callObserverMethod($object, $method, $observer);
+        return $return;
     }
 
     public function getEvents()

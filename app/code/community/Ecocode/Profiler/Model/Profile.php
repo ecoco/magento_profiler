@@ -20,6 +20,7 @@ class Ecocode_Profiler_Model_Profile
     protected $time;
     protected $statusCode;
     protected $collectTime;
+    protected $size;
 
     /**
      * @var Ecocode_Profiler_Model_Profile
@@ -184,6 +185,24 @@ class Ecocode_Profiler_Model_Profile
         return $this->collectTime = $time;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param mixed $size
+     * @return $this
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
 
     /**
      * Finds children profilers.
@@ -264,10 +283,13 @@ class Ecocode_Profiler_Model_Profile
      * Adds a Collector.
      *
      * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector A Ecocode_Profiler_Model_Collector_DataCollectorInterface instance
+     * @return $this
      */
     public function addCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collectors[$collector->getName()] = $collector;
+
+        return $this;
     }
 
     /**

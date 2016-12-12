@@ -1,0 +1,49 @@
+<?php
+/** @var Ecocode_Profiler_Block_Renderer_Settings_Field $fieldRenderer */
+$fieldRenderer = Mage::helper('ecocode_profiler/renderer')->getInstance('settings_field');
+
+/** @var Ecocode_Profiler_Model_Config $config */
+$config = Mage::getSingleton('ecocode_profiler/config');
+
+$data = [
+    'name' => $this->getData('key'),
+];
+
+/** @var Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector */
+if ($collector = $this->getData('collector')) {
+    $data['id']    = sprintf('setting-collector-%s-%s', $collector->getName(), $this->getData('key'));
+    $data['value'] = $config->getCollectorValue($collector, $this->getData('key'));
+
+    if (!isset($data['data'])) {
+        $data['data'] = [];
+    }
+    $data['data']['collector'] = $collector->getName();
+} else {
+    $data['id']    = sprintf('setting-base-%s', $this->getData('key'));
+    $data['value'] = $config->getValue($this->getData('key'));
+}
+
+$this->addData($data);
+?>
+<tr>
+    <td>
+        <label for="<?php echo $this->getData('id') ?>"><?php echo $this->getData('label') ?></label>
+        <?php if ($this->getData('label_description')): ?>
+            <br>
+            <small><?php echo $this->getData('label_description') ?></small>
+        <?php endif ?>
+    </td>
+    <td>
+        <?php echo $fieldRenderer->render($this->getData()) ?>
+        <?php if ($this->getData('value_description')): ?>
+            <br>
+            <small><?php echo $this->getData('value_description') ?></small>
+        <?php endif ?>
+    </td>
+    <td>
+        <a class="btn btn-sm btn-delete" title="reset to default" data-id="#<?php echo $this->getData('id') ?>">
+            <i class="fa fa-remove"></i>
+        </a>
+        <a class="btn btn-sm btn-save" data-id="#<?php echo $this->getData('id') ?>">save</a>
+    </td>
+</tr>

@@ -1,9 +1,19 @@
 CHANGELOG
 =========
+* introduced a settings section which will allow adjust some settings to your needs
+* improved ssl handling
+* improved handling of "xdebug.file_link_format"
+* improved context display to make use of "file_link_format"
+* added timings to event collector
+* made tables sortable
+* added profile size in MB to search results
+* added purge profile button to search result page
+* introduced a replacement for the Varien_Profiler
+* introduced new "Performance" Tab
 
 1.2.1
 -----
-* fix for #1 Not working in secure environnement with magento 1.9.2 (https://)
+* fix for #1 Not working in secure environment with magento 1.9.2 (https://)
 * fix for #6 Undefined index error in layout data collector 
 * added magento 1.9.3 to test stack
 

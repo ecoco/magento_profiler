@@ -5,28 +5,50 @@
 /** @var Ecocode_Profiler_Model_Collector_EventDataCollector $collector */
 $collector = $this->getCollector();
 
+/** @var Ecocode_Profiler_Helper_Code $codeHelper */
+$codeHelper = Mage::helper('ecocode_profiler/code');
+
+
 $eventsFired = $collector->getFiredEvents();
+$calledListeners = $collector->getCalledListeners()
 ?>
-<h2>Events</h2>
+
+<div>
+    <h2>Events</h2>
+    <div class="metrics">
+        <div class="metric">
+            <span class="value"><?php echo count($eventsFired) ?></span>
+            <span class="label">Events fired</span>
+        </div>
+
+        <div class="metric">
+            <span class="value"><?php echo count($calledListeners) ?></span>
+            <span class="label">Called Listeners</span>
+        </div>
+
+        <div class="metric">
+            <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
+            <span class="label">Total time</span>
+        </div>
+    </div>
+</div>
 
 <?php if (!$eventsFired): ?>
     <div class="empty">
         <p>No events have been recorded. Check that you are loading "AppDev"</p>
     </div>
 <?php else: ?>
-    <?php
-    $calledListeners = $collector->getCalledListeners()
-    ?>
     <div class="sf-tabs">
         <div class="tab">
             <h3 class="tab-title">Events Fired <span class="badge"><?php echo count($eventsFired) ?></span></h3>
             <div class="tab-content">
-                <table>
+                <table class="sortable-table">
                     <thead>
                     <tr>
                         <th>Event</th>
-                        <th>Observer</th>
-                        <th>Count</th>
+                        <th data-sort="int">Observer</th>
+                        <th data-sort="int">Count</th>
+                        <th data-sort="float">Time</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,30 +63,37 @@ $eventsFired = $collector->getFiredEvents();
                                        data-toggle-alt-content="Hide observer">Show observer</a>
                                     <div id="event-observer-<?php echo $index ?>" class="hidden">
                                         <ul>
-                                            <?php foreach ($event['observer'] as $area => $observers):?>
+                                            <?php foreach ($event['observer'] as $area => $observers): ?>
                                                 <li>
                                                     <?php echo $area ?>
-                                                <table>
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Type</th>
-                                                        <th>Model</th>
-                                                        <th>Method</th>
-                                                    </tr>
-                                                    </thead>
-                                                        <?php foreach ($observers as $name => $observer):?>
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Type</th>
+                                                            <th>Model</th>
+                                                            <th>Method</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <?php foreach ($observers as $name => $observer): ?>
+                                                            <?php
+                                                            $className = $observer['model'];
+                                                            if (strpos($className, '/')) {
+                                                                $className = Mage::getConfig()->getModelClassName($className);
+                                                            }
+                                                            ?>
+
                                                             <tr>
                                                                 <td><?php echo $name ?></td>
                                                                 <td><?php echo $observer['type'] ? $observer['type'] : 'singleton' ?></td>
-                                                                <td><?php echo $observer['model'] ?></td>
-                                                                <td><?php echo $observer['method'] ?></td>
+                                                                <td><?php echo $codeHelper->formatClass($className); ?></td>
+                                                                <td><?php echo $codeHelper->formatClassMethod($className, $observer['method'], $observer['method']); ?></td>
                                                             </tr>
-                                                        <?php endforeach;?>
-                                                </table>
+                                                        <?php endforeach; ?>
+                                                    </table>
 
                                                 </li>
-                                            <?php endforeach;?>
+                                            <?php endforeach; ?>
                                         </ul>
                                     </div>
                                 <?php endif; ?>
@@ -78,8 +107,10 @@ $eventsFired = $collector->getFiredEvents();
                                 <?php endif; ?>
                             </td>
                             <td><?php echo $event['count'] ?></td>
+                            <td data-sort-value="<?php echo round($event['execution_time_total'] * 1000, 4) ?>">
+                                <?php echo $event['execution_time_total'] > 0 ? sprintf('%0.2f', $event['execution_time_total'] * 1000) . ' ms' : '-' ?>
+                            </td>
                         </tr>
-
                     <?php endforeach; ?>
                     </tbody>
 
@@ -91,11 +122,12 @@ $eventsFired = $collector->getFiredEvents();
             <h3 class="tab-title">Called Listeners <span class="badge"><?php echo count($calledListeners) ?></span></h3>
 
             <div class="tab-content">
-                <table>
+                <table class="sortable-table">
                     <thead>
                     <tr>
                         <th>Event</th>
                         <th>Listener</th>
+                        <th data-sort="float">Time</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -103,7 +135,8 @@ $eventsFired = $collector->getFiredEvents();
                     <?php foreach ($calledListeners as $listener): ?>
                         <tr>
                             <td><?php echo $listener['event_name'] ?></td>
-                            <td><?php echo $listener['class'] ?>:<?php echo $listener['method'] ?></td>
+                            <td><?php echo $codeHelper->formatClassMethod($listener['class'], $listener['method']); ?></td>
+                            <td><?php echo sprintf('%0.2f', $listener['execution_time'] * 1000); ?> ms</td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

@@ -1,0 +1,12 @@
+{
+  "overwrite-1": "overwrite-1",
+  "overwrite": {
+    "overwrite-2": "overwrite-2",
+    "nested": {
+      "overwrite-3": "overwrite-3"
+    }
+  },
+  "collector": {
+    "mysql": {}
+  }
+}

@@ -7,9 +7,9 @@ class TestHelper extends PHPUnit_Framework_TestCase
     protected $reInetMage = false;
 
     protected $mageDefaultProperties = [
-        '_registry' => [],
-        '_isDownloader' => false,
-        '_isDeveloperMode' => false,
+        '_registry'                  => [],
+        '_isDownloader'              => false,
+        '_isDeveloperMode'           => false,
         'headersSentThrowsException' => true,
     ];
 
@@ -30,7 +30,7 @@ class TestHelper extends PHPUnit_Framework_TestCase
         $mageReflectionClass = new \ReflectionClass('Mage');
         $properties          = $mageReflectionClass->getStaticProperties();
 
-        foreach($properties as $key => $value) {
+        foreach ($properties as $key => $value) {
             $reflectedProperty = $mageReflectionClass->getProperty($key);
             $reflectedProperty->setAccessible(true);
             $value = null;
@@ -89,11 +89,38 @@ class TestHelper extends PHPUnit_Framework_TestCase
         return $property->getValue($object);
     }
 
+    public function setProtectedValue($object, $property, $value)
+    {
+        $property = new ReflectionProperty(get_class($object), $property);
+        $property->setAccessible(true);
+
+        $property->setValue($object, $value);
+
+        return $this;
+    }
+
     public function getProtectedMethod($className, $property)
     {
         $method = new ReflectionMethod($className, $property);
         $method->setAccessible(true);
 
         return $method;
+    }
+
+    public function getFixturePath($file = null)
+    {
+        $env = isset($_ENV['environment']) ? $_ENV['environment'] : 'dev';
+        $env = ucfirst($env);
+
+        $baseDir = __DIR__ . DIRECTORY_SEPARATOR . $env . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR;
+
+        return $baseDir . $file;
+    }
+
+    public function checkCanUseDepends()
+    {
+        if (version_compare(\PHPUnit_Runner_Version::id(), 5, '<=')) {
+            $this->markTestSkipped('@depends seems to be broken in 4.x');
+        }
     }
 }

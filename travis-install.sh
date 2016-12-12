@@ -26,7 +26,8 @@ EOF
 n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
 mkdir -p magento/var/log
 
-cd $TRAVIS_BUILD_DIR
+mkdir $TRAVIS_BUILD_DIR/util
+cd $TRAVIS_BUILD_DIR/util
 #only install test dependencies
 composer require phpunit/phpunit
 composer require satooshi/php-coveralls
@@ -43,8 +44,10 @@ modman link $TRAVIS_BUILD_DIR
 if [ $NO_DEPS ]
 then
     #create minimal composer json to make sure we can install inchoo php7
+    echo 'Install with no deps';
     echo '{"name": "ecocode/magento_profiler", "extra": {"magento-root-dir": "magento/"}}' > ./composer.json
 else
+    echo 'Install composer deps';
     cp $TRAVIS_BUILD_DIR/composer.json .
 
     #add magento-root-dir directive

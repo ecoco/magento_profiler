@@ -29,9 +29,9 @@ mkdir -p magento/var/log
 mkdir $TRAVIS_BUILD_DIR/util
 cd $TRAVIS_BUILD_DIR/util
 #only install test dependencies
-#DO NOT USE COMPOSER FOR PHPUNIT as it shares its autoloader
 composer require satooshi/php-coveralls
 
+#DO NOT USE COMPOSER FOR PHPUNIT as it shares its autoloader
 if [ $TRAVIS_PHP_VERSION == "5.5" ]
 then
     wget https://phar.phpunit.de/phpunit-4.8.31.phar

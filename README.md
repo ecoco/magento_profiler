@@ -54,6 +54,7 @@ the dependencies. This is currently only possible via composer as we do need the
 To install the dependencies run the following from your magento root dir or a parent directory:
 ```
 composer require --dev symfony/debug 3.0
+composer require --dev symfony/stopwatch 3.2
 composer require --dev symfony/yaml 3.1
 composer require --dev jdorn/sql-formatter ~1.2
 composer require --dev monolog/monolog 1.11
@@ -90,7 +91,9 @@ time to time to verify the result.
 * Request/Response
   * Display of request/response server parameters
 * Memory
-  * Display of memory usage 
+  * Display of memory usage
+* Time
+  * New visualization of the varien profiler
 * Mysql
   * Display of all queries with syntax highlighting and stack traces to locate the origin
   * Queries by context so you can easily determine the origin block

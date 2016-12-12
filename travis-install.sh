@@ -29,7 +29,6 @@ mkdir -p magento/var/log
 mkdir $TRAVIS_BUILD_DIR/util
 cd $TRAVIS_BUILD_DIR/util
 #only install test dependencies
-composer require phpunit/phpunit
 composer require satooshi/php-coveralls
 
 

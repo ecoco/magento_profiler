@@ -1,5 +1,8 @@
 CHANGELOG
 =========
+
+1.3.0
+-----
 * introduced a settings section which will allow adjust some settings to your needs
 * improved ssl handling
 * improved handling of "xdebug.file_link_format"

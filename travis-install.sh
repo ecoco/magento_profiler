@@ -26,6 +26,12 @@ EOF
 n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
 mkdir -p magento/var/log
 
+cd $TRAVIS_BUILD_DIR
+#only install test dependencies
+composer require phpunit/phpunit
+composer require satooshi/php-coveralls
+
+
 # Install our module
 cd $TRAVIS_BUILD_DIR/build/magento
 n98-magerun.phar sys:info
@@ -34,12 +40,9 @@ modman init
 modman link $TRAVIS_BUILD_DIR
 
 
-
 if [ $NO_DEPS ]
 then
-    #only install test dependencies
-    composer require phpunit/phpunit
-    composer require satooshi/php-coveralls
+    echo "dont install deps"
 else
     cp $TRAVIS_BUILD_DIR/composer.json .
 

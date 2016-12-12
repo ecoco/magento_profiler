@@ -46,7 +46,7 @@ script:
   - cd $TRAVIS_BUILD_DIR/build/magento
   - cp $TRAVIS_BUILD_DIR/phpunit-prod.xml.dist .
   - cp $TRAVIS_BUILD_DIR/phpunit-dev.xml.dist .
-  - vendor/bin/phpunit -c phpunit-prod.xml.dist && vendor/bin/phpunit -c phpunit-dev.xml.dist --coverage-clover $TRAVIS_BUILD_DIR/build/logs/clover.xml
+  - $TRAVIS_BUILD_DIR/vendor/bin/phpunit -c phpunit-prod.xml.dist && vendor/bin/phpunit -c phpunit-dev.xml.dist --coverage-clover $TRAVIS_BUILD_DIR/build/logs/clover.xml
 
 after_success:
   - cd $TRAVIS_BUILD_DIR

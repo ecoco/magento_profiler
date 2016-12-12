@@ -157,6 +157,7 @@ class Ecocode_Profiler_Model_Profiler
     {
         return $this->getStorage()->purge();
     }
+
     /**
      * @return Ecocode_Profiler_Model_Profiler_StorageInterface
      */

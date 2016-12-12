@@ -30,6 +30,7 @@ $_SESSION = ['x' => 'y'];
 //flag to check for unittets
 define('BASE_TESTS_PATH', realpath(dirname(__FILE__)));
 require_once BASE_TESTS_PATH . '/../TestHelper.php';
+require_once BASE_TESTS_PATH . '/../TestControllerHelper.php';
 
 $options = [
     'cache'        => ['id_prefix' => 'test-dev'],

@@ -283,10 +283,13 @@ class Ecocode_Profiler_Model_Profile
      * Adds a Collector.
      *
      * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector A Ecocode_Profiler_Model_Collector_DataCollectorInterface instance
+     * @return $this
      */
     public function addCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collectors[$collector->getName()] = $collector;
+
+        return $this;
     }
 
     /**

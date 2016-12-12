@@ -16,20 +16,13 @@ class Varien_Profiler
     static private $sectionMap = [
         'mage::app::init::system_config' => 'config'
     ];
-    /**
-     * Timers for code profiling
-     *
-     * @var array
-     */
+
     /** @var  Stopwatch */
     static private $stopWatch;
     static private $enabled = false;
 
     public static function enable()
     {
-        if (self::$enabled) {
-            return;
-        }
         self::$enabled = true;
     }
 
@@ -38,7 +31,7 @@ class Varien_Profiler
         self::$enabled = false;
     }
 
-    public static function getCategory($timerName)
+    protected static function getCategory($timerName)
     {
         if (isset(self::$sectionMap[$timerName])) {
             return self::CATEGORY_SECTION;
@@ -56,13 +49,16 @@ class Varien_Profiler
                 $category = self::CATEGORY_CORE;
                 break;
             case 'eav':
-            case '_LOAD_ATTRIBUTE_BY_CODE__':
-            case '__EAV_COLLECTION_AFTER_LOAD__':
+            case '_load_attribute_by_code__':
+            case '__eav_collection_after_load__':
                 $category = self::CATEGORY_EAV;
                 break;
             case 'dispatch event':
             case 'observer':
                 $category = self::CATEGORY_EVENT;
+                break;
+            case 'block':
+                $category = self::CATEGORY_LAYOUT;
                 break;
             default:
                 if (substr($timerName, -6) === '.phtml') {
@@ -105,6 +101,7 @@ class Varien_Profiler
         if (!self::$enabled) {
             return;
         }
+
         if (self::$stopWatch->isStarted($timerName)) {
             self::$stopWatch->stop($timerName);
         }
@@ -115,11 +112,20 @@ class Varien_Profiler
         self::pause($timerName);
     }
 
-    public static function fetch()
+    public static function fetch($key)
     {
-        return false;
+        if (!self::$stopWatch) {
+            throw new \LogicException(sprintf('Cant fetch event when the profiler is not started.'));
+        }
+
+        return self::$stopWatch->getEvent($key);
     }
 
+    /**
+     * we dont have a "stop" event so calling this multiple
+     * times in a row will cause an error as we wont have
+     * active sections
+     */
     public static function getTimers()
     {
         if (self::$stopWatch) {
@@ -133,8 +139,9 @@ class Varien_Profiler
     /**
      * Output SQl Zend_Db_Profiler
      *
+     * @codeCoverageIgnore
      */
-    public static function getSqlProfiler($res)
+    public static function getSqlProfiler()
     {
         return '';
     }

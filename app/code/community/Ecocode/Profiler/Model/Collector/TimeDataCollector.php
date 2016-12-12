@@ -7,7 +7,10 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
     extends Ecocode_Profiler_Model_Collector_AbstractDataCollector
     implements Ecocode_Profiler_Model_Collector_LateDataCollectorInterface
 {
-
+    public function isVarienProfiler()
+    {
+        return defined('Varien_Profiler::CATEGORY_SECTION') ? false : true;
+    }
 
     /**
      * {@inheritdoc}
@@ -15,7 +18,6 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
     public function collect(Mage_Core_Controller_Request_Http $request, Mage_Core_Controller_Response_Http $response, \Exception $exception = null)
     {
         $this->data = [
-            'total_time' => 0,
             'start_time' => Mage::app()->getStartTime() * 1000,
             'events'     => []
         ];
@@ -24,7 +26,13 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
 
     public function lateCollect()
     {
-        $this->setEvents($this->getEventsFromProfiler());
+        if (!$this->isVarienProfiler()) {
+            $this->setEvents($this->getEventsFromProfiler());
+        }
+
+        if (!$this->getDuration()) {
+            $this->data['duration'] = (microtime(true) * 1000) - $this->getData('start_time', 0);
+        }
 
         return $this;
     }
@@ -51,7 +59,7 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
     public function getDuration()
     {
         if (!isset($this->data['events']['__section__'])) {
-            return 0;
+            return $this->getData('duration', 0);
         }
 
         /** @var \Symfony\Component\Stopwatch\StopwatchEvent $event */
@@ -91,6 +99,10 @@ class Ecocode_Profiler_Model_Collector_TimeDataCollector
      */
     protected function getEventsFromProfiler()
     {
-        return Varien_Profiler::getTimers();
+        if (@class_exists('Symfony\Component\Stopwatch\Stopwatch')) {
+            return Varien_Profiler::getTimers();
+        }
+
+        return [];
     }
 }

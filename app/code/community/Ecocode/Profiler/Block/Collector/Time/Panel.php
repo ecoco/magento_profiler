@@ -2,6 +2,7 @@
 
 /**
  * Class Ecocode_Profiler_Block_Collector_Log_Panel
+ * @method Ecocode_Profiler_Model_Collector_TimeDataCollector getCollector
  */
 class Ecocode_Profiler_Block_Collector_Time_Panel
     extends Ecocode_Profiler_Block_Collector_Base

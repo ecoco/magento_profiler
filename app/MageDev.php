@@ -31,8 +31,11 @@ $autoloader
     ->addOverwrite('Mage_Core_Model_Resource_Db_Abstract', 'MageCoreModelResourceDbAbstract.php')
     ->addOverwrite('Mage_Core_Model_Store', 'MageCoreModelStore.php')
     ->addOverwrite('Mage_Core_Model_Translate', 'MageCoreModelTranslate.php')
-    ->addOverwrite('Mage_Eav_Model_Entity_Abstract', 'MageEavModelEntityAbstract.php')
-    ->addOverwrite('Varien_Profiler', 'VarienProfiler.php');
+    ->addOverwrite('Mage_Eav_Model_Entity_Abstract', 'MageEavModelEntityAbstract.php');
+
+if (@class_exists('Symfony\Component\Stopwatch\Stopwatch')) {
+    $autoloader->addOverwrite('Varien_Profiler', 'VarienProfiler.php');
+}
 
 require_once $profilerDir . 'Helper' . DIRECTORY_SEPARATOR . 'Data.php';
 

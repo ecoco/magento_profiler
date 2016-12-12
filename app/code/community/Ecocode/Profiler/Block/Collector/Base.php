@@ -18,10 +18,13 @@ class Ecocode_Profiler_Block_Collector_Base
     /**
      * @codeCoverageIgnore
      * @param Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector
+     * @return $this
      */
     public function setCollector(Ecocode_Profiler_Model_Collector_DataCollectorInterface $collector)
     {
         $this->collector = $collector;
+
+        return $this;
     }
 
     /**

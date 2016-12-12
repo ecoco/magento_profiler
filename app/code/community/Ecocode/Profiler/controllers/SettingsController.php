@@ -2,13 +2,29 @@
 
 class Ecocode_Profiler_SettingsController extends Ecocode_Profiler_Controller_AbstractController
 {
+    /**
+     * @return Ecocode_Profiler_Model_Config
+     */
+    protected function getConfig()
+    {
+        return Mage::getSingleton('ecocode_profiler/config');
+    }
+
+    /**
+     * @return Ecocode_Profiler_Model_Profiler
+     */
+    protected function getProfiler()
+    {
+        return Mage::getSingleton('ecocode_profiler/profiler');
+    }
+
     public function indexAction()
     {
         Mage::register('current_panel', 'settings');
 
         $request = $this->getRequest();
         $token   = $request->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
-        if ($token && $profile = Mage::getSingleton('ecocode_profiler/profiler')->loadProfile($token)) {
+        if ($token && $profile = $this->getProfiler()->loadProfile($token)) {
             //make the menu available if we have a token
             Mage::register('current_profile', $profile);
         }
@@ -26,13 +42,13 @@ class Ecocode_Profiler_SettingsController extends Ecocode_Profiler_Controller_Ab
         if (!$key || !$value) {
             throw new \Exception('missing "key" or "value"');
         } else {
-            /** @var Ecocode_Profiler_Model_Config $configHelper */
-            $configHelper = Mage::getSingleton('ecocode_profiler/config');
+            /** @var Ecocode_Profiler_Model_Config $config */
+            $config = $this->getConfig();
             if ($collectorName = $request->getParam('collector')) {
-                $collector = Mage::getSingleton('ecocode_profiler/profiler')->getDataCollector($collectorName);
-                $configHelper->saveCollectorValue($collector, $key, $value);
+                $collector = $this->getProfiler()->getDataCollector($collectorName);
+                $config->saveCollectorValue($collector, $key, $value);
             } else {
-                $configHelper->saveValue($key, $value);
+                $config->saveValue($key, $value);
             }
         }
     }
@@ -46,9 +62,9 @@ class Ecocode_Profiler_SettingsController extends Ecocode_Profiler_Controller_Ab
             throw new \Exception('missing "key"');
         } else {
             /** @var Ecocode_Profiler_Model_Config $configHelper */
-            $configHelper = Mage::getSingleton('ecocode_profiler/config');
+            $configHelper = $this->getConfig();
             if ($collectorName = $request->getParam('collector')) {
-                $collector = Mage::getSingleton('ecocode_profiler/profiler')->getDataCollector($collectorName);
+                $collector = $this->getProfiler()->getDataCollector($collectorName);
                 $configHelper->deleteCollectorValue($collector, $key);
                 $value = $configHelper->getValue($key);
             } else {

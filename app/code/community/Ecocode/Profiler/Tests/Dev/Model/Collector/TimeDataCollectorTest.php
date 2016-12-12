@@ -8,6 +8,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
 
     public function testCollect()
     {
+        $this->checkCanRunTest();
 
         $collector = $this->getMockBuilder('Ecocode_Profiler_Model_Collector_TimeDataCollector')
             ->setMethods(['getEventsFromProfiler'])
@@ -45,6 +46,16 @@ class Ecocode_Profiler_Tests_Dev_Model_Collector_TimeDataCollectorTest
         $this->assertGreaterThan(0, $collector->getStartTime());
         $this->assertGreaterThan(0, $collector->getDuration());
         $this->assertCount(2, $collector->getEvents());
+    }
+
+
+    protected function checkCanRunTest()
+    {
+        if (defined('Varien_Profiler::CATEGORY_SECTION') && @class_exists('Symfony\Component\Stopwatch\Stopwatch')) {
+            return true;
+        } else {
+            $this->markTestSkipped('symfony stopwatch is not installed');
+        }
     }
 
 }

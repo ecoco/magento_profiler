@@ -42,20 +42,20 @@ modman link $TRAVIS_BUILD_DIR
 
 if [ $NO_DEPS ]
 then
-    echo "dont install deps"
+    #create minimal composer json to make sure we can install inchoo php7
+    echo '{"name": "ecocode/magento_profiler", "extra": {"magento-root-dir": "magento/"}}' > ./composer.json
 else
     cp $TRAVIS_BUILD_DIR/composer.json .
 
     #add magento-root-dir directive
     sed -i 's/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/' composer.json
 
-    composer install
+    composer install --no-dev
 fi
 
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
     #make php7 possible
-    echo '{"name": "ecocode/magento_profiler"}' > ./composer.json
     composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7
 
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]

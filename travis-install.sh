@@ -37,7 +37,8 @@ then
     wget https://phar.phpunit.de/phpunit-4.8.31.phar
     mv phpunit-4.8.31.phar phpunit.phar
 else
-    wget https://phar.phpunit.de/phpunit.phar
+    wget https://phar.phpunit.de/phpunit-5.7.phar
+    mv phpunit-5.7.phar phpunit.phar
 fi
 chmod +x phpunit.phar
 

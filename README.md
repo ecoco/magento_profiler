@@ -42,7 +42,7 @@ If you have not already configured [magento-composer-installer][1] add
 ```
 to your **composer.json**. If your magento root dir is the same directory as the one containing your **composer.json** use `"."` as the `magento-root-dir`
 
-`composer require --dev ecocode/magento-profiler`
+`composer require --dev ecocode/magento_profiler`
 
 ### Manually
 Download the module and copy the **app** folder + "dev.php" into your magento 

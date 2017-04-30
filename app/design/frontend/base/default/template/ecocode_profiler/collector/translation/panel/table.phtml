@@ -13,6 +13,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
     <tr>
         <th>Locale</th>
         <th>Module</th>
+        <th>Used Source</th>
         <th>Times used</th>
         <th>Message ID</th>
         <th>Message Preview</th>
@@ -23,6 +24,7 @@ $rendererHelper = Mage::helper('ecocode_profiler/renderer');
         <tr>
             <td class="font-normal text-small"><?php echo $message['locale'] ?></td>
             <td class="font-normal text-small text-bold nowrap"><?php echo $message['module'] ?></td>
+            <td class="font-normal text-small text-bold nowrap"><?php echo isset($message['source']) ? $message['source'] : '-' ?></td>
             <td class="font-normal text-small"><?php echo $message['count'] ?></td>
             <td>
                 <?php echo $message['code'] ?>

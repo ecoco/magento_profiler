@@ -31,10 +31,12 @@ $collector = $this->getCollector();
 </div>
 
 
-
 <h2>Translation Messages</h2>
-
-<?php $messageGroups = $this->getMessageGroups();?>
+<p class="help">Its important to understand how magento does handle translations and why your translations in the
+    "translate.csv" are not always working. In case you have this kind of issue check out
+    <a target="_blank" href="https://magento.stackexchange.com/questions/28720/why-does-my-translate-csv-and-the-translation-files-not-work">magento.stackexchange</a>
+</p>
+<?php $messageGroups = $this->getMessageGroups(); ?>
 <div class="sf-tabs">
     <div class="tab">
         <h3 class="tab-title">Defined <span class="badge"><?php echo count($messageGroups['translated']) ?></span></h3>
@@ -115,7 +117,7 @@ $collector = $this->getCollector();
 
 <style>
     tr.sf-toggle-content.sf-toggle-visible {
-        display: table-row!important;
+        display: table-row !important;
     }
 
 </style>

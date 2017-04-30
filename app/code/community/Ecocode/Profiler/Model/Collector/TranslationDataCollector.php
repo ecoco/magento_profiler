@@ -9,10 +9,10 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
     protected $_currentBlock;
 
     protected $stateCounts = [
-        'translated' => 0,
-        'missing'    => 0,
-        'invalid'    => 0,
-        'fallback'   => 0
+        'translated'  => 0,
+        'missing'     => 0,
+        'invalid'     => 0,
+        'fallback'    => 0
     ];
 
     /**
@@ -94,8 +94,8 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
     public function getNotOkCount()
     {
         return $this->getStateCount('invalid')
-        + $this->getStateCount('missing')
-        + $this->getStateCount('fallback');
+            + $this->getStateCount('missing')
+            + $this->getStateCount('fallback');
     }
 
     /**

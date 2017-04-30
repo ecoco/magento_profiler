@@ -8,16 +8,70 @@ Ecocode_Profiler_Helper_Data::loadRenamedClass('core/Mage/Core/Model/Translate.p
  */
 class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 {
-    const STATE_TRANSLATED = 'translated';
-    const STATE_FALLBACK   = 'fallback';
-    const STATE_MISSING    = 'missing';
-    const STATE_INVALID    = 'invalid';
+
+    const STATE_TRANSLATED  = 'translated';
+    const STATE_FALLBACK    = 'fallback';
+    const STATE_MISSING     = 'missing';
+    const STATE_INVALID     = 'invalid';
 
     protected $profilerConfig = null;
 
     protected $currentMessage = null;
 
     protected $messages = [];
+
+    protected $source  = [];
+
+    protected $sourceMap = [
+        '_loadModuleTranslation' => 'module',
+        '_loadThemeTranslation'  => 'theme',
+        '_loadDbTranslation'     => 'db',
+    ];
+
+
+    public function init($area, $forceReload = false)
+    {
+        parent::init($area, $forceReload);
+    }
+
+    protected function _loadCache()
+    {
+        if (!$this->_canUseCache()) {
+            return false;
+        }
+
+        $cacheData = Mage::app()->loadCache($this->getCacheId());
+        if ($cacheData === false) {
+            return false;
+        }
+
+        $cacheData = unserialize($cacheData);
+        if (!isset($cacheData['source'])) {
+            return false;
+        }
+
+        $this->source = $cacheData['source'];
+        return $cacheData['data'];
+    }
+
+    /**
+     * Saving data cache
+     *
+     * @param   string $area
+     * @return  Mage_Core_Model_Translate
+     */
+    protected function _saveCache()
+    {
+        if (!$this->_canUseCache()) {
+            return $this;
+        }
+        $data = [
+            'data'   => $this->getData(),
+            'source' => $this->source
+        ];
+        Mage::app()->saveCache(serialize($data), $this->getCacheId(), [self::CACHE_TAG], null);
+        return $this;
+    }
 
 
     public function translate($args)
@@ -61,12 +115,15 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
     {
         $this->currentMessage['text'] = $text;
         $this->currentMessage['code'] = $code;
+        $source                       = null;
 
         $translated = parent::_getTranslatedString($text, $code);
         if (array_key_exists($code, $this->_data)) {
-            $state = self::STATE_TRANSLATED;
+            $state  = self::STATE_TRANSLATED;
+            $source = $this->source[$code];
         } elseif (array_key_exists($text, $this->_data)) {
-            $state = self::STATE_FALLBACK;
+            $source = $this->source[$text];
+            $state  = self::STATE_FALLBACK;
             $this->addTrace();
         } else {
             $state = self::STATE_MISSING;
@@ -75,6 +132,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
 
         $this->currentMessage['state']       = $state;
         $this->currentMessage['translation'] = $translated;
+        $this->currentMessage['source']      = $source;
 
         return $translated;
     }
@@ -94,6 +152,7 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
             'state'       => $this->currentMessage['state'],
             'parameters'  => $this->currentMessage['parameters'],
             'module'      => $this->currentMessage['module'],
+            'source'      => $this->currentMessage['source'],
             'trace'       => $this->currentMessage['trace']
         ];
     }
@@ -108,20 +167,32 @@ class Mage_Core_Model_Translate extends Original_Mage_Core_Model_Translate
      */
     protected function _addData($data, $scope, $forceReload = false)
     {
-        foreach ($data as $key => $value) {
+        $source = debug_backtrace()[1]['function'];
+        if (isset($this->sourceMap[$source])) {
+            $source = $this->sourceMap[$source];
+        }
 
-            /*
-            we needed to simplify this to properly detect not translated strings and their scope
-            */
+        foreach ($data as $key => $value) {
             $key   = $this->_prepareDataString($key);
             $value = $this->_prepareDataString($value);
 
-            $scopeKey = $scope . self::SCOPE_SEPARATOR . $key;
-
-            $this->_data[$scopeKey] = $value;
-            if (!isset($this->_data[$key]) && !Mage::getIsDeveloperMode()) {
-                $this->_data[$key] = $value;
+            $scopeKey = $key;
+            $sourceName = $source;
+            if ($scope) {
+                $scopeKey = $scope . self::SCOPE_SEPARATOR . $key;
+                $sourceName .= ' (' . $scope . ')';
+            } else {
+                // we have no scope key so this is coming from translate.csv or db in this case magento overwrites
+                // the translation in any case
             }
+
+            $this->_data[$scopeKey]  = $value;
+            $this->source[$scopeKey] = $sourceName;
+            if (!isset($this->_data[$key]) && !Mage::getIsDeveloperMode()) {
+                $this->_data[$key]  = $value;
+                $this->source[$key] = $sourceName;
+            }
+            continue;
         }
         return $this;
     }

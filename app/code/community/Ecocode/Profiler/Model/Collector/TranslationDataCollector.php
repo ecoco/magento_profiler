@@ -17,6 +17,7 @@ class Ecocode_Profiler_Model_Collector_TranslationDataCollector
 
     /**
      * @return Mage_Core_Model_Translate
+     * @codeCoverageIgnore
      */
     protected function getTranslator()
     {

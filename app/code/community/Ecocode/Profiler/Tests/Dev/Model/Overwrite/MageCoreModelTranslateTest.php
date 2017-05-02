@@ -166,35 +166,23 @@ class Ecocode_Profiler_Tests_Dev_Model_Overwrite_MageCoreModelTranslateTest
 
     protected function _loadModuleTranslation(Original_Mage_Core_Model_Translate $object, array $data, $module)
     {
-        if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $closure = $this->getAddDataReflection($object)->getClosure($object);
-            $closure($data, $module);
-        } else {
-            $this->getAddDataReflection($object)->invoke($object, $data, $module);
-        }
+        $closure = $this->getAddDataReflectionClosure($object);
+        $closure($data, $module);
     }
 
     protected function _loadThemeTranslation(Original_Mage_Core_Model_Translate $object, array $data)
     {
-        if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $closure = $this->getAddDataReflection($object)->getClosure($object);
-            $closure($data, null);
-        } else {
-            $this->getAddDataReflection($object)->invoke($object, $data, null);
-        }
+        $closure = $this->getAddDataReflectionClosure($object);
+        $closure($data, null);
     }
 
     protected function _loadDbTranslation(Original_Mage_Core_Model_Translate $object, array $data)
     {
-        if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $closure = $this->getAddDataReflection($object)->getClosure($object);
-            $closure($data, null);
-        } else {
-            $this->getAddDataReflection($object)->invoke($object, $data, null);
-        }
+        $closure = $this->getAddDataReflectionClosure($object);
+        $closure($data, null);
     }
 
-    protected function getAddDataReflection(Original_Mage_Core_Model_Translate $object)
+    protected function getAddDataReflectionClosure(Original_Mage_Core_Model_Translate $object)
     {
         $class = get_class($object);
         if (!isset($this->translationReflection[$class])) {
@@ -204,7 +192,7 @@ class Ecocode_Profiler_Tests_Dev_Model_Overwrite_MageCoreModelTranslateTest
             $this->translationReflection[$class] = $addDataMethod;
         }
 
-        return $this->translationReflection[$class];
+        return $this->translationReflection[$class]->getClosure($object);
     }
 
 }

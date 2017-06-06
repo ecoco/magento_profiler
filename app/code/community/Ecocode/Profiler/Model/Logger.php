@@ -35,6 +35,10 @@ class Ecocode_Profiler_Model_Logger
 
     public function mageLog($level, $message, array $context = [])
     {
+        if (is_array($message) || is_object($message)) {
+            $message = print_r($message, true);
+        }
+
         $level = self::$levelMap[$level];
         return $this->log($level, $message, $context);
     }

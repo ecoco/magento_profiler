@@ -72,9 +72,9 @@ then
 
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]
     then
-        composer require inchoo/php7 2.0.0 --no-interaction
+        composer require inchoo/php7 2.0.0
     else
-        composer require inchoo/php7 1.0.6 --no-interaction
+        composer require inchoo/php7 1.0.6
     fi
 fi
 

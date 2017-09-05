@@ -6,10 +6,11 @@ if [ $MAGENTO_VERSION == "magento-mirror-1.7.0.2" ]
 then
     sudo service mysql stop
     docker run --name mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes  -e MYSQL_ROOT_PASSWORD="" -d mysql:5.5
+    docker ps
 fi
 
 #Clean mysql database
-mysql -h 127.0.0.1 -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
+mysql --host=127.0.0.1 -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
 
 cd $TRAVIS_BUILD_DIR/build
 

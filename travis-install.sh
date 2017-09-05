@@ -7,7 +7,10 @@ then
     sudo service mysql stop
     docker run --net=host --name mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes  -e MYSQL_ROOT_PASSWORD="" -d mysql:5.5
     docker ps
-    sleep 5
+    while ! mysqladmin ping --host=127.0.0.1 -uroot --silent; do
+        echo 'waiting for mysql'
+        sleep 1
+    done
 fi
 
 #Clean mysql database

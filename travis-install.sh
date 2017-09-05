@@ -2,6 +2,12 @@
 set -ev
 
 
+if [ $MAGENTO_VERSION == "magento-mirror-1.7.0.2" ]
+then
+    sudo service mysql stop
+    docker run --name mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql:5.5
+fi
+
 #Clean mysql database
 mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
 

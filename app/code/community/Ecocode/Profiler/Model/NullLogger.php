@@ -27,6 +27,14 @@ class Ecocode_Profiler_Model_NullLogger
         return 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function countWarnings()
+    {
+        return 0;
+    }
+
 
     /**
      * System is unusable.

@@ -59,7 +59,7 @@ class Ecocode_Profiler_Tests_Dev_Controller_AbstractControllerTest
         $this->assertConfigValue(
             $app->getConfig(),
             'disabled',
-            'frontend/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type'
+            'global/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type'
         );
     }
 

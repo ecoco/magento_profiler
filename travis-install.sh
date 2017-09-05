@@ -29,8 +29,7 @@ mkdir -p magento/var/log
 mkdir $TRAVIS_BUILD_DIR/util
 cd $TRAVIS_BUILD_DIR/util
 #only install test dependencies
-touch composer.json
-composer require satooshi/php-coveralls
+composer require satooshi/php-coveralls --no-interaction
 
 #DO NOT USE COMPOSER FOR PHPUNIT as it shares its autoloader
 if [ $TRAVIS_PHP_VERSION == "5.5" ]
@@ -50,7 +49,7 @@ n98-magerun.phar sys:info
 modman init
 modman link $TRAVIS_BUILD_DIR
 
-touch composer.json
+
 if [ $NO_DEPS ]
 then
     #create minimal composer json to make sure we can install inchoo php7
@@ -63,19 +62,19 @@ else
     #add magento-root-dir directive
     sed -i 's/"require":/"extra": {"magento-root-dir": "magento\/"},\n    "require":/' composer.json
 
-    composer install --no-dev
+    composer install --no-dev --no-interaction
 fi
 
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
     #make php7 possible
-    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7
+    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7 --no-interaction
 
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]
     then
-        composer require inchoo/php7 2.0.0
+        composer require inchoo/php7 2.0.0 --no-interaction
     else
-        composer require inchoo/php7 1.0.6
+        composer require inchoo/php7 1.0.6 --no-interaction
     fi
 fi
 

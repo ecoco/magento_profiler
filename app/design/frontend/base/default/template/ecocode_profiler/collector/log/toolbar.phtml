@@ -3,7 +3,7 @@
 $collector   = $this->getCollector();
 $token       = $this->getToken();
 $logCount    = $collector->getLogCount();
-$statusColor = $collector->countErrors() ? 'red' : ($collector->countDeprecations() ? 'yellow' : '');
+$statusColor = $collector->countErrors() ? 'red' : ($collector->countDeprecations() || $collector->countWarnings() ? 'yellow' : '');
 ?>
 
 <?php if ($logCount): ?>
@@ -34,6 +34,12 @@ $statusColor = $collector->countErrors() ? 'red' : ($collector->countDeprecation
                 <b>Errors</b>
                 <span
                     class="sf-toolbar-status sf-toolbar-status-<?php echo $collector->countErrors() ? 'red' : '' ?>"><?php echo $collector->countErrors() ?></span>
+            </div>
+
+            <div class="sf-toolbar-info-piece">
+                <b>Warnings</b>
+                <span
+                    class="sf-toolbar-status sf-toolbar-status-<?php echo $collector->countWarnings() ? 'yellow' : '' ?>"><?php echo $collector->countWarnings() ?></span>
             </div>
 
             <div class="sf-toolbar-info-piece">

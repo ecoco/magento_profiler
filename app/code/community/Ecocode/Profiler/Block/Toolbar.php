@@ -29,7 +29,6 @@ class Ecocode_Profiler_Block_Toolbar
     {
         if ($this->collectors === null) {
             $this->collectors = $this->getProfile()->getCollectors();
-
         }
 
         return $this->collectors;

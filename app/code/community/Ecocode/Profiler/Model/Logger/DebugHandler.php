@@ -56,5 +56,16 @@ class Ecocode_Profiler_Model_Logger_DebugHandler extends TestHandler
 
         return $cnt;
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function countWarnings()
+    {
+        if (isset($this->recordsByLevel[Logger::WARNING])) {
+            return count($this->recordsByLevel[Logger::WARNING]);
+        }
+
+        return 0;
+    }
 }
 

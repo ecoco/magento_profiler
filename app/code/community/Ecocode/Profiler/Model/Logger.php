@@ -68,6 +68,18 @@ class Ecocode_Profiler_Model_Logger
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function countWarnings()
+    {
+        if ($logger = $this->getDebugLogger()) {
+            return $logger->countWarnings();
+        }
+
+        return 0;
+    }
+
+    /**
      * Returns a Ecocode_Profiler_Model_Logger_DebugHandlerInterface instance if one is registered with this logger.
      *
      * @return Ecocode_Profiler_Model_Logger_DebugHandlerInterface|null A DebugLoggerInterface instance or null if none is registered

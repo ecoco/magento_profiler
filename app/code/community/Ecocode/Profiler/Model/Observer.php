@@ -105,6 +105,65 @@ class Ecocode_Profiler_Model_Observer
         return $this->profiler;
     }
 
+    public function checkEvents()
+    {
+        if (!$this->getProfiler()->isEnabled()) {
+            return;
+        }
+
+        /** @var Ecocode_Profiler_Model_AppDev $app */
+        $app    = Mage::app();
+        $events = $app->getEvents();
+
+        foreach (array_keys($events) as $area) {
+            $this->verifyAreaEvents($area);
+        }
+    }
+
+    protected function verifyAreaEvents($area)
+    {
+        $config = Mage::app()->getConfig();
+        $events = $config->getNode($area)->events;
+
+        if (!$events) {
+            return;
+        }
+
+        $cache    = Mage::app()->getCache();
+        $cacheKey = 'profiler-events-valid-' . $area;
+        $hash     = md5(json_encode($events));
+
+        if ($cache->load($cacheKey) === $hash) {
+            return;
+        }
+
+        $valid = true;
+
+        foreach ($events->asArray() as $event) {
+            foreach ($event['observers'] as $observer) {
+                $modelClassName = $config->getModelClassName($observer['class']);
+                if (!class_exists($modelClassName)) {
+                    $valid = false;
+                    Mage::log(sprintf('observer class "%s" does not exist', $modelClassName), Zend_Log::CRIT);
+                }
+
+                if (!method_exists($modelClassName, $observer['method'])) {
+                    $valid = false;
+                    Mage::log(
+                        sprintf('observer class method "%s::%s" does not exist', $modelClassName, $observer['method']),
+                        Zend_Log::WARN
+                    );
+                }
+            }
+        }
+
+        if ($valid) {
+            $cache->save($hash, $cacheKey);
+        }
+
+        return;
+    }
+
 
     /**
      * @codeCoverageIgnore
@@ -120,7 +179,7 @@ class Ecocode_Profiler_Model_Observer
     {
         $collector = $this->getProfiler()->getDataCollector('request');
         /** @var Ecocode_Profiler_Model_Collector_RequestDataCollector $collector */
-        if($collector) {
+        if ($collector) {
             $collector->captureFlashMessages();
         }
     }

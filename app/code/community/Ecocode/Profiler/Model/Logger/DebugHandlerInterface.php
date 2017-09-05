@@ -25,4 +25,11 @@ interface Ecocode_Profiler_Model_Logger_DebugHandlerInterface
      * @return int The number of errors
      */
     public function countErrors();
+
+    /**
+     * Returns the number of warnings.
+     *
+     * @return int The number of warnings
+     */
+    public function countWarnings();
 }

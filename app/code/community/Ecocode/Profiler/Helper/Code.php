@@ -154,10 +154,14 @@ class Ecocode_Profiler_Helper_Code
      */
     public function formatClassMethod($class, $method, $text = null)
     {
-        $reflectionMethod = new ReflectionMethod($class, $method);
+        try {
+            $reflectionMethod = new ReflectionMethod($class, $method);
 
-        if ($text === null) {
-            $text = $reflectionMethod->getDeclaringClass()->getName() . ':' . $method;
+            if ($text === null) {
+                $text = $reflectionMethod->getDeclaringClass()->getName() . ':' . $method;
+            }
+        } catch (\ReflectionException $e) {
+            return $e->getMessage();
         }
 
         return $this->formatFile(

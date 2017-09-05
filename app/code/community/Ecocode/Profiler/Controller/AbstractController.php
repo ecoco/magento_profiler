@@ -22,8 +22,8 @@ class Ecocode_Profiler_Controller_AbstractController
         $config = $app->getConfig();
 
         //disable before/after to html observer as its quiet costly
-        $config->setNode('frontend/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type', 'disabled');
-        $config->setNode('frontend/events/core_block_abstract_to_html_after/observers/ecocode_profiler_context/type', 'disabled');
+        $config->setNode('global/events/core_block_abstract_to_html_before/observers/ecocode_profiler_context/type', 'disabled');
+        $config->setNode('global/events/core_block_abstract_to_html_after/observers/ecocode_profiler_context/type', 'disabled');
 
         parent::preDispatch();
         return $this;

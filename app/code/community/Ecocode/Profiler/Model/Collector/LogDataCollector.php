@@ -61,6 +61,11 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
         return isset($this->data['error_count']) ? $this->data['error_count'] : 0;
     }
 
+    public function countWarnings()
+    {
+        return isset($this->data['warning_count']) ? $this->data['warning_count'] : 0;
+    }
+
     /**
      * Gets the logs.
      *
@@ -160,6 +165,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
         $count  = [
             'total_log_count'   => count($logger->getLogs()),
             'error_count'       => $logger->countErrors(),
+            'warning_count'     => $logger->countWarnings(),
             'deprecation_count' => 0,
             'scream_count'      => 0,
             'priorities'        => [],
@@ -193,6 +199,7 @@ class Ecocode_Profiler_Model_Collector_LogDataCollector
     {
         return isset($this->data['total_log_count']) ? $this->data['total_log_count'] : 0;
     }
+
 
 
     /**

@@ -29,6 +29,7 @@ mkdir -p magento/var/log
 mkdir $TRAVIS_BUILD_DIR/util
 cd $TRAVIS_BUILD_DIR/util
 #only install test dependencies
+touch composer.json
 composer require satooshi/php-coveralls
 
 #DO NOT USE COMPOSER FOR PHPUNIT as it shares its autoloader
@@ -49,7 +50,7 @@ n98-magerun.phar sys:info
 modman init
 modman link $TRAVIS_BUILD_DIR
 
-
+touch composer.json
 if [ $NO_DEPS ]
 then
     #create minimal composer json to make sure we can install inchoo php7

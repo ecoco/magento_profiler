@@ -6,15 +6,16 @@ php:
   - 5.5
 
 env:
-  - MAGENTO_VERSION=magento-mirror-1.9.3.0
+  - MAGENTO_VERSION=magento-mirror-1.9.3.7
   - MAGENTO_VERSION=magento-mirror-1.9.2.4
   - MAGENTO_VERSION=magento-mirror-1.8.1.0
-  - MAGENTO_VERSION=magento-mirror-1.7.0.2
+  # overwrite version with a fix for mysql 5.6 installation
+  - MAGENTO_VERSION=ecocode-mirror-1.7.0.2
 
 matrix:
   include:
     - php: 7.0
-      env: MAGENTO_VERSION=magento-mirror-1.9.3.0 NO_DEPS=1
+      env: MAGENTO_VERSION=magento-mirror-1.9.3.7 NO_DEPS=1
 
 services:
   - mysql
@@ -50,4 +51,4 @@ script:
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
-  - travis_retry $TRAVIS_BUILD_DIR/util/vendor/bin/coveralls -v
+  - travis_retry $TRAVIS_BUILD_DIR/util/vendor/bin/php-coveralls -v

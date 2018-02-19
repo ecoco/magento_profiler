@@ -7,18 +7,18 @@ mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS ma
 
 cd $TRAVIS_BUILD_DIR/build
 
-#1.9.3.0 is currently not in the default version of n98 so add it manually
+#1.7.0.2  overwrite version due to https://github.com/ecoco/magento_profiler/issues/19
 cat <<EOF > ~/.n98-magerun.yaml
 commands:
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-mirror-1.9.3.0
-        version: 1.9.3.0
+      - name: ecocode-mirror-1.7.0.2
+        version: 1.7.0.2
         dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.0.zip
+          url: https://github.com/ecoco/magento-mirror/archive/1.7.0.2-fix.zip
           type: zip
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.6.1.0
 EOF
 
 
@@ -67,14 +67,12 @@ fi
 
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
-    #make php7 possible
-    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7 --no-interaction
-
-    if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.0" ]
+    composer config -g repositories.firegento composer https://packages.firegento.com --no-interaction
+    if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.7" ]
     then
-        composer require inchoo/php7 2.0.0 --no-interaction
+        composer require inchoo/php7 2.1.1 --no-interaction
     else
-        composer require inchoo/php7 1.0.6 --no-interaction
+        composer require inchoo/php7 1.1.0 --no-interaction
     fi
 fi
 

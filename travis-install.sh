@@ -67,6 +67,7 @@ fi
 
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
+    composer config -g repositories.firegento composer https://packages.firegento.com --no-interaction
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.7" ]
     then
         composer require inchoo/php7 2.1.1 --no-interaction

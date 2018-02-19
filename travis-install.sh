@@ -67,14 +67,11 @@ fi
 
 if [ $TRAVIS_PHP_VERSION == "7.0" ]
 then
-    #make php7 possible
-    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7 --no-interaction
-
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.7" ]
     then
-        composer require inchoo/php7 2.0.0 --no-interaction
+        composer require inchoo/php7 2.1.1 --no-interaction
     else
-        composer require inchoo/php7 1.0.6 --no-interaction
+        composer require inchoo/php7 1.1.0 --no-interaction
     fi
 fi
 

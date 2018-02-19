@@ -12,8 +12,8 @@ cat <<EOF > ~/.n98-magerun.yaml
 commands:
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-mirror-1.7.0.2-fix
-        version: 1.7.0.2-fix
+      - name: ecocode-mirror-1.7.0.2
+        version: 1.7.0.2
         dist:
           url: https://github.com/ecoco/magento-mirror/archive/1.7.0.2-fix.zip
           type: zip

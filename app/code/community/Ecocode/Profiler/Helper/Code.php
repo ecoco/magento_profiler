@@ -24,10 +24,13 @@ class Ecocode_Profiler_Helper_Code
     public function __construct($format = null, $rootDir = null, $charset = 'UTF-8', Ecocode_Profiler_Model_Config $config = null)
     {
         $this->config         = $config ? $config : Mage::getSingleton('ecocode_profiler/config');
+
         $format               = $format ? $format : $this->config->getValue('file_link_format');
         $this->fileLinkFormat = $format ? $format : ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
-        $this->rootDir        = $rootDir ? $rootDir : str_replace('/', DIRECTORY_SEPARATOR, dirname(Mage::getRoot())) . DIRECTORY_SEPARATOR;
         $this->charset        = $charset;
+
+        $rootDir              = $rootDir ? $rootDir: $this->config->getValue('magento_root', dirname(Mage::getRoot()));
+        $this->rootDir        = str_replace('/', DIRECTORY_SEPARATOR, $rootDir) . DIRECTORY_SEPARATOR;
     }
 
     public function abbrClass($class)
@@ -220,7 +223,7 @@ class Ecocode_Profiler_Helper_Code
     {
         if ($hostRoot = $this->getHostRoot()) {
             $file = str_replace($this->rootDir, $hostRoot, $file);
-        };
+        }
 
         return $file;
     }

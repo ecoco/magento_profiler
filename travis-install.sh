@@ -38,7 +38,7 @@ cd $TRAVIS_BUILD_DIR/build
 # Install Magento
 n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --only-download
 # path the mysql install file
-cp $TRAVIS_BUILD_DIR/travis/DbMysql.php ./app/code/core/Mage/Install/Model/Installer/Db/Mysql4.php
+cp $TRAVIS_BUILD_DIR/travis/DbMysql.php ./magento/app/code/core/Mage/Install/Model/Installer/Db/Mysql4.php
 n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --noDownload --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
 mkdir -p magento/var/log
 

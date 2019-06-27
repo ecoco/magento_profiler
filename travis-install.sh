@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -ev
 
+
+#Clean mysql database
+mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
+
+cd $TRAVIS_BUILD_DIR/build
+
 #1.9.3.0 is currently not in the default version of n98 so add it manually
 cat <<EOF > ~/.n98-magerun.yaml
 commands:
@@ -72,7 +78,7 @@ else
     composer install --no-dev --no-interaction
 fi
 
-if [ $TRAVIS_PHP_VERSION == "7.2" ]
+if [ $TRAVIS_PHP_VERSION == "7.1" ]
 then
     #make php7 possible
     composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7 --no-interaction

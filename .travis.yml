@@ -51,4 +51,4 @@ script:
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
-  - travis_retry $TRAVIS_BUILD_DIR/util/vendor/bin/coveralls -v
+  - travis_retry $TRAVIS_BUILD_DIR/util/vendor/bin/php-coveralls -v

@@ -26,20 +26,19 @@ commands:
           type: zip
         extra:
           sample-data: sample-data-1.9.1.0
+      #1.7.0.2  overwrite version due to https://github.com/ecoco/magento_profiler/issues/19
+      - name: ecocode-mirror-1.7.0.2
+        version: 1.7.0.2
+        dist:
+          url: https://github.com/ecoco/magento-mirror/archive/1.7.0.2-fix.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.6.1.0
 EOF
 
 
-#Clean mysql database
-mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot
-
-cd $TRAVIS_BUILD_DIR/build
-
-
 # Install Magento
-n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --only-download
-# path the mysql install file
-cp $TRAVIS_BUILD_DIR/travis/DbMysql.php ./magento/app/code/core/Mage/Install/Model/Installer/Db/Mysql4.php
-n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --noDownload --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
+n98-magerun.phar install --magentoVersion ${MAGENTO_VERSION} --installationFolder "magento" --dbHost "127.0.0.1" --dbUser "root" --dbPass "" --dbName "magento_test" --baseUrl "http://testmagento.local" --forceUseDb --useDefaultConfigParams yes --installSampleData no
 mkdir -p magento/var/log
 
 mkdir $TRAVIS_BUILD_DIR/util

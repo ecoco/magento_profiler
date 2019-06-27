@@ -1,6 +1,27 @@
 #!/usr/bin/env bash
 set -ev
 
+#1.9.3.0 is currently not in the default version of n98 so add it manually
+cat <<EOF > ~/.n98-magerun.yaml
+commands:
+  N98\Magento\Command\Installer\InstallCommand:
+    magento-packages:
+      - name: magento-mirror-1.9.3.10
+        version: 1.9.3.10
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.10.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.9.1.0
+      - name: magento-mirror-1.9.4.1
+        version: 1.9.4.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.1.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.9.1.0
+EOF
+
 
 #Clean mysql database
 mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS magento_test;" -uroot

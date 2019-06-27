@@ -7,11 +7,26 @@ mysql -e "DROP DATABASE IF EXISTS magento_test; CREATE DATABASE IF NOT EXISTS ma
 
 cd $TRAVIS_BUILD_DIR/build
 
-#1.7.0.2  overwrite version due to https://github.com/ecoco/magento_profiler/issues/19
+#1.9.3.0 is currently not in the default version of n98 so add it manually
 cat <<EOF > ~/.n98-magerun.yaml
 commands:
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-mirror-1.9.3.10
+        version: 1.9.3.10
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.10.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.9.1.0
+      - name: magento-mirror-1.9.4.1
+        version: 1.9.4.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.1.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.9.1.0
+      #1.7.0.2  overwrite version due to https://github.com/ecoco/magento_profiler/issues/19
       - name: ecocode-mirror-1.7.0.2
         version: 1.7.0.2
         dist:
@@ -65,13 +80,16 @@ else
     composer install --no-dev --no-interaction
 fi
 
-if [ $TRAVIS_PHP_VERSION == "7.0" ]
+if [ $TRAVIS_PHP_VERSION == "7.1" ]
 then
-    composer config -g repositories.firegento composer https://packages.firegento.com --no-interaction
-    if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.7" ]
+    #make php7 possible
+
+    if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.10" ] || [ $MAGENTO_VERSION == "magento-mirror-1.9.4.1"  ]
     then
-        composer require inchoo/php7 2.1.1 --no-interaction
+        # do nothing no longer needed
+        echo 'magento version is new enough no php 7 patch required'
     else
+        composer config -g repositories.firegento composer https://packages.firegento.com --no-interaction
         composer require inchoo/php7 1.1.0 --no-interaction
     fi
 fi

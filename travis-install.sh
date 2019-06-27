@@ -83,13 +83,13 @@ fi
 if [ $TRAVIS_PHP_VERSION == "7.1" ]
 then
     #make php7 possible
-    composer config repositories.inchoo vcs https://github.com/Inchoo/Inchoo_PHP7 --no-interaction
 
     if [ $MAGENTO_VERSION == "magento-mirror-1.9.3.10" ] || [ $MAGENTO_VERSION == "magento-mirror-1.9.4.1"  ]
     then
         # do nothing no longer needed
         echo 'magento version is new enough no php 7 patch required'
     else
+        composer config -g repositories.firegento composer https://packages.firegento.com --no-interaction
         composer require inchoo/php7 1.1.0 --no-interaction
     fi
 fi

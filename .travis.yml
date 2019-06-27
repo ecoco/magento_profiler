@@ -14,7 +14,7 @@ env:
 
 matrix:
   include:
-    - php: 7.0
+    - php: 7.2
       env: MAGENTO_VERSION=magento-mirror-1.9.3.4 NO_DEPS=1
 
 services:

@@ -11,9 +11,8 @@ addons:
     sources:
       - mysql-5.5-trusty
     packages:
-      - mysql-server
-      - mysql-client
-      -
+      - mysql-server-5.5
+      - mysql-client-5.5
 env:
   - MAGENTO_VERSION=magento-mirror-1.9.4.1
   - MAGENTO_VERSION=magento-mirror-1.9.3.10

@@ -73,6 +73,7 @@ class Ecocode_Profiler_Model_Collector_CacheDataCollector
         }
         $cacheCalls = $cache->getLog();
         $totalTime  = 0;
+        $totalSize  = 0;
         $stats      = [
             'total' => count($cacheCalls),
             'hit'   => 0,
@@ -85,6 +86,7 @@ class Ecocode_Profiler_Model_Collector_CacheDataCollector
             switch ($log['action']) {
                 case 'load':
                     $stats[$log['hit'] ? 'hit' : 'miss']++;
+                    $totalSize += $log['size'] ?: 0;
                     break;
                 case 'save':
                     $stats['save']++;
@@ -96,6 +98,7 @@ class Ecocode_Profiler_Model_Collector_CacheDataCollector
 
         $this->data['stats']       = $stats;
         $this->data['total_time']  = $totalTime;
+        $this->data['total_size']  = $totalSize;
         $this->data['cache_calls'] = $cache->getLog();
     }
 
@@ -123,6 +126,10 @@ class Ecocode_Profiler_Model_Collector_CacheDataCollector
         return $this->getData('total_time', 0);
     }
 
+    public function getTotalSize()
+    {
+        return $this->getData('total_size', 0);
+    }
 
     public function getCacheList()
     {

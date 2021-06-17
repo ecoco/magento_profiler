@@ -28,6 +28,11 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
     <?php endforeach; ?>
 
     <div class="metric">
+        <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalSize() / 1024) ?> kb</span>
+        <span class="label">Loaded</span>
+    </div>
+
+    <div class="metric">
         <span class="value"><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
         <span class="label">Time</span>
     </div>
@@ -108,6 +113,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
         <th>Action</th>
         <th style="width: 100%;">Id</th>
         <th>Hit</th>
+        <th data-sort="float">Size</th>
         <th data-sort="float">Time</th>
     </tr>
     </thead>
@@ -132,6 +138,7 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
                     -
                 <?php endif ?>
             </td>
+            <td class="nowrap"><?php echo isset($call['size']) ? sprintf('%0.2f', $call['size'] / 1024) : '-'?> kb</td>
             <td class="nowrap"><?php echo sprintf('%0.2f', $call['time'] * 1000) ?> ms</td>
         </tr>
     <?php endforeach; ?>

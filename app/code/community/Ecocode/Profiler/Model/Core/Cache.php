@@ -13,7 +13,13 @@ class Ecocode_Profiler_Model_Core_Cache extends Mage_Core_Model_Cache
         $result   = parent::load($id);
         $execTime = microtime(true) - $start;
 
-        $this->log[] = ['action' => 'load', 'id' => $id, 'hit' => ($result !== false), 'time' => $execTime];
+        $this->log[] = [
+            'action' => 'load',
+            'id'     => $id,
+            'hit'    => ($result !== false),
+            'time'   => $execTime,
+            'size'   => $result ? strlen($result) : null
+        ];
 
         return $result;
     }
@@ -24,16 +30,23 @@ class Ecocode_Profiler_Model_Core_Cache extends Mage_Core_Model_Cache
         $result   = parent::save($data, $id, $tags, $lifeTime);
         $execTime = microtime(true) - $start;
 
-        $this->log[] = ['action' => 'save', 'id' => $id, 'tags' => $tags, 'life_time' => $lifeTime, 'time' => $execTime];
+        $this->log[] = [
+            'action'    => 'save',
+            'id'        => $id,
+            'tags'      => $tags,
+            'life_time' => $lifeTime,
+            'time'      => $execTime
+        ];
+
         return $result;
     }
 
     public function clean($tags = [])
     {
 
-        $loadTime = microtime(true);
-        $result   = parent::clean($tags);
-        $execTime = microtime(true) - $loadTime;
+        $loadTime    = microtime(true);
+        $result      = parent::clean($tags);
+        $execTime    = microtime(true) - $loadTime;
         $this->log[] = ['action' => 'clean', 'tags' => $tags, 'time' => $execTime];
 
         return $result;

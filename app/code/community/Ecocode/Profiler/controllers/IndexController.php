@@ -20,7 +20,7 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $this->renderLayout();
     }
 
-    public function toolbarAjaxAction()
+    public function ajaxAction()
     {
         $token    = $this->getRequest()->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
         $profiler = $this->getProfiler();

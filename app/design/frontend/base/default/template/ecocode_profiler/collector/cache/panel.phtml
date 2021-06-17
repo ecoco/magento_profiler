@@ -119,11 +119,12 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
     </thead>
     <tbody>
     <?php foreach ($collector->getCacheCalls() as $index => $call): ?>
+        <?php $id = isset($call['id']) ? $call['id'] : '-'; ?>
         <tr>
             <td class="nowrap"><?php echo $index + 1 ?> </td>
             <td><?php echo $call['action'] ?></td>
             <td>
-                <?php echo isset($call['id']) ? $call['id'] : '-'; ?>
+                <?php echo $id ?>
                 <?php if (!empty($call['tags'])): ?>
                     <br>
                     <small><strong>Tags:</strong> <?php echo implode(', ', $call['tags']) ?></small>
@@ -138,7 +139,16 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
                     -
                 <?php endif ?>
             </td>
-            <td class="nowrap"><?php echo isset($call['size']) ? sprintf('%0.2f', $call['size'] / 1024) : '-'?> kb</td>
+            <td class="nowrap">
+                <?php if (isset($call['size'])): ?>
+                    <span><?php echo sprintf('%0.2f', $call['size'] / 1024)?> kb</span>
+                    <?php if (substr($id, 0, 10) === 'translate_'):?>
+                        <a style="color: #A46A1F; cursor: pointer; text-decoration: none;" title="Unprecise due to debugging data added by the profile!">ⓘ</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    -
+                <?php endif; ?>
+            </td>
             <td class="nowrap"><?php echo sprintf('%0.2f', $call['time'] * 1000) ?> ms</td>
         </tr>
     <?php endforeach; ?>

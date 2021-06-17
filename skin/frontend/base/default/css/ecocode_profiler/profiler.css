@@ -180,7 +180,7 @@ table tbody ul {
     display: none;
 }
 .nowrap {
-    white-space: pre;
+    white-space: nowrap;
 }
 .newline {
     display: block;

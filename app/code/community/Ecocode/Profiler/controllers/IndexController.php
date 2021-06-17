@@ -20,6 +20,25 @@ class Ecocode_Profiler_IndexController extends Ecocode_Profiler_Controller_Abstr
         $this->renderLayout();
     }
 
+    public function toolbarAjaxAction()
+    {
+        $token    = $this->getRequest()->getParam(Ecocode_Profiler_Model_Profiler::URL_TOKEN_PARAMETER);
+        $profiler = $this->getProfiler();
+
+        $profile = $profiler->loadProfile($token);
+        Mage::register('current_profile', $profile);
+
+        $data = [];
+        foreach($profile->getCollectors() as $collector) {
+            $data[$collector->getName()] = $collector->getData();
+        }
+
+        Mage::app()
+            ->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody(json_encode($data));
+    }
+
     public function searchAction()
     {
         /** @var Mage_Core_Controller_Request_Http$request */

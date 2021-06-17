@@ -18,7 +18,7 @@ class Ecocode_Profiler_Model_Core_Cache extends Mage_Core_Model_Cache
             'id'     => $id,
             'hit'    => ($result !== false),
             'time'   => $execTime,
-            'size'   => $result ? strlen($result) : null
+            'size'   => $result !== false ? strlen($result) : null
         ];
 
         return $result;

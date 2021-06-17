@@ -58,6 +58,11 @@ $cacheTypes = Mage::app()->getCacheInstance()->getTypes();
             </div>
 
             <div class="sf-toolbar-info-piece">
+                <b>Cache size</b>
+                <span><?php echo sprintf('%.2f kb', $collector->getTotalSize() / 1024) ?></span>
+            </div>
+
+            <div class="sf-toolbar-info-piece">
                 <b>Time</b>
                 <span><?php echo sprintf('%0.2f', $collector->getTotalTime() * 1000) ?> ms</span>
             </div>

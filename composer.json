@@ -22,7 +22,7 @@
         "symfony/yaml": "^3.1|^4.0",
         "jdorn/sql-formatter": "^1.2",
         "monolog/monolog": "^1.0",
-        "magento-hackathon/magento-composer-installer": "3.2.*",
+        "magento-hackathon/magento-composer-installer": "^3.0|^4.0",
         "symfony/stopwatch":  "^3.2|^4.0"
     },
     "require-dev": {
